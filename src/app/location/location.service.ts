@@ -7,6 +7,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import {catchError, tap} from 'rxjs/operators';
 import {LocationCreated} from '../domain/location-created';
+import {environment} from '../../environments/environment';
 
 class Empty {
 }
@@ -18,7 +19,7 @@ export class LocationService {
   }
 
   addLocation(location: NewLocation): Observable<LocationCreated> {
-    return this.http.post('http://127.0.0.1:8182/location', location, {
+    return this.http.post(environment.locationResource, location, {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
@@ -26,9 +27,11 @@ export class LocationService {
       .flatMap(response => {
         const locationURL = response.headers.get('Location');
         return this.http.get<LocationCreated>(locationURL)
-          .pipe(tap(_ => console.log(`Get location location=${locationURL}`)), catchError(this.handleError(`Location ${locationURL}`)));
+          .pipe(tap(_ => console.log(`Get location location=${locationURL}`)),
+            catchError(this.handleError(`Location ${locationURL}`)));
       })
-      .pipe(tap(_ => console.log(`Post location=${location}`)), catchError(this.handleError(`Post location=${location}`)));
+      .pipe(tap(_ => console.log(`Post location=${location}`)),
+        catchError(this.handleError(`Post location=${location}`)));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

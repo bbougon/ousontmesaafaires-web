@@ -1,7 +1,6 @@
 # Où sont mes affaires web
 [![Build Status](https://travis-ci.org/bbougon/ousontmesaafaires-web.svg)](https://travis-ci.org/bbougon/ousontmesaafaires-web)
 
-
 ## CI
 https://travis-ci.org/bbougon/ousontmesaafaires-web
 
