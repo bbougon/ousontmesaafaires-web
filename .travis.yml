@@ -22,5 +22,9 @@ before_script:
   - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
   - npm install -g @angular/cli
 
+cache:
+  directories:
+    — node_modules
+
 script:
-  - ng test
+  - node_modules/karma/bin/karma start karma.conf.js --single-run
