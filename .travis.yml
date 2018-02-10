@@ -1,13 +1,14 @@
 language: node_js
 node_js:
-   - “7”
+  - "iojs"
+  - “7”
 
 branches:
-   only:
-      - master
+  only:
+    - master
 
 before_script:
-   - npm install -g @angular/cli
+  - npm install -g @angular/cli
 
 script:
-   - ng test
+  - ng test
