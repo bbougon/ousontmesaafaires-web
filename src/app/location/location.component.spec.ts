@@ -5,6 +5,9 @@ import {LocationService} from './location.service';
 import {HttpClient, HttpHandler} from '@angular/common/http';
 import {BrowserModule, By} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ConnectionBackend, HttpModule} from '@angular/http';
+import {MessageService} from '../infrastructure/message.service';
+import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -14,8 +17,8 @@ describe('LocationComponent', () => {
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
       declarations: [LocationComponent],
-      providers: [LocationService, HttpClient, HttpHandler],
-      imports: [FormsModule, ReactiveFormsModule, BrowserModule]
+      providers: [LocationService, HttpClient, ConnectionBackend, HttpHandler, HttpErrorHandler, MessageService],
+      imports: [FormsModule, ReactiveFormsModule, BrowserModule, HttpModule]
     })
       .compileComponents();
   }));

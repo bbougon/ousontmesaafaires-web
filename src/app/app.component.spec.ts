@@ -4,6 +4,9 @@ import {LocationComponent} from './location/location.component';
 import {LocationService} from './location/location.service';
 import {HttpClient, HttpHandler} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ConnectionBackend, Http, HttpModule} from '@angular/http';
+import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
+import {MessageService} from './infrastructure/message.service';
 
 
 describe('AppComponent', () => {
@@ -12,8 +15,8 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent, LocationComponent
       ],
-      providers: [LocationService, HttpClient, HttpHandler],
-      imports: [FormsModule, ReactiveFormsModule]
+      providers: [LocationService, ConnectionBackend, HttpClient, HttpHandler, HttpErrorHandler, MessageService],
+      imports: [FormsModule, ReactiveFormsModule, HttpModule]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

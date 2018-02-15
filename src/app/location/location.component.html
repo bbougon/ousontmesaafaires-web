@@ -1,85 +1,94 @@
-<form novalidate [formGroup]="addLocationForm">
+<div class="row col-md-12">
+  <form novalidate [formGroup]="addLocationForm">
 
-  <div class="container-fluid location col-md-7">
-    <h2>Add location</h2>
+    <div class="container-fluid location col-md-12">
+      <h2>Add location</h2>
 
-    <div class="row">
-      <div class="form-group col-md-12">
+      <div class="row col-md-12">
         <div class="form-group col-md-12">
-          <div class="row">
-            <div class="col-md-3">
-              <label for="locationName">
-                Location name:
-              </label>
-            </div>
-            <div class="col-md-9 form-group">
-              <input #locationName id="locationName" class="form-control" [ngClass]="{
+          <div class="form-group col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <label for="locationName">
+                  Location name:
+                </label>
+              </div>
+              <div class="col-md-9 form-group">
+                <input #locationName id="locationName" class="form-control" [ngClass]="{
                 'is-invalid': locationNameFormControl.invalid && (locationNameFormControl.dirty || locationNameFormControl.touched),
                 'is-valid': locationNameFormControl.valid && (locationNameFormControl.dirty || locationNameFormControl.touched)}"
-                     formControlName="locationNameFormControl" required/>
-              <div id="locationNameFeedback" class="invalid-feedback">
-                Please choose a location name.
+                       formControlName="locationNameFormControl" required/>
+                <div id="locationNameFeedback" class="invalid-feedback">
+                  Please choose a location name.
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="form-group col-md-12">
-          <div class="row">
-            <div class="col-md-3">
-              <label for="featureType">Feature:</label>
+          <div class="form-group col-md-12">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>Item</h5>
+              </div>
             </div>
-            <div class="col-md-8 row form-group">
-              <div class="col-md-6">
-                <input #featureType id="featureType" class="form-control col-md-12" [ngClass]="{
+            <div class="row">
+              <div class="col-md-3">
+                <label for="featureType">Feature:</label>
+              </div>
+              <div class="col-md-8 row form-group">
+                <div class="col-md-6">
+                  <input #featureType id="featureType" class="form-control col-md-12" [ngClass]="{
                   'is-invalid': featureTypeFormControl.invalid && (featureTypeFormControl.dirty || featureTypeFormControl.touched),
                   'is-valid': featureTypeFormControl.valid && (featureTypeFormControl.dirty || featureTypeFormControl.touched)}"
-                       formControlName="featureTypeFormControl" required>
-                <div id="featureTypeFeedback" class="invalid-feedback">
-                  Please fill a feature type
+                         formControlName="featureTypeFormControl" required>
+                  <div id="featureTypeFeedback" class="invalid-feedback">
+                    Please fill a feature type
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <input #feature id="featureValue" class="form-control col-md-12" [ngClass]="{
+                <div class="col-md-6">
+                  <input #feature id="featureValue" class="form-control col-md-12" [ngClass]="{
                   'is-invalid': featureValueFormControl.invalid && (featureValueFormControl.dirty || featureValueFormControl.touched),
                   'is-valid': featureValueFormControl.valid && (featureValueFormControl.dirty || featureValueFormControl.touched)}"
-                       formControlName="featureValueFormControl" required>
-                <div id="featureValueFeedback" class="invalid-feedback">
-                  Please fill a feature value
+                         formControlName="featureValueFormControl" required>
+                  <div id="featureValueFeedback" class="invalid-feedback">
+                    Please fill a feature value
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-light"
-                      (click)="add(featureType.value, feature.value); featureType.value=''; feature.value=''">
-                +
-              </button>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-light"
+                        (click)="add(featureType.value, feature.value); featureType.value=''; feature.value=''">
+                  +
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group col-md-12">
-          <span *ngIf="getItemToCreate()">Item: {{getItemToCreate()}}</span>
-        </div>
-        <div class="form-group col-md-12 offset-10">
-          <button type="button" id="addLocation" class="btn btn-light"
-                  (click)="addLocation(locationName.value); locationName.value=''">
-            Add
-          </button>
+          <div class="form-group col-md-12">
+            <span *ngIf="getItemToCreate()">Item: {{getItemToCreate()}}</span>
+          </div>
+          <div class="form-group col-md-12 offset-10">
+            <button type="button" id="addLocation" class="btn btn-light"
+                    (click)="addLocation(locationName.value); locationName.value=''">
+              Add
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
+</div>
 
-<div *ngFor="let location of locations" class="col-md-12">
-  <div class="col-md-8" id="locations">
-    <button type="button" class="btn btn-light">
-      {{location.location}}
-    </button>
+<div class="row col-md-12">
+  <div *ngFor="let location of locations" class="col-md-12">
+    <div class="col-md-8" id="locations">
+      <button type="button" class="btn btn-light">
+        {{location.location}}
+      </button>
+    </div>
+    <!--li *ngFor="let item of location.items">
+      <span>
+          Item: {{item.item | pair}}
+        </span>
+    </li-->
+    <!--img src="data:image/png;base64,{{location.qrcode}}"/-->
   </div>
-  <!--li *ngFor="let item of location.items">
-    <span>
-        Item: {{item.item | pair}}
-      </span>
-  </li-->
-  <!--img src="data:image/png;base64,{{location.qrcode}}"/-->
 </div>

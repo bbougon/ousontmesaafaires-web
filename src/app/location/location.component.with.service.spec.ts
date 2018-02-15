@@ -5,6 +5,9 @@ import {HttpClient, HttpHandler} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule, By} from '@angular/platform-browser';
 import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.service';
+import {ConnectionBackend, HttpModule} from '@angular/http';
+import {MessageService} from '../infrastructure/message.service';
+import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 
 describe('LocationComponent Call Service', () => {
   let component: LocationComponent;
@@ -15,8 +18,8 @@ describe('LocationComponent Call Service', () => {
       declarations: [LocationComponent],
       providers: [{
         provide: LocationService, useClass: FakeLocationService
-      }, HttpClient, HttpHandler],
-      imports: [FormsModule, ReactiveFormsModule, BrowserModule]
+      }, HttpClient, ConnectionBackend, HttpHandler, HttpErrorHandler, MessageService],
+      imports: [FormsModule, ReactiveFormsModule, HttpModule, BrowserModule]
     })
       .compileComponents();
   }));

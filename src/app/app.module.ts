@@ -5,8 +5,11 @@ import {AppComponent} from './app.component';
 import {LocationModule} from './location/location.module';
 import {LocationComponent} from './location/location.component';
 import {LocationService} from './location/location.service';
-import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {HttpClientModule} from '@angular/common/http';
+import {HttpErrorHandler} from "./infrastructure/http-error-handler.service";
+import {MessageService} from "./infrastructure/message.service";
 
 @NgModule({
   declarations: [
@@ -14,13 +17,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     LocationComponent
   ],
   imports: [
-    BrowserModule,
     HttpClientModule,
+    HttpModule,
+    BrowserModule,
     LocationModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [LocationService],
+  providers: [LocationService, HttpErrorHandler, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
