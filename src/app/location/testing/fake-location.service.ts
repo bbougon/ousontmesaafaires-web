@@ -13,4 +13,8 @@ export class FakeLocationService extends LocationService {
     return of(LOCATION_CREATED);
   }
 
+
+  getLocations(): Observable<LocationCreated[]> {
+    return of([LOCATION_CREATED]);
+  }
 }

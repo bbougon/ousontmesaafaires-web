@@ -24,10 +24,6 @@ export class LocationComponent implements OnInit {
   featureValueFormControl: FormControl;
 
   constructor(private locationService: LocationService, private pair: PairPipe) {
-    this.locationService.getLocations().subscribe(locations => {
-        this.locations = locations;
-      }
-    );
   }
 
   ngOnInit() {
@@ -39,6 +35,10 @@ export class LocationComponent implements OnInit {
       featureTypeFormControl: this.featureTypeFormControl,
       featureValueFormControl: this.featureValueFormControl,
     });
+    this.locationService.getLocations().subscribe(locations => {
+        this.locations = locations;
+      }
+    );
   }
 
   markAsDirty(value: string, formControl: FormControl) {

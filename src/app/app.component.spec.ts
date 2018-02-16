@@ -2,11 +2,12 @@ import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import {LocationComponent} from './location/location.component';
 import {LocationService} from './location/location.service';
-import {HttpClient, HttpHandler} from '@angular/common/http';
+import {HttpClient, HttpClientModule, HttpHandler} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ConnectionBackend, Http, HttpModule} from '@angular/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
 import {MessageService} from './infrastructure/message.service';
+import {FakeLocationService} from './location/testing/fake-location.service';
 
 
 describe('AppComponent', () => {
@@ -15,8 +16,9 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent, LocationComponent
       ],
-      providers: [LocationService, ConnectionBackend, HttpClient, HttpHandler, HttpErrorHandler, MessageService],
-      imports: [FormsModule, ReactiveFormsModule, HttpModule]
+      providers: [{provide: LocationService, useClass:  FakeLocationService},
+        ConnectionBackend, HttpClient, HttpHandler, HttpErrorHandler, MessageService],
+      imports: [FormsModule, ReactiveFormsModule, HttpModule, HttpClientModule]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
