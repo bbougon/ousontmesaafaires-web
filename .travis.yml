@@ -27,4 +27,4 @@ cache:
     — node_modules
 
 script:
-  - ng test --single-run
+  - ng test --single-run -sm=false
