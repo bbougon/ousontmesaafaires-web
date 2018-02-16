@@ -24,6 +24,10 @@ export class LocationComponent implements OnInit {
   featureValueFormControl: FormControl;
 
   constructor(private locationService: LocationService, private pair: PairPipe) {
+    this.locationService.getLocations().subscribe(locations => {
+        this.locations = locations;
+      }
+    );
   }
 
   ngOnInit() {

@@ -35,12 +35,9 @@ export class LocationService {
       .pipe(tap(_ => console.log(`Post location=${location}`)),
         catchError(this.handleError(`Add location`, location)));
   }
-
-  private log(message: string) {
-    console.log('LocationService: ' + message);
-  }
-
   getLocations(): Observable<LocationCreated[]> {
-    return null;
+    return this.httpClient.get(environment.locationResource)
+      .pipe(tap(_ => console.log(`Get all locations location`)),
+        catchError(this.handleError(`getLocations`)));
   }
 }

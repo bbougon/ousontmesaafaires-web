@@ -3,6 +3,5 @@ const API_URL = 'http://127.0.0.1:8182';
 
 export const environment = {
   production: true,
-  locationResource: API_URL + '/location',
-  locationsResource: API_URL + '/locations'
+  locationResource: API_URL + '/locations',
 };

@@ -79,6 +79,17 @@ describe('LocationService', () => {
         });
 
       })));
+
+    it('should get all locations', async(
+      inject([LocationService, HttpTestingController], (locationService: LocationService, mockBackend: HttpTestingController) => {
+        const expectedLocation1 = new LocationCreated('an id &', [new Item({'type': 'chaussure'})], 'Location 1');
+        const expectedLocation2 = new LocationCreated('an id 2', [new Item({'type': 'pantalon'})], 'Location 2');
+        locationService.getLocations().subscribe(locations => {
+          expect(locations).toContain(expectedLocation1, expectedLocation2);
+        });
+
+        mockBackend.expectOne(environment.locationResource).flush([expectedLocation1, expectedLocation2], {status: 200, statusText: 'OK'});
+      })));
   });
 
 });
