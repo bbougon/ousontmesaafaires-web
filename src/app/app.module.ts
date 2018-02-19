@@ -8,13 +8,17 @@ import {LocationService} from './location/location.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
-import {HttpErrorHandler} from "./infrastructure/http-error-handler.service";
-import {MessageService} from "./infrastructure/message.service";
+import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
+import {MessageService} from './infrastructure/message.service';
+import { ErrorMessageComponent } from './error-message/error-message.component';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LocationComponent
+    LocationComponent,
+    ErrorMessageComponent,
+    ItemComponent
   ],
   imports: [
     HttpClientModule,

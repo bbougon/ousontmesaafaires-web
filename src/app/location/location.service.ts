@@ -2,13 +2,12 @@ import {Injectable} from '@angular/core';
 import {NewLocation} from '../domain/new-location';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {of} from 'rxjs/observable/of';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import {catchError, tap} from 'rxjs/operators';
 import {LocationCreated} from '../domain/location-created';
 import {environment} from '../../environments/environment';
-import { HttpErrorHandler, HandleError } from '../infrastructure/http-error-handler.service';
+import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 
 @Injectable()
 export class LocationService {
@@ -35,6 +34,7 @@ export class LocationService {
       .pipe(tap(_ => console.log(`Post location=${location}`)),
         catchError(this.handleError(`Add location`, location)));
   }
+
   getLocations(): Observable<LocationCreated[]> {
     return this.httpClient.get(environment.locationResource)
       .pipe(tap(_ => console.log(`Get all locations location`)),

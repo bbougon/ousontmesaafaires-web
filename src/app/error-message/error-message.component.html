@@ -1,0 +1,10 @@
+<div *ngIf="messageService.messages.length" class="col-md-12">
+  <div class="modal-dialog modal-lg col-md-8" #errorDialog>
+    <div class="modal-body alert alert-danger">
+      <h2>Error messages:</h2>
+      <ol>
+        <li *ngFor='let message of messageService.messages'> {{message}}</li>
+      </ol>
+    </div>
+  </div>
+</div>
