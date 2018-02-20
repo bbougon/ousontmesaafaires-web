@@ -1,14 +1,11 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {LocationComponent} from './location.component';
 import {LocationService} from './location.service';
-import {HttpClient, HttpHandler} from '@angular/common/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BrowserModule, By} from '@angular/platform-browser';
+import {By} from '@angular/platform-browser';
 import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.service';
-import {ConnectionBackend, HttpModule} from '@angular/http';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
-import {ItemComponent} from '../item/item.component';
+import {AppModule} from '../app.module';
 
 describe('LocationComponent Call Service', () => {
   let component: LocationComponent;
@@ -16,11 +13,10 @@ describe('LocationComponent Call Service', () => {
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      declarations: [LocationComponent, ItemComponent],
       providers: [{
         provide: LocationService, useClass: FakeLocationService
-      }, HttpClient, ConnectionBackend, HttpHandler, HttpErrorHandler, MessageService],
-      imports: [FormsModule, ReactiveFormsModule, HttpModule, BrowserModule]
+      }, HttpErrorHandler, MessageService],
+      imports: [AppModule]
     })
       .compileComponents();
   }));

@@ -2,9 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {LocationComponent} from './location.component';
 import {LocationService} from './location.service';
-import {HttpClientModule} from '@angular/common/http';
-import {BrowserModule, By} from '@angular/platform-browser';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {FakeLocationService} from './testing/fake-location.service';
@@ -19,7 +17,7 @@ describe('LocationComponent', () => {
     TestBed.configureTestingModule({
       providers: [{provide: LocationService, useClass: FakeLocationService},
         HttpErrorHandler, MessageService],
-      imports: [FormsModule, ReactiveFormsModule, BrowserModule, HttpClientModule, AppModule]
+      imports: [AppModule]
     })
       .compileComponents();
   }));

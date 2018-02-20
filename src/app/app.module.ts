@@ -12,6 +12,7 @@ import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
 import {MessageService} from './infrastructure/message.service';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { ItemComponent } from './item/item.component';
+import {FormService} from './infrastructure/form.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,7 @@ import { ItemComponent } from './item/item.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [LocationService, HttpErrorHandler, MessageService],
+  providers: [LocationService, HttpErrorHandler, MessageService, FormService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

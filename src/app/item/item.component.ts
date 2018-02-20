@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {Item} from '../domain/item';
 import {PairPipe} from '../infrastructure/pair-pipe';
+import {FormService} from '../infrastructure/form.service';
 
 @Component({
   selector: 'app-item',
@@ -18,7 +19,7 @@ export class ItemComponent implements OnInit {
   private item = {};
   private itemToCreate: Item;
 
-  constructor(private pair: PairPipe) {
+  constructor(private pair: PairPipe, private formService: FormService) {
   }
 
   ngOnInit() {
@@ -30,30 +31,18 @@ export class ItemComponent implements OnInit {
     });
   }
 
-  markAsDirty(value: string, formControl: FormControl) {
-    if (value.trim() === '') {
-      formControl.markAsDirty();
-    }
-  }
-
-  resetFormControl(formControl: FormControl) {
-    if (formControl.valid) {
-      formControl.reset();
-    }
-  }
-
   add(featureType: string, feature: string): void {
-    this.markAsDirty(featureType, this.featureTypeFormControl);
-    this.markAsDirty(feature, this.featureValueFormControl);
+    this.formService.markAsDirty(featureType, this.featureTypeFormControl);
+    this.formService.markAsDirty(feature, this.featureValueFormControl);
 
     if (this.featureTypeFormControl.invalid || this.featureValueFormControl.invalid) {
-      this.resetFormControl(this.featureTypeFormControl);
-      this.resetFormControl(this.featureValueFormControl);
+      this.formService.resetFormControl(this.featureTypeFormControl);
+      this.formService.resetFormControl(this.featureValueFormControl);
       return;
     }
 
-    this.resetFormControl(this.featureTypeFormControl);
-    this.resetFormControl(this.featureValueFormControl);
+    this.formService.resetFormControl(this.featureTypeFormControl);
+    this.formService.resetFormControl(this.featureValueFormControl);
     this.item[featureType] = feature;
     Observable.create(this.itemToCreate = new Item(this.item));
   }
@@ -72,8 +61,8 @@ export class ItemComponent implements OnInit {
   }
 
   markAllAsDirty() {
-    this.markAsDirty('', this.featureTypeFormControl);
-    this.markAsDirty('', this.featureValueFormControl);
+    this.formService.markAsDirty('', this.featureTypeFormControl);
+    this.formService.markAsDirty('', this.featureValueFormControl);
   }
 
   getCreatedItem() {

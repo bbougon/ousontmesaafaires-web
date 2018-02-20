@@ -1,11 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ItemComponent } from './item.component';
-import {BrowserModule, By} from '@angular/platform-browser';
+import {ItemComponent} from './item.component';
+import {By} from '@angular/platform-browser';
 import {PairPipe} from '../infrastructure/pair-pipe';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppModule} from '../app.module';
-import {HttpClientModule} from '@angular/common/http';
 
 describe('ItemComponent', () => {
   let component: ItemComponent;
@@ -14,7 +12,7 @@ describe('ItemComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [PairPipe],
-      imports: [FormsModule, ReactiveFormsModule, BrowserModule, HttpClientModule, AppModule]
+      imports: [AppModule]
     })
     .compileComponents();
   }));

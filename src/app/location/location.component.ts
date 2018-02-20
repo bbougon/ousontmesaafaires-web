@@ -5,6 +5,7 @@ import {PairPipe} from '../infrastructure/pair-pipe';
 import {LocationCreated} from '../domain/location-created';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ItemComponent} from '../item/item.component';
+import {FormService} from '../infrastructure/form.service';
 
 @Component({
   selector: 'app-location',
@@ -20,7 +21,7 @@ export class LocationComponent implements OnInit {
   addLocationForm: FormGroup;
   locationNameFormControl: FormControl;
 
-  constructor(private locationService: LocationService, private pair: PairPipe) {
+  constructor(private locationService: LocationService, private pair: PairPipe, private formService: FormService) {
   }
 
   ngOnInit() {
@@ -34,21 +35,9 @@ export class LocationComponent implements OnInit {
     );
   }
 
-  markAsDirty(value: string, formControl: FormControl) {
-    if (value.trim() === '') {
-      formControl.markAsDirty();
-    }
-  }
-
-  resetFormControl(formControl: FormControl) {
-    if (formControl.valid) {
-      formControl.reset();
-    }
-  }
-
   addLocation(locationName: string): void {
     if (locationName.trim() === '' || Object.keys(this.itemComponent.getItem()).length === 0) {
-      this.markAsDirty(locationName, this.locationNameFormControl);
+      this.formService.markAsDirty(locationName, this.locationNameFormControl);
       this.itemComponent.markAllAsDirty();
       return;
     }
