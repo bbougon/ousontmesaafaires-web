@@ -8,6 +8,7 @@ import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.ser
 import {ConnectionBackend, HttpModule} from '@angular/http';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
+import {ItemComponent} from '../item/item.component';
 
 describe('LocationComponent Call Service', () => {
   let component: LocationComponent;
@@ -15,7 +16,7 @@ describe('LocationComponent Call Service', () => {
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      declarations: [LocationComponent],
+      declarations: [LocationComponent, ItemComponent],
       providers: [{
         provide: LocationService, useClass: FakeLocationService
       }, HttpClient, ConnectionBackend, HttpHandler, HttpErrorHandler, MessageService],
@@ -31,7 +32,6 @@ describe('LocationComponent Call Service', () => {
   }));
 
   it('displays the location once added', () => {
-    const locationService = fixture.debugElement.injector.get(LocationService);
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
     setValueOnFeaturesAndDispatchEvent(compiled, Object.keys(LOCATION_CREATED.items[0].item)[0],

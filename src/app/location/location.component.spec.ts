@@ -8,6 +8,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {FakeLocationService} from './testing/fake-location.service';
+import {AppModule} from '../app.module';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -16,10 +17,9 @@ describe('LocationComponent', () => {
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      declarations: [LocationComponent],
-      providers: [{provide: LocationService, useClass:  FakeLocationService},
+      providers: [{provide: LocationService, useClass: FakeLocationService},
         HttpErrorHandler, MessageService],
-      imports: [FormsModule, ReactiveFormsModule, BrowserModule, HttpClientModule]
+      imports: [FormsModule, ReactiveFormsModule, BrowserModule, HttpClientModule, AppModule]
     })
       .compileComponents();
   }));
@@ -35,6 +35,7 @@ describe('LocationComponent', () => {
 
     expect(component).toBeTruthy();
   });
+
   it('should render location empty', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
@@ -43,58 +44,6 @@ describe('LocationComponent', () => {
     expect(compiled.querySelector('label[for="locationName"]').textContent).toContain('Location name:');
     expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature:');
     expect(compiled.querySelector('div span')).toBeNull('Should be null');
-  });
-
-  it('should add the feature once \'+\' is clicked', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('span').textContent).toContain('Item: type,tshirt');
-  });
-
-  it('should invalidate feature if \'+\' is clicked and feature is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, '', '');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
-    expect(compiled.querySelector('#featureValueFeedback').textContent).toContain('Please fill a feature value');
-    expect(compiled.querySelector('span')).toBeNull();
-  });
-
-  it('should reset feature type if \'+\' is clicked and feature type is valid and feature value is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', '');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-invalid');
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('span')).toBeNull();
-  });
-
-  it('should reset feature value if \'+\' is clicked and feature value is valid and feature type is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, '', 'value');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-invalid');
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
-    expect(compiled.querySelector('span')).toBeNull();
   });
 
   it('should warn if location name is empty', () => {

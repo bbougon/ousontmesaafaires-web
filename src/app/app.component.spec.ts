@@ -29,18 +29,18 @@ describe('AppComponent', () => {
 
     expect(app.title).toEqual('app');
   }));
-  it('should have location component loaded', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('app-location')).toBeTruthy();
-  }));
   it('should have error message component loaded', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('app-error-message')).toBeTruthy();
+  }));
+  it('should have location component loaded', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('app-location')).toBeTruthy();
   }));
 });

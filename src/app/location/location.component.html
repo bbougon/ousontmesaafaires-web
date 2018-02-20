@@ -1,5 +1,5 @@
 <div class="row col-md-12">
-  <form novalidate [formGroup]="addLocationForm">
+  <div [formGroup]="addLocationForm">
 
     <div class="container-fluid location col-md-12">
       <h2>Add location</h2>
@@ -24,47 +24,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <h5>Item</h5>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-3">
-                <label for="featureType">Feature:</label>
-              </div>
-              <div class="col-md-8 row form-group">
-                <div class="col-md-6">
-                  <input #featureType id="featureType" class="form-control col-md-12" [ngClass]="{
-                  'is-invalid': featureTypeFormControl.invalid && (featureTypeFormControl.dirty || featureTypeFormControl.touched),
-                  'is-valid': featureTypeFormControl.valid && (featureTypeFormControl.dirty || featureTypeFormControl.touched)}"
-                         formControlName="featureTypeFormControl" required>
-                  <div id="featureTypeFeedback" class="invalid-feedback">
-                    Please fill a feature type
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <input #feature id="featureValue" class="form-control col-md-12" [ngClass]="{
-                  'is-invalid': featureValueFormControl.invalid && (featureValueFormControl.dirty || featureValueFormControl.touched),
-                  'is-valid': featureValueFormControl.valid && (featureValueFormControl.dirty || featureValueFormControl.touched)}"
-                         formControlName="featureValueFormControl" required>
-                  <div id="featureValueFeedback" class="invalid-feedback">
-                    Please fill a feature value
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-1">
-                <button type="button" class="btn btn-light"
-                        (click)="add(featureType.value, feature.value); featureType.value=''; feature.value=''">
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="form-group col-md-12">
-            <span *ngIf="getItemToCreate()">Item: {{getItemToCreate()}}</span>
-          </div>
+          <app-item></app-item>
           <div class="form-group col-md-12 offset-10">
             <button type="button" id="addLocation" class="btn btn-light"
                     (click)="addLocation(locationName.value); locationName.value=''">
@@ -74,7 +34,7 @@
         </div>
       </div>
     </div>
-  </form>
+  </div>
 </div>
 
 <div class="row col-md-12">

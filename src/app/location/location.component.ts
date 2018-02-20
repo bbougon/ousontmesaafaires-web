@@ -1,11 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {LocationService} from './location.service';
-import {Item} from '../domain/item';
 import {NewLocation} from '../domain/new-location';
-import {Observable} from 'rxjs/Observable';
 import {PairPipe} from '../infrastructure/pair-pipe';
 import {LocationCreated} from '../domain/location-created';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ItemComponent} from '../item/item.component';
 
 @Component({
   selector: 'app-location',
@@ -15,25 +14,19 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 })
 export class LocationComponent implements OnInit {
 
+  @ViewChild(ItemComponent) itemComponent: ItemComponent;
+
   locations: LocationCreated[] = [];
-  item = {};
-  itemToCreate: Item;
   addLocationForm: FormGroup;
   locationNameFormControl: FormControl;
-  featureTypeFormControl: FormControl;
-  featureValueFormControl: FormControl;
 
   constructor(private locationService: LocationService, private pair: PairPipe) {
   }
 
   ngOnInit() {
     this.locationNameFormControl = new FormControl('', Validators.required);
-    this.featureTypeFormControl = new FormControl('', Validators.required);
-    this.featureValueFormControl = new FormControl('', Validators.required);
     this.addLocationForm = new FormBuilder().group({
       locationNameFormControl: this.locationNameFormControl,
-      featureTypeFormControl: this.featureTypeFormControl,
-      featureValueFormControl: this.featureValueFormControl,
     });
     this.locationService.getLocations().subscribe(locations => {
         this.locations = locations;
@@ -53,39 +46,17 @@ export class LocationComponent implements OnInit {
     }
   }
 
-  add(featureType: string, feature: string): void {
-    this.markAsDirty(featureType, this.featureTypeFormControl);
-    this.markAsDirty(feature, this.featureValueFormControl);
-
-    if (this.featureTypeFormControl.invalid || this.featureValueFormControl.invalid) {
-      this.resetFormControl(this.featureTypeFormControl);
-      this.resetFormControl(this.featureValueFormControl);
-      return;
-    }
-
-    this.resetFormControl(this.featureTypeFormControl);
-    this.resetFormControl(this.featureValueFormControl);
-    this.item[featureType] = feature;
-    Observable.create(this.itemToCreate = new Item(this.item));
-  }
-
   addLocation(locationName: string): void {
-    if (locationName.trim() === '' || Object.keys(this.item).length === 0) {
+    if (locationName.trim() === '' || Object.keys(this.itemComponent.getItem()).length === 0) {
       this.markAsDirty(locationName, this.locationNameFormControl);
-      this.markAsDirty('', this.featureTypeFormControl);
-      this.markAsDirty('', this.featureValueFormControl);
+      this.itemComponent.markAllAsDirty();
       return;
     }
 
-    this.locationService.addLocation(new NewLocation(locationName, this.itemToCreate.item))
+    this.locationService.addLocation(new NewLocation(locationName, this.itemComponent.getCreatedItem().item))
       .subscribe(location => {
         this.locations.push(location);
-        this.item = {};
-        this.itemToCreate = null;
+        this.itemComponent.clearItem();
       });
-  }
-
-  getItemToCreate() {
-    return this.itemToCreate ? this.pair.transform(this.itemToCreate.item) : '';
   }
 }

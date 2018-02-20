@@ -16,9 +16,9 @@ import { ItemComponent } from './item/item.component';
 @NgModule({
   declarations: [
     AppComponent,
+    ItemComponent,
     LocationComponent,
-    ErrorMessageComponent,
-    ItemComponent
+    ErrorMessageComponent
   ],
   imports: [
     HttpClientModule,
