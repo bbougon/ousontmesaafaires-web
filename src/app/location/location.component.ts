@@ -1,14 +1,15 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {LocationService} from './location.service';
 import {NewLocation} from '../domain/new-location';
-import {PairPipe} from '../infrastructure/pair-pipe';
+import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {LocationCreated} from '../domain/location-created';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ItemComponent} from '../item/item.component';
 import {FormService} from '../infrastructure/form.service';
+import {NgbCollapse} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-location',
+  selector: 'ng-location',
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.css'],
   providers: [PairPipe],
@@ -16,12 +17,14 @@ import {FormService} from '../infrastructure/form.service';
 export class LocationComponent implements OnInit {
 
   @ViewChild(ItemComponent) itemComponent: ItemComponent;
+  @ViewChild('locationCollapse') locationCollapse: NgbCollapse;
 
   locations: LocationCreated[] = [];
   addLocationForm: FormGroup;
   locationNameFormControl: FormControl;
+  isCollapsed: Boolean[] = [];
 
-  constructor(private locationService: LocationService, private pair: PairPipe, private formService: FormService) {
+  constructor(private locationService: LocationService, private formService: FormService) {
   }
 
   ngOnInit() {
@@ -31,6 +34,7 @@ export class LocationComponent implements OnInit {
     });
     this.locationService.getLocations().subscribe(locations => {
         this.locations = locations;
+        this.locations.forEach(() => this.isCollapsed.push(true));
       }
     );
   }
@@ -39,13 +43,26 @@ export class LocationComponent implements OnInit {
     if (locationName.trim() === '' || Object.keys(this.itemComponent.getItem()).length === 0) {
       this.formService.markAsDirty(locationName, this.locationNameFormControl);
       this.itemComponent.markAllAsDirty();
+      if (!this.itemComponent.itemsAreEmpty()) {
+        this.itemComponent.hint();
+      }
+      return;
+    }
+
+    if (!this.itemComponent.itemsAreEmpty()) {
+      this.itemComponent.hint();
       return;
     }
 
     this.locationService.addLocation(new NewLocation(locationName, this.itemComponent.getCreatedItem().item))
       .subscribe(location => {
+        this.formService.resetFormControl(this.locationNameFormControl);
         this.locations.push(location);
         this.itemComponent.clearItem();
       });
+  }
+
+  collapse(elementId: number) {
+    this.isCollapsed[elementId] = !this.isCollapsed[elementId];
   }
 }

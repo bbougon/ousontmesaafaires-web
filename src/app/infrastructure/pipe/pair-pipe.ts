@@ -7,6 +7,6 @@ export class PairPipe implements PipeTransform {
     if (Array.isArray(value) || !isObject(value)) {
       return value;
     }
-    return Object.keys(value).map(k => [k, value[k]]);
+    return Object.keys(value).map(k => [k, ' ' + value[k]]);
   }
 }

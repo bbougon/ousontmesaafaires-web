@@ -38,9 +38,10 @@ describe('LocationComponent Call Service', () => {
     fixture.detectChanges();
 
     expect(compiled.querySelector('#locations').outerHTML).toContain('Location');
+    expect(compiled.querySelector('#locationName').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('span')).toBeNull();
+    expect(fixture.debugElement.query(By.css('#items'))).toBeNull(compiled.querySelector('span').outerHTML + 'Should be null');
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {

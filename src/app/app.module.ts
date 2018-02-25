@@ -10,27 +10,37 @@ import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
 import {MessageService} from './infrastructure/message.service';
-import { ErrorMessageComponent } from './error-message/error-message.component';
-import { ItemComponent } from './item/item.component';
+import {ErrorMessageComponent} from './error-message/error-message.component';
+import {ItemComponent} from './item/item.component';
 import {FormService} from './infrastructure/form.service';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
+import {OcticonDirective} from './infrastructure/directive/octicon.directive';
+import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     ItemComponent,
     LocationComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    TruncatePipe,
+    LocationItemPipe,
+    OcticonDirective
   ],
   imports: [
+    NgbModule.forRoot(),
     HttpClientModule,
-    HttpModule,
     BrowserModule,
     LocationModule,
     FormsModule,
     ReactiveFormsModule
   ],
   providers: [LocationService, HttpErrorHandler, MessageService, FormService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    TruncatePipe
+  ]
 })
 export class AppModule {
 }

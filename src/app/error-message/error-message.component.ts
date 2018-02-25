@@ -3,7 +3,7 @@ import {MessageService} from '../infrastructure/message.service';
 import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
-  selector: 'app-error-message',
+  selector: 'ng-error-message',
   templateUrl: './error-message.component.html',
   styleUrls: ['./error-message.component.css']
 })

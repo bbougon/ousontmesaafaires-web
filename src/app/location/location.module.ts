@@ -1,12 +1,12 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {PairPipe} from '../infrastructure/pair-pipe';
-import {HttpModule} from '@angular/http';
+import {PairPipe} from '../infrastructure/pipe/pair-pipe';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule,
-    HttpModule
+    NgbModule
   ],
   declarations: [
     PairPipe
@@ -15,4 +15,5 @@ import {HttpModule} from '@angular/http';
     PairPipe
   ]
 })
-export class LocationModule { }
+export class LocationModule {
+}

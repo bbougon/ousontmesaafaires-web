@@ -1,17 +1,21 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {Item} from '../domain/item';
-import {PairPipe} from '../infrastructure/pair-pipe';
+import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {FormService} from '../infrastructure/form.service';
+import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-item',
+  selector: 'ng-item',
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit {
 
+  @ViewChild('featureHint') public featureHint: NgbPopover;
+  @ViewChild('featureType') public featureType: ElementRef;
+  @ViewChild('feature') public feature: ElementRef;
 
   addItemForm: FormGroup;
   featureTypeFormControl: FormControl;
@@ -32,6 +36,7 @@ export class ItemComponent implements OnInit {
   }
 
   add(featureType: string, feature: string): void {
+    this.featureHint.close();
     this.formService.markAsDirty(featureType, this.featureTypeFormControl);
     this.formService.markAsDirty(feature, this.featureValueFormControl);
 
@@ -67,5 +72,16 @@ export class ItemComponent implements OnInit {
 
   getCreatedItem() {
     return this.itemToCreate;
+  }
+
+  hint() {
+    this.featureHint.close();
+    if (!this.featureHint.isOpen()) {
+      this.featureHint.open();
+    }
+  }
+
+  itemsAreEmpty() {
+    return this.featureType.nativeElement.value.trim() === '' || this.feature.nativeElement.value.trim() === '';
   }
 }

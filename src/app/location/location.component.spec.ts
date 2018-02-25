@@ -38,9 +38,9 @@ describe('LocationComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
-    expect(compiled.querySelector('h2').textContent).toContain('Add location');
+    expect(fixture.debugElement.query(By.css('.title')).nativeElement.textContent).toContain('Add location');
     expect(compiled.querySelector('label[for="locationName"]').textContent).toContain('Location name:');
-    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature:');
+    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature type:');
     expect(compiled.querySelector('div span')).toBeNull('Should be null');
   });
 
@@ -61,7 +61,7 @@ describe('LocationComponent', () => {
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
     setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'value').click();
-    setValueToInputAndDispatchEvent('', '#locationName');
+    setValueToInputAndDispatchEvent('#locationName', '');
 
     const button = compiled.querySelector('#addLocation');
     button.click();
@@ -77,13 +77,15 @@ describe('LocationComponent', () => {
     locationService = fixture.debugElement.injector.get(LocationService);
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent('', '#locationName');
+    const spiedComponent = spyOn(component.itemComponent, 'hint');
+    setValueToInputAndDispatchEvent('#locationName', '');
     const button = compiled.querySelector('#addLocation');
 
     button.click();
     fixture.detectChanges();
 
     expect(spiedLocationService).not.toHaveBeenCalled();
+    expect(spiedComponent).not.toHaveBeenCalled();
     expect(compiled.querySelector('#locationName').className).toContain('is-invalid');
     expect(compiled.querySelector('#locationNameFeedback').textContent).toContain('Please choose a location name');
     expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
@@ -97,7 +99,7 @@ describe('LocationComponent', () => {
     locationService = fixture.debugElement.injector.get(LocationService);
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent('Location', '#locationName');
+    setValueToInputAndDispatchEvent('#locationName', 'Location');
     const button = compiled.querySelector('#addLocation');
 
     button.click();
@@ -112,17 +114,43 @@ describe('LocationComponent', () => {
     expect(compiled.querySelector('span')).toBeNull();
   });
 
-  function setValueToInputAndDispatchEvent(value: string, selector: string) {
+  it('should release hint if \'Add\' button is clicked, item has already a feature but a new is filled without being added', () => {
+    locationService = fixture.debugElement.injector.get(LocationService);
+    const spiedLocationService = spyOn(locationService, 'addLocation');
+    const compiled = fixture.debugElement.nativeElement;
+    const spiedComponent = spyOn(component.itemComponent, 'hint');
+    setValueToInputAndDispatchEvent('#locationName', 'Location');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
+    setValueToInput('#featureType', 'noir');
+    setValueToInput('#featureValue', 'couleur');
+    const button = compiled.querySelector('#addLocation');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(spiedComponent).toHaveBeenCalled();
+    expect(spiedLocationService).not.toHaveBeenCalled();
+    expect(compiled.querySelector('#locationName').className).not.toContain('is-invalid');
+  });
+
+
+  function setValueToInput(selector: string, value: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
+    input.textContent = value;
     input.value = value;
+    return input;
+  }
+
+  function setValueToInputAndDispatchEvent(selector: string, value: string) {
+    const input = setValueToInput(selector, value);
     input.dispatchEvent(new Event('input'));
   }
 
   function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string) {
     featureValue = featureValue || '';
     featureType = featureType || '';
-    setValueToInputAndDispatchEvent(featureType, '#featureType');
-    setValueToInputAndDispatchEvent(featureValue, '#featureValue');
+    setValueToInputAndDispatchEvent('#featureType', featureType);
+    setValueToInputAndDispatchEvent('#featureValue', featureValue);
     return compiled.querySelector('button');
   }
 });

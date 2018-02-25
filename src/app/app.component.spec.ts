@@ -23,24 +23,18 @@ describe('AppComponent', () => {
 
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'app'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-
-    expect(app.title).toEqual('app');
-  }));
   it('should have error message component loaded', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('app-error-message')).toBeTruthy();
+    expect(compiled.querySelector('ng-error-message')).toBeTruthy();
   }));
   it('should have location component loaded', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('app-location')).toBeTruthy();
+    expect(compiled.querySelector('ng-location')).toBeTruthy();
   }));
 });

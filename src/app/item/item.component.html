@@ -1,41 +1,47 @@
-<div class="form-group col-md-12" [formGroup]="addItemForm">
-  <div class="row">
-    <div class="col-md-12">
-      <h5>Item</h5>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <label for="featureType">Feature:</label>
-    </div>
-    <div class="col-md-8 row form-group">
-      <div class="col-md-6">
-        <input #featureType id="featureType" class="form-control col-md-12" [ngClass]="{
+<div class="row" [formGroup]="addItemForm">
+  <div class="col-sm-10">
+
+    <h5>Item</h5>
+    <label for="featureType">Feature type:</label>
+    <div class="form-group">
+      <input #featureType id="featureType" class="form-control form-control-sm" [ngClass]="{
                   'is-invalid': featureTypeFormControl.invalid && (featureTypeFormControl.dirty || featureTypeFormControl.touched),
                   'is-valid': featureTypeFormControl.valid && (featureTypeFormControl.dirty || featureTypeFormControl.touched)}"
-               formControlName="featureTypeFormControl" required>
-        <div id="featureTypeFeedback" class="invalid-feedback">
-          Please fill a feature type
-        </div>
-      </div>
-      <div class="col-md-6">
-        <input #feature id="featureValue" class="form-control col-md-12" [ngClass]="{
-                  'is-invalid': featureValueFormControl.invalid && (featureValueFormControl.dirty || featureValueFormControl.touched),
-                  'is-valid': featureValueFormControl.valid && (featureValueFormControl.dirty || featureValueFormControl.touched)}"
-               formControlName="featureValueFormControl" required>
-        <div id="featureValueFeedback" class="invalid-feedback">
-          Please fill a feature value
-        </div>
+             formControlName="featureTypeFormControl" required>
+      <div id="featureTypeFeedback" class="invalid-feedback">
+        Please fill a feature type
       </div>
     </div>
-    <div class="col-md-1">
-      <button type="button" class="btn btn-light"
+    <label for="featureValue">Feature value:</label>
+    <div class="form-group">
+      <input #feature id="featureValue" class="form-control form-control-sm" [ngClass]="{
+                  'is-invalid': featureValueFormControl.invalid && (featureValueFormControl.dirty || featureValueFormControl.touched),
+                  'is-valid': featureValueFormControl.valid && (featureValueFormControl.dirty || featureValueFormControl.touched)}"
+             formControlName="featureValueFormControl" required>
+      <div id="featureValueFeedback" class="invalid-feedback">
+        Please fill a feature value
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-2 align-self-center">
+    <div>
+      <ng-template #featureHintPopOver>Press '+' button!</ng-template>
+      <button type="button" class="btn btn-light" [ngbPopover]="featureHintPopOver" popoverTitle="Hint"
+              placement="right" container="body" triggers="manual" #featureHint="ngbPopover"
               (click)="add(featureType.value, feature.value); featureType.value=''; feature.value=''">
         +
       </button>
     </div>
   </div>
 </div>
-<div class="form-group col-md-12">
-  <span *ngIf="getItemToCreate()">Item: {{getItemToCreate()}}</span>
+<div class="row">
+  <div *ngIf="getItemToCreate()" class="col-sm-12" id="items">
+    Item:
+    <ul class="list-group list-group-flush col-sm-12">
+      <li *ngFor="let item of getItemToCreate()" class="list-group-item item d-flex justify-content-between col-sm-12">
+        {{item[0] | truncate:26}},{{item[1] | truncate:26}}
+      </li>
+
+    </ul>
+  </div>
 </div>

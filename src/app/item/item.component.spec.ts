@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ItemComponent} from './item.component';
 import {By} from '@angular/platform-browser';
-import {PairPipe} from '../infrastructure/pair-pipe';
+import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {AppModule} from '../app.module';
 
 describe('ItemComponent', () => {
@@ -31,7 +31,7 @@ describe('ItemComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
-    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature:');
+    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature type:');
     expect(compiled.querySelector('div span')).toBeNull('Should be null');
   });
 
@@ -44,7 +44,7 @@ describe('ItemComponent', () => {
 
     expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('span').textContent).toContain('Item: type,tshirt');
+    expect(compiled.querySelector('li').textContent).toContain('type, tshirt');
   });
 
   it('should invalidate feature if \'+\' is clicked and feature is empty', () => {
@@ -58,7 +58,7 @@ describe('ItemComponent', () => {
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
     expect(compiled.querySelector('#featureValueFeedback').textContent).toContain('Please fill a feature value');
-    expect(compiled.querySelector('span')).toBeNull();
+    expect(compiled.querySelector('li')).toBeNull();
   });
 
   it('should reset feature type if \'+\' is clicked and feature type is valid and feature value is empty', () => {
@@ -71,7 +71,7 @@ describe('ItemComponent', () => {
     expect(compiled.querySelector('#featureType').className).not.toContain('is-invalid');
     expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('span')).toBeNull();
+    expect(compiled.querySelector('li')).toBeNull();
   });
 
   it('should reset feature value if \'+\' is clicked and feature value is valid and feature type is empty', () => {
@@ -84,7 +84,7 @@ describe('ItemComponent', () => {
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-invalid');
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
-    expect(compiled.querySelector('span')).toBeNull();
+    expect(compiled.querySelector('li')).toBeNull();
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {

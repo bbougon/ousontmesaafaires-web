@@ -1,7 +1,22 @@
 .location {
-  padding: 1.5rem;
-  margin-right: 0;
-  margin-left: 0;
-  border: solid #f7f7f9;
-  border-width: .2rem;
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.location .title h5 {
+  text-transform: uppercase;
+  color: #bbb;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.location .qrcode {
+  width: 64px;
+  height: 64px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

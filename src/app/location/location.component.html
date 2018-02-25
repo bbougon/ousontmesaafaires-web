@@ -1,54 +1,70 @@
-<div class="row col-md-12">
-  <div [formGroup]="addLocationForm">
-
-    <div class="container-fluid location col-md-12">
-      <h2>Add location</h2>
-
-      <div class="row col-md-12">
-        <div class="form-group col-md-12">
-          <div class="form-group col-md-12">
-            <div class="row">
-              <div class="col-md-3">
-                <label for="locationName">
-                  Location name:
-                </label>
-              </div>
-              <div class="col-md-9 form-group">
-                <input #locationName id="locationName" class="form-control" [ngClass]="{
+<div class="sidebar">
+  <div class="container-fluid">
+    <div [formGroup]="addLocationForm">
+      <div class="location row">
+        <div class="title"><h5>Add location</h5></div>
+        <div class="row">
+          <div class="row col-sm-12 form-group">
+            <label for="locationName">
+              Location name:
+            </label>
+            <input #locationName id="locationName" class="form-control form-control-sm" [ngClass]="{
                 'is-invalid': locationNameFormControl.invalid && (locationNameFormControl.dirty || locationNameFormControl.touched),
                 'is-valid': locationNameFormControl.valid && (locationNameFormControl.dirty || locationNameFormControl.touched)}"
-                       formControlName="locationNameFormControl" required/>
-                <div id="locationNameFeedback" class="invalid-feedback">
-                  Please choose a location name.
-                </div>
-              </div>
+                   formControlName="locationNameFormControl" required/>
+            <div id="locationNameFeedback" class="invalid-feedback">
+              Please choose a location name.
             </div>
           </div>
-          <app-item></app-item>
-          <div class="form-group col-md-12 offset-10">
-            <button type="button" id="addLocation" class="btn btn-light"
-                    (click)="addLocation(locationName.value); locationName.value=''">
-              Add
-            </button>
-          </div>
+          <ng-item class="row col-sm-12"></ng-item>
+        </div>
+        <div class="row col-sm-12">
+          <button type="button" id="addLocation" class="btn btn-light btn-block"
+                  (click)="addLocation(locationName.value); locationName.value=''">
+            Add
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row col-md-12">
-  <div *ngFor="let location of locations" class="col-md-12">
-    <div class="col-md-8" id="locations">
-      <button type="button" class="btn btn-light">
-        {{location.location}}
-      </button>
+<div class="main-content">
+  <div class="col-10">
+    <div class="row-fluid">
+      <ul class="list-group col-md-12">
+        <li *ngFor="let location of locations; let i = index" class="list-group-item col-md-12">
+          <div id="locations" class="row" (click)="collapse(i)">
+            <div class="col-md-6">
+              {{location.location}}
+            </div>
+            <div class="col-md-1 offset-4">
+              <span class="badge badge-light badge-pill">{{location.items.length}}</span>
+            </div>
+            <div class="col-md-1">
+              <span class="badge badge-light badge-pill cursor-pointer" [octicon]="'arrow-down'" width="8" color="grey"></span>
+            </div>
+          </div>
+          <div [ngbCollapse]="isCollapsed[i]" class="collapse show" #locationCollapse="ngbCollapse">
+            <div class="card-body">
+              <div class="row col-sm-12">
+                <div class="col-sm-10">
+                  <ul class="list-group list-group-flush">
+                    <li *ngFor="let item of location.items" class="list-group-item item d-flex justify-content-between col-md-12">
+                      <div><span [outerHTML]="item.item | item"></span></div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-sm-2">
+                  <div class="location">
+                    <img src="data:image/png;base64,{{location.qrcode}}" class="qrcode"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <!--li *ngFor="let item of location.items">
-      <span>
-          Item: {{item.item | pair}}
-        </span>
-    </li-->
-    <!--img src="data:image/png;base64,{{location.qrcode}}"/-->
   </div>
 </div>

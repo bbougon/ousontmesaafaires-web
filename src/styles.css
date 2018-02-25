@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns:
+    [start] minmax(auto, min-content)
+    [center]1fr
+    [end] minmax(auto,min-content);
+  grid-template-rows: auto auto 1fr;
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.header {
+  grid-column: 1 / 4;
+  grid-row: 1;
+}
+
+.content {
+  display: grid;
+  grid-template-columns:
+    [start] minmax(auto, min-content)
+    [center]1fr
+    [end] minmax(auto,min-content);
+  grid-template-rows: auto auto 1fr;
+  grid-column: 1/4;
+  grid-row: 2/5
+}
+
+.sidebar {
+  grid-column: 1;
+  grid-row: 2 / 5;
+}
+
+.main-content {
+  grid-column: 2/4;
+  grid-row: 2 / 5;
+}
+
+@media (min-width: 960px) {
+  .sidebar {
+    width: 240px;
+  }
+}
+
+
