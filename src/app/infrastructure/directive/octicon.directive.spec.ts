@@ -29,6 +29,7 @@ describe('OcticonDirective', () => {
     });
     fixture = TestBed.createComponent(TestOcticonComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     inputEl = fixture.debugElement.query(By.css('input'));
   });
 

@@ -19,6 +19,8 @@ describe('AppComponent', () => {
   }));
   it('should create the app', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
     const app = fixture.debugElement.componentInstance;
 
     expect(app).toBeTruthy();
@@ -28,6 +30,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
+
     expect(compiled.querySelector('ng-error-message')).toBeTruthy();
   }));
   it('should have location component loaded', async(() => {
@@ -35,6 +38,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
+
     expect(compiled.querySelector('ng-location')).toBeTruthy();
   }));
 });

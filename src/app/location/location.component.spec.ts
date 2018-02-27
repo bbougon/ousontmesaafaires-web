@@ -5,8 +5,12 @@ import {LocationService} from './location.service';
 import {By} from '@angular/platform-browser';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
-import {FakeLocationService} from './testing/fake-location.service';
+import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.service';
 import {AppModule} from '../app.module';
+import {ItemComponent} from '../item/item.component';
+import {PairPipe} from '../infrastructure/pipe/pair-pipe';
+import {FormService} from '../infrastructure/form.service';
+import {Item} from '../domain/item';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
@@ -60,7 +64,6 @@ describe('LocationComponent', () => {
     locationService = fixture.debugElement.injector.get(LocationService);
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'value').click();
     setValueToInputAndDispatchEvent('#locationName', '');
 
     const button = compiled.querySelector('#addLocation');
@@ -133,6 +136,17 @@ describe('LocationComponent', () => {
     expect(compiled.querySelector('#locationName').className).not.toContain('is-invalid');
   });
 
+  it('can add item to location', () => {
+    locationService = fixture.debugElement.injector.get(LocationService);
+    const itemComponent = new ItemComponent(new PairPipe(), new FormService());
+    itemComponent.item = {'type': 'jouet'};
+    itemComponent.itemToCreate = new Item({'type': 'jouet'});
+    component.locations = [LOCATION_CREATED];
+
+    component.addItemToLocation('an-id', itemComponent);
+
+    expect(component.locations[0].items).toContain(itemComponent.itemToCreate);
+  });
 
   function setValueToInput(selector: string, value: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
@@ -146,11 +160,13 @@ describe('LocationComponent', () => {
     input.dispatchEvent(new Event('input'));
   }
 
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string) {
+  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string, selector?: string) {
     featureValue = featureValue || '';
     featureType = featureType || '';
-    setValueToInputAndDispatchEvent('#featureType', featureType);
-    setValueToInputAndDispatchEvent('#featureValue', featureValue);
-    return compiled.querySelector('button');
+    selector = selector ? selector.length > 0 ? selector + ' ' : '' : '';
+    setValueToInputAndDispatchEvent(selector + '#featureType', featureType);
+    setValueToInputAndDispatchEvent(selector.length > 0 ? selector + ' ' : '' + '#featureValue', featureValue);
+    const querySelector = compiled.querySelector('#itemForLocation button');
+    return querySelector;
   }
 });

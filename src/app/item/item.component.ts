@@ -20,8 +20,8 @@ export class ItemComponent implements OnInit {
   addItemForm: FormGroup;
   featureTypeFormControl: FormControl;
   featureValueFormControl: FormControl;
-  private item = {};
-  private itemToCreate: Item;
+  item = {};
+  itemToCreate: Item;
 
   constructor(private pair: PairPipe, private formService: FormService) {
   }

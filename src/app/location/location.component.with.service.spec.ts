@@ -30,8 +30,7 @@ describe('LocationComponent Call Service', () => {
   it('displays the location once added', () => {
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
-    setValueOnFeaturesAndDispatchEvent(compiled, Object.keys(LOCATION_CREATED.items[0].item)[0],
-      Object.values(Object.keys(LOCATION_CREATED.items[0].item)[0])[0]).click();
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
     const button = compiled.querySelector('#addLocation');
 
     button.click();

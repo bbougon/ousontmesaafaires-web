@@ -1,5 +1,5 @@
 import {LocationItemPipe} from './location-item-pipe';
-import {ElementRef} from '@angular/core';
+import {Item} from '../../domain/item';
 
 describe('Location Item Pipe', () => {
   let pipe: LocationItemPipe;
@@ -9,16 +9,17 @@ describe('Location Item Pipe', () => {
   });
 
   it('should transform an item into a readable string', () => {
-    const elementRef = new ElementRef('div');
-    expect(pipe.transform({'type': 'chaussure'})).toEqual('<b>Type:</b> chaussure');
-    expect(pipe.transform({'type': 'chaussure', 'couleur': 'noir'})).toEqual('<b>Type:</b> chaussure, <b>Couleur:</b> noir');
+    expect(pipe.transform(new Item({'type': 'chaussure'}))).toEqual('<b>Type:</b> chaussure');
+    expect(pipe.transform(new Item({'type': 'chaussure', 'couleur': 'noir'})))
+      .toEqual('<b>Type:</b> chaussure, <b>Couleur:</b> noir');
+    expect(pipe.transform({type: 'item'})).toEqual('<b>Type:</b> item');
   });
 
   it('should transform an item with accent into a readable string', () => {
-    expect(pipe.transform({'matière': 'cuir'})).toEqual('<b>Matière:</b> cuir');
+    expect(pipe.transform(new Item({'matière': 'cuir'}))).toEqual('<b>Matière:</b> cuir');
   });
 
-  it('should throw an error if not a string', () => {
+  it('should throw an error if not an Object', () => {
     function errorThrown() {
       pipe.transform(2);
     }

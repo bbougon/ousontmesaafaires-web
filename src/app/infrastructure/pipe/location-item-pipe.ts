@@ -1,6 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {isObject} from 'rxjs/util/isObject';
 import {InvalidArgumentPipeError} from '../invalid-argument-pipe-error';
+import {isUndefined} from 'util';
 
 @Pipe({name: 'item'})
 export class LocationItemPipe implements PipeTransform {
@@ -18,6 +19,9 @@ export class LocationItemPipe implements PipeTransform {
         + item.substr(1).toLowerCase();
     }
 
+    if (!isUndefined(value.item)) {
+      return Object.keys(value.item).map(item => (uppercaseFirstLetter(item) + ':').bold() + ' ' + value.item[item]).join(', ');
+    }
     return Object.keys(value).map(item => (uppercaseFirstLetter(item) + ':').bold() + ' ' + value[item]).join(', ');
   }
 

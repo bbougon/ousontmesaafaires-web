@@ -16,7 +16,7 @@
               Please choose a location name.
             </div>
           </div>
-          <ng-item class="row col-sm-12"></ng-item>
+          <ng-item class="row col-sm-12" id="itemForLocation"></ng-item>
         </div>
         <div class="row col-sm-12">
           <button type="button" id="addLocation" class="btn btn-light btn-block"
@@ -59,6 +59,17 @@
                   <div class="location">
                     <img src="data:image/png;base64,{{location.qrcode}}" class="qrcode"/>
                   </div>
+                </div>
+              </div>
+              <div class="row col-sm-12">
+                <div class="col-sm-8">
+                  <ng-item #itemToCreate [attr.id]="'itemToCreate' + i"></ng-item>
+                </div>
+                <div class="col-sm-4 align-middle">
+                  <button type="button" [attr.id]="'addItemToLocation' + i" class="btn btn-light btn-block"
+                          (click)="addItemToLocation(location.id, itemToCreate)">
+                    Add to location {{location.location}}
+                  </button>
                 </div>
               </div>
             </div>

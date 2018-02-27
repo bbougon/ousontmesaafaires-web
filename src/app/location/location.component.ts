@@ -32,7 +32,7 @@ export class LocationComponent implements OnInit {
     this.addLocationForm = new FormBuilder().group({
       locationNameFormControl: this.locationNameFormControl,
     });
-    this.locationService.getLocations().subscribe(locations => {
+    this.locationService.getLocations().subscribe((locations: LocationCreated[]) => {
         this.locations = locations;
         this.locations.forEach(() => this.isCollapsed.push(true));
       }
@@ -64,5 +64,17 @@ export class LocationComponent implements OnInit {
 
   collapse(elementId: number) {
     this.isCollapsed[elementId] = !this.isCollapsed[elementId];
+  }
+
+  addItemToLocation(id: String, itemComponent: ItemComponent) {
+    // console.log('id : ' + id + ' - item : ' + JSON.stringify(itemComponent.getCreatedItem().item));
+    this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
+      .subscribe(() => {
+          this.locations.map((location: LocationCreated) => {
+            if (location.id === id) {
+              location.add(itemComponent.getCreatedItem());
+            }
+          });
+      });
   }
 }

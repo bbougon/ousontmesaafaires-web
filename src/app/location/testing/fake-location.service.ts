@@ -5,7 +5,8 @@ import {Item} from '../../domain/item';
 import {of} from 'rxjs/observable/of';
 import {Observable} from 'rxjs/Observable';
 
-export const LOCATION_CREATED: LocationCreated = new LocationCreated('an-id', [new Item({'type': 'chaussure'})], 'Location');
+export const LOCATION_CREATED: LocationCreated = new LocationCreated({'id': 'an-id', 'location': 'Location',
+  'items': [{'item': {'type': 'chaussure'}}], 'qrcode': 'a qr code'});
 
 export class FakeLocationService extends LocationService {
   private locations: LocationCreated[] = [];
@@ -17,5 +18,14 @@ export class FakeLocationService extends LocationService {
 
   getLocations(): Observable<LocationCreated[]> {
     return of(this.locations);
+  }
+
+  addItemToLocation(locationId: String, item: Item): Observable<any> {
+    this.locations.forEach(location => {
+      if (location.id === locationId) {
+        location.add(item);
+      }
+    });
+    return of(null);
   }
 }
