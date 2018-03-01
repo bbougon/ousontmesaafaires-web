@@ -87,6 +87,38 @@ describe('ItemComponent', () => {
     expect(compiled.querySelector('li')).toBeNull();
   });
 
+  it('can display hint if \'+\' has not been clicked', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    const spiedCloseHint = spyOn(component.featureHint, 'close');
+    const spiedIsOpenHint = spyOn(component.featureHint, 'isOpen');
+    const spiedOpenHint = spyOn(component.featureHint, 'open');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
+
+    component.hint();
+    fixture.detectChanges();
+
+    expect(spiedCloseHint).toHaveBeenCalled();
+    expect(spiedIsOpenHint).toHaveBeenCalled();
+    expect(spiedOpenHint).toHaveBeenCalled();
+  });
+
+  it('do not display hint if \'+\' has been clicked', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    const spiedCloseHint = spyOn(component.featureHint, 'close');
+    const spiedIsOpenHint = spyOn(component.featureHint, 'isOpen');
+    const spiedOpenHint = spyOn(component.featureHint, 'open');
+    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
+
+    button.click();
+    fixture.detectChanges();
+    component.hint();
+    fixture.detectChanges();
+
+    expect(spiedCloseHint).toHaveBeenCalled();
+    expect(spiedIsOpenHint).not.toHaveBeenCalled();
+    expect(spiedOpenHint).not.toHaveBeenCalled();
+  });
+
   function setValueToInputAndDispatchEvent(value: string, selector: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
     input.value = value;

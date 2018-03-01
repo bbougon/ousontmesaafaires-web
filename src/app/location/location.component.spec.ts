@@ -80,7 +80,7 @@ describe('LocationComponent', () => {
     locationService = fixture.debugElement.injector.get(LocationService);
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
-    const spiedComponent = spyOn(component.itemComponent, 'hint');
+    const spiedOpenComponent = spyOn(component.itemComponent.featureHint, 'open');
     setValueToInputAndDispatchEvent('#locationName', '');
     const button = compiled.querySelector('#addLocation');
 
@@ -88,7 +88,7 @@ describe('LocationComponent', () => {
     fixture.detectChanges();
 
     expect(spiedLocationService).not.toHaveBeenCalled();
-    expect(spiedComponent).not.toHaveBeenCalled();
+    expect(spiedOpenComponent).not.toHaveBeenCalled();
     expect(compiled.querySelector('#locationName').className).toContain('is-invalid');
     expect(compiled.querySelector('#locationNameFeedback').textContent).toContain('Please choose a location name');
     expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
@@ -121,7 +121,7 @@ describe('LocationComponent', () => {
     locationService = fixture.debugElement.injector.get(LocationService);
     const spiedLocationService = spyOn(locationService, 'addLocation');
     const compiled = fixture.debugElement.nativeElement;
-    const spiedComponent = spyOn(component.itemComponent, 'hint');
+    const spiedComponent = spyOn(component.itemComponent.featureHint, 'open');
     setValueToInputAndDispatchEvent('#locationName', 'Location');
     setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
     setValueToInput('#featureType', 'noir');

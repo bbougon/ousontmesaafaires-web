@@ -40,17 +40,14 @@ export class LocationComponent implements OnInit {
   }
 
   addLocation(locationName: string): void {
+    this.itemComponent.hint();
     if (locationName.trim() === '' || Object.keys(this.itemComponent.getItem()).length === 0) {
       this.formService.markAsDirty(locationName, this.locationNameFormControl);
       this.itemComponent.markAllAsDirty();
-      if (!this.itemComponent.itemsAreEmpty()) {
-        this.itemComponent.hint();
-      }
       return;
     }
 
     if (!this.itemComponent.itemsAreEmpty()) {
-      this.itemComponent.hint();
       return;
     }
 
@@ -67,7 +64,6 @@ export class LocationComponent implements OnInit {
   }
 
   addItemToLocation(id: String, itemComponent: ItemComponent) {
-    // console.log('id : ' + id + ' - item : ' + JSON.stringify(itemComponent.getCreatedItem().item));
     this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
       .subscribe(() => {
           this.locations.map((location: LocationCreated) => {

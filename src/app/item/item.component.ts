@@ -76,6 +76,9 @@ export class ItemComponent implements OnInit {
 
   hint() {
     this.featureHint.close();
+    if (this.itemsAreEmpty()) {
+      return;
+    }
     if (!this.featureHint.isOpen()) {
       this.featureHint.open();
     }
