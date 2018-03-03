@@ -66,9 +66,15 @@ export class LocationComponent implements OnInit {
 
   addItemToLocation(id: String, itemComponent: ItemComponent) {
     itemComponent.hint();
+    if (Object.keys(itemComponent.getItem()).length === 0) {
+      itemComponent.markAllAsDirty();
+      return;
+    }
+
     if (!itemComponent.itemsAreEmpty()) {
       return;
     }
+
     this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
       .subscribe(() => {
           this.locations.map((location: LocationCreated) => {

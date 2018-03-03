@@ -56,6 +56,8 @@ describe('LocationComponent Call Service', () => {
     const button = compiled.querySelector('#addLocation');
     button.click();
     fixture.detectChanges();
+    const itemComponents = component.itemComponents.toArray();
+    const spiedClearItemComponent = spyOn(itemComponents[1], 'clearItem');
     setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
       'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button').click();
     const addItemButton = compiled.querySelector('#addItemToLocation0');
@@ -66,7 +68,7 @@ describe('LocationComponent Call Service', () => {
     const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item item d-flex justify-content-between col-md-12"] div');
     const querySelector = querySelectorAll[1];
     expect(querySelector.textContent).toContain('Couleur: marron');
-    // expect(spiedClearItemComponent).toHaveBeenCalled();
+    expect(spiedClearItemComponent).toHaveBeenCalled();
   });
 
   it('hint is raised if `+` button is not clicked', () => {
@@ -80,7 +82,6 @@ describe('LocationComponent Call Service', () => {
     fixture.detectChanges();
     const itemComponents = component.itemComponents.toArray();
     const spiedOpenComponent = spyOn(itemComponents[1].featureHint, 'open');
-    const spiedClearItemComponent = spyOn(itemComponents[1], 'clearItem');
     setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
       'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button');
     const addItemButton = compiled.querySelector('#addItemToLocation0');
@@ -89,6 +90,26 @@ describe('LocationComponent Call Service', () => {
     fixture.detectChanges();
 
     expect(spiedOpenComponent).toHaveBeenCalled();
+    expect(spiedLocationService).not.toHaveBeenCalled();
+  });
+
+  it('item form shows error if addLocation has been clicked and no item has been added', () => {
+    const locationService = fixture.debugElement.injector.get(LocationService);
+    const spiedLocationService = spyOn(locationService, 'addItemToLocation');
+    const compiled = fixture.debugElement.nativeElement;
+    setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    const button = compiled.querySelector('#addLocation');
+    button.click();
+    fixture.detectChanges();
+    const itemComponents = component.itemComponents.toArray();
+    const spiedComponent = spyOn(itemComponents[1], 'markAllAsDirty');
+    const addItemButton = compiled.querySelector('#addItemToLocation0');
+
+    addItemButton.click();
+    fixture.detectChanges();
+
+    expect(spiedComponent).toHaveBeenCalled();
     expect(spiedLocationService).not.toHaveBeenCalled();
   });
 
