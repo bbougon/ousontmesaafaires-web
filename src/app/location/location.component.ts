@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {LocationService} from './location.service';
 import {NewLocation} from '../domain/new-location';
 import {PairPipe} from '../infrastructure/pipe/pair-pipe';
@@ -18,6 +18,7 @@ export class LocationComponent implements OnInit {
 
   @ViewChild(ItemComponent) itemComponent: ItemComponent;
   @ViewChild('locationCollapse') locationCollapse: NgbCollapse;
+  @ViewChildren(ItemComponent) itemComponents: QueryList<ItemComponent>;
 
   locations: LocationCreated[] = [];
   addLocationForm: FormGroup;
@@ -64,11 +65,16 @@ export class LocationComponent implements OnInit {
   }
 
   addItemToLocation(id: String, itemComponent: ItemComponent) {
+    itemComponent.hint();
+    if (!itemComponent.itemsAreEmpty()) {
+      return;
+    }
     this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
       .subscribe(() => {
           this.locations.map((location: LocationCreated) => {
             if (location.id === id) {
               location.add(itemComponent.getCreatedItem());
+              itemComponent.clearItem();
             }
           });
       });

@@ -5,6 +5,7 @@ import {Item} from '../domain/item';
 import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {FormService} from '../infrastructure/form.service';
 import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
+import {isUndefined} from 'util';
 
 @Component({
   selector: 'ng-item',
@@ -75,12 +76,14 @@ export class ItemComponent implements OnInit {
   }
 
   hint() {
-    this.featureHint.close();
-    if (this.itemsAreEmpty()) {
-      return;
-    }
-    if (!this.featureHint.isOpen()) {
-      this.featureHint.open();
+    if (!isUndefined(this.featureHint)) {
+      this.featureHint.close();
+      if (this.itemsAreEmpty()) {
+        return;
+      }
+      if (!this.featureHint.isOpen()) {
+        this.featureHint.open();
+      }
     }
   }
 

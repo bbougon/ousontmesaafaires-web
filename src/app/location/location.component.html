@@ -51,7 +51,7 @@
                 <div class="col-sm-10">
                   <ul class="list-group list-group-flush">
                     <li *ngFor="let item of location.items" class="list-group-item item d-flex justify-content-between col-md-12">
-                      <div><span [outerHTML]="item.item | item"></span></div>
+                      <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
                     </li>
                   </ul>
                 </div>

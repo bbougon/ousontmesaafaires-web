@@ -14,7 +14,7 @@ describe('LocationComponent Call Service', () => {
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
       providers: [{
-        provide: LocationService, useClass: FakeLocationService
+        provide: LocationService, useValue: new FakeLocationService()
       }, HttpErrorHandler, MessageService],
       imports: [AppModule]
     })
@@ -27,10 +27,16 @@ describe('LocationComponent Call Service', () => {
     fixture.detectChanges();
   }));
 
+  afterEach(() => {
+    component.itemComponent.item = {};
+    component.itemComponent.itemToCreate = null;
+    component.locations = [];
+  });
+
   it('displays the location once added', () => {
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
     const button = compiled.querySelector('#addLocation');
 
     button.click();
@@ -43,17 +49,64 @@ describe('LocationComponent Call Service', () => {
     expect(fixture.debugElement.query(By.css('#items'))).toBeNull(compiled.querySelector('span').outerHTML + 'Should be null');
   });
 
+  it('can add an item to a location', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    const button = compiled.querySelector('#addLocation');
+    button.click();
+    fixture.detectChanges();
+    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
+      'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button').click();
+    const addItemButton = compiled.querySelector('#addItemToLocation0');
+
+    addItemButton.click();
+    fixture.detectChanges();
+
+    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item item d-flex justify-content-between col-md-12"] div');
+    const querySelector = querySelectorAll[1];
+    expect(querySelector.textContent).toContain('Couleur: marron');
+    // expect(spiedClearItemComponent).toHaveBeenCalled();
+  });
+
+  it('hint is raised if `+` button is not clicked', () => {
+    const locationService = fixture.debugElement.injector.get(LocationService);
+    const spiedLocationService = spyOn(locationService, 'addItemToLocation');
+    const compiled = fixture.debugElement.nativeElement;
+    setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    const button = compiled.querySelector('#addLocation');
+    button.click();
+    fixture.detectChanges();
+    const itemComponents = component.itemComponents.toArray();
+    const spiedOpenComponent = spyOn(itemComponents[1].featureHint, 'open');
+    const spiedClearItemComponent = spyOn(itemComponents[1], 'clearItem');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
+      'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button');
+    const addItemButton = compiled.querySelector('#addItemToLocation0');
+
+    addItemButton.click();
+    fixture.detectChanges();
+
+    expect(spiedOpenComponent).toHaveBeenCalled();
+    expect(spiedLocationService).not.toHaveBeenCalled();
+  });
+
   function setValueToInputAndDispatchEvent(value: string, selector: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
     input.value = value;
     input.dispatchEvent(new Event('input'));
   }
 
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string) {
+  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureTypeSelector: string,
+                                              featureValue: string, featureValueSelector: string, buttonSelector: string) {
+    buttonSelector = buttonSelector || 'button';
+    featureValueSelector = featureValueSelector || '#featureValue';
+    featureTypeSelector = featureTypeSelector || '#featureType';
     featureValue = featureValue || '';
     featureType = featureType || '';
-    setValueToInputAndDispatchEvent(featureType, '#featureType');
-    setValueToInputAndDispatchEvent(featureValue, '#featureValue');
-    return compiled.querySelector('button');
+    setValueToInputAndDispatchEvent(featureType, featureTypeSelector);
+    setValueToInputAndDispatchEvent(featureValue, featureValueSelector);
+    return compiled.querySelector(buttonSelector);
   }
 });
