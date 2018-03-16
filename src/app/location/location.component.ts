@@ -24,6 +24,7 @@ export class LocationComponent implements OnInit {
   addLocationForm: FormGroup;
   locationNameFormControl: FormControl;
   isCollapsed: Boolean[] = [];
+  pdf: any;
 
   constructor(private locationService: LocationService, private formService: FormService) {
   }
@@ -83,6 +84,13 @@ export class LocationComponent implements OnInit {
               itemComponent.clearItem();
             }
           });
+      });
+  }
+
+  generateSticker(locationId: String) {
+    this.locationService.generateSticker(locationId)
+      .subscribe((pdf) => {
+        this.pdf = pdf;
       });
   }
 }

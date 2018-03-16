@@ -66,4 +66,15 @@ export class LocationService {
       .pipe(tap(() => console.log(`Add item (${JSON.stringify(item)}) to location=${locationId}`)),
         catchError(this.handleError(`Add item location`, item)));
   }
+
+  generateSticker(locationId: String): Observable<Uint8Array> {
+    return this.httpClient.get(environment.locationResource + '/' + locationId + '/sticker', {
+      headers: new HttpHeaders().set('Content-Type', 'application/octet-stream'),
+      responseType: 'arraybuffer'
+    })
+      .pipe(tap(_ => console.log(`Generate sticker`)),
+        catchError(this.handleError(`generateSticker`)))
+      .map((response: Response) => response.arrayBuffer())
+      .map((arrayBuffer: ArrayBuffer) => new Uint8Array(arrayBuffer));
+  }
 }

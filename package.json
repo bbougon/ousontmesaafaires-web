@@ -4,12 +4,11 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ng build --aot -e heroku"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -26,8 +25,8 @@
     "@ng-bootstrap/ng-bootstrap": "^1.0.0",
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
-    "express": "^4.16.3",
     "jquery": "^3.3.1",
+    "ng2-pdf-viewer": "^4.1.2",
     "ngx-bootstrap": "^2.0.2",
     "octicons": "^7.1.0",
     "pfdemo": "^4.0.3",
@@ -55,8 +54,5 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
     "typescript": "2.4.2"
-  },
-  "engines": {
-    "node": "9.4.0"
   }
 }
