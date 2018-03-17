@@ -62,6 +62,14 @@
                 </div>
               </div>
               <div class="row col-sm-12">
+                <div class="col-sm-4 offset-8 align-middle">
+                  <button type="button" [attr.id]="'generateSticker' + i" class="btn btn-light btn-block"
+                          (click)="generateSticker(location.id)">
+                    Print PDF {{location.location}}
+                  </button>
+                </div>
+              </div>
+              <div class="row col-sm-12">
                 <div class="col-sm-8">
                   <ng-item #itemToCreate [attr.id]="'itemToCreate' + i"></ng-item>
                 </div>

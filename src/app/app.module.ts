@@ -19,6 +19,7 @@ import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
 import {PdfComponent} from './pdf/pdf.component';
 import {PrintDirective} from './pdf/print.directive';
+import {PdfViewerComponent} from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {PrintDirective} from './pdf/print.directive';
     LocationItemPipe,
     OcticonDirective,
     PdfComponent,
-    PrintDirective
+    PrintDirective,
+    PdfViewerComponent
   ],
   imports: [
     NgbModule.forRoot(),
