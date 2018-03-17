@@ -6,7 +6,6 @@ import {LocationModule} from './location/location.module';
 import {LocationComponent} from './location/location.component';
 import {LocationService} from './location/location.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
 import {MessageService} from './infrastructure/message.service';
@@ -19,7 +18,7 @@ import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
 import {PdfComponent} from './pdf/pdf.component';
 import {PrintDirective} from './pdf/print.directive';
-import {PdfViewerComponent} from 'ng2-pdf-viewer';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -31,8 +30,7 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
     LocationItemPipe,
     OcticonDirective,
     PdfComponent,
-    PrintDirective,
-    PdfViewerComponent
+    PrintDirective
   ],
   imports: [
     NgbModule.forRoot(),
@@ -40,7 +38,8 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
     BrowserModule,
     LocationModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PdfViewerModule
   ],
   providers: [LocationService, HttpErrorHandler, MessageService, FormService],
   bootstrap: [AppComponent],
