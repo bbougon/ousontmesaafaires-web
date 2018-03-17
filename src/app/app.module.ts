@@ -6,6 +6,7 @@ import {LocationModule} from './location/location.module';
 import {LocationComponent} from './location/location.component';
 import {LocationService} from './location/location.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
 import {MessageService} from './infrastructure/message.service';
@@ -16,9 +17,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
-import {PdfViewerModule} from 'ng2-pdf-viewer';
-import {PdfComponent} from './pdf/pdf.component';
-import { PrintDirective } from './pdf/print.directive';
 
 @NgModule({
   declarations: [
@@ -28,9 +26,7 @@ import { PrintDirective } from './pdf/print.directive';
     ErrorMessageComponent,
     TruncatePipe,
     LocationItemPipe,
-    OcticonDirective,
-    PdfComponent,
-    PrintDirective
+    OcticonDirective
   ],
   imports: [
     NgbModule.forRoot(),
@@ -38,16 +34,12 @@ import { PrintDirective } from './pdf/print.directive';
     BrowserModule,
     LocationModule,
     FormsModule,
-    ReactiveFormsModule,
-    PdfViewerModule
+    ReactiveFormsModule
   ],
   providers: [LocationService, HttpErrorHandler, MessageService, FormService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe
-  ],
-  entryComponents: [
-    PdfComponent
   ]
 })
 export class AppModule {

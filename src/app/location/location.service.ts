@@ -66,11 +66,4 @@ export class LocationService {
       .pipe(tap(() => console.log(`Add item (${JSON.stringify(item)}) to location=${locationId}`)),
         catchError(this.handleError(`Add item location`, item)));
   }
-
-  generateSticker(locationId: String): Observable<ArrayBuffer> {
-    return this.httpClient.get(environment.locationResource + '/' + locationId + '/sticker', {
-      headers: new HttpHeaders().set('Content-Type', 'application/octet-stream'),
-      responseType: 'arraybuffer'
-    });
-  }
 }

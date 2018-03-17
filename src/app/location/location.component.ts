@@ -6,8 +6,7 @@ import {LocationCreated} from '../domain/location-created';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ItemComponent} from '../item/item.component';
 import {FormService} from '../infrastructure/form.service';
-import {NgbCollapse, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {PdfComponent} from '../pdf/pdf.component';
+import {NgbCollapse} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'ng-location',
@@ -26,7 +25,7 @@ export class LocationComponent implements OnInit {
   locationNameFormControl: FormControl;
   isCollapsed: Boolean[] = [];
 
-  constructor(private locationService: LocationService, private formService: FormService, private modalService: NgbModal) {
+  constructor(private locationService: LocationService, private formService: FormService) {
   }
 
   ngOnInit() {
@@ -78,21 +77,12 @@ export class LocationComponent implements OnInit {
 
     this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
       .subscribe(() => {
-        this.locations.map((location: LocationCreated) => {
-          if (location.id === id) {
-            location.add(itemComponent.getCreatedItem());
-            itemComponent.clearItem();
-          }
-        });
-      });
-  }
-
-  generateSticker(locationId: String) {
-    this.locationService.generateSticker(locationId)
-      .subscribe((pdf: ArrayBuffer) => {
-        const modalRef = this.modalService.open(PdfComponent);
-        modalRef.componentInstance.pdf = new Uint8Array(pdf);
-        modalRef.componentInstance.pdfName = 'FileName.pdf';
+          this.locations.map((location: LocationCreated) => {
+            if (location.id === id) {
+              location.add(itemComponent.getCreatedItem());
+              itemComponent.clearItem();
+            }
+          });
       });
   }
 }
