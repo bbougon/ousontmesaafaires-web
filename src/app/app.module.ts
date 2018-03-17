@@ -17,6 +17,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
+import {PdfComponent} from './pdf/pdf.component';
+import {PrintDirective} from './pdf/print.directive';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
     ErrorMessageComponent,
     TruncatePipe,
     LocationItemPipe,
-    OcticonDirective
+    OcticonDirective,
+    PdfComponent,
+    PrintDirective
   ],
   imports: [
     NgbModule.forRoot(),
@@ -40,6 +44,9 @@ import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe
+  ],
+  entryComponents: [
+    PdfComponent
   ]
 })
 export class AppModule {
