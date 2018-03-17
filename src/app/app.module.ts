@@ -17,6 +17,8 @@ import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {PdfComponent} from './pdf/pdf.component';
+import { PrintDirective } from './pdf/print.directive';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
     ErrorMessageComponent,
     TruncatePipe,
     LocationItemPipe,
-    OcticonDirective
+    OcticonDirective,
+    PdfComponent,
+    PrintDirective
   ],
   imports: [
     NgbModule.forRoot(),
@@ -41,6 +45,9 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe
+  ],
+  entryComponents: [
+    PdfComponent
   ]
 })
 export class AppModule {

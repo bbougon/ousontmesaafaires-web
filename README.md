@@ -32,7 +32,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Docker
 ### Building container
-`docker build -t ou-sont-mes-affaires .`
+`docker build -t ou-sont-mes-affaires-web .`
 
 ### Running container
 
