@@ -19,6 +19,12 @@ import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
 import {PdfComponent} from './pdf/pdf.component';
 import {PrintDirective} from './pdf/print.directive';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {RouterModule, Routes} from '@angular/router';
+import {NgxQRCodeModule} from 'ngx-qrcode2';
+
+const routes: Routes = [
+  {path: '', component: AppComponent, pathMatch: 'full'}
+];
 
 @NgModule({
   declarations: [
@@ -34,12 +40,14 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
   ],
   imports: [
     NgbModule.forRoot(),
+    RouterModule.forRoot(routes, {useHash: true}),
     HttpClientModule,
     BrowserModule,
     LocationModule,
     FormsModule,
     ReactiveFormsModule,
-    PdfViewerModule
+    PdfViewerModule,
+    NgxQRCodeModule
   ],
   providers: [LocationService, HttpErrorHandler, MessageService, FormService],
   bootstrap: [AppComponent],

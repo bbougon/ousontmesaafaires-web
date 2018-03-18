@@ -30,7 +30,7 @@ export class LocationService {
   }
 
   addLocation(location: NewLocation): Observable<any> {
-    return this.httpClient.post(environment.locationResource, location, {
+    return this.httpClient.post(`${environment.apiUrl}/locations`, location, {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
@@ -49,7 +49,7 @@ export class LocationService {
   }
 
   getLocations(): Observable<LocationCreated[]> {
-    return this.httpClient.get<LocationCreated[]>(environment.locationResource)
+    return this.httpClient.get<LocationCreated[]>(`${environment.apiUrl}/locations`)
       .pipe(tap(_ => console.log(`Get all locations location`)),
         catchError(this.handleError(`getLocations`)))
       .map((response) => {
@@ -58,7 +58,7 @@ export class LocationService {
   }
 
   addItemToLocation(locationId: String, item: Item): Observable<any> {
-    return this.httpClient.post(environment.locationResource + '/' + locationId + '/item', item, {
+    return this.httpClient.post(`${environment.apiUrl}/locations/${locationId}/item`, item, {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
@@ -67,10 +67,18 @@ export class LocationService {
         catchError(this.handleError(`Add item location`, item)));
   }
 
-  generateSticker(locationId: String): Observable<ArrayBuffer> {
-    return this.httpClient.get(environment.locationResource + '/' + locationId + '/sticker', {
-      headers: new HttpHeaders().set('Content-Type', 'application/octet-stream'),
-      responseType: 'arraybuffer'
-    });
+  generateSticker(url, locationId: String): Observable<ArrayBuffer> {
+    return this.httpClient.put(`${environment.apiUrl}/locations/sticker/${locationId}`, {url: url},
+      {
+        headers: new HttpHeaders().set('Content-Type', 'application/octet-stream'),
+        responseType: 'arraybuffer'
+      })
+      .pipe(tap(_ => console.log(`Put sticker=${locationId}`)),
+        catchError(this.handleError(`Generate sticker`, locationId)))
+      .map((arrayBuffer) => {
+        if (arrayBuffer instanceof ArrayBuffer) {
+          return arrayBuffer;
+        }
+      });
   }
 }

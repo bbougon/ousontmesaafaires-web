@@ -48,24 +48,27 @@
           <div [ngbCollapse]="isCollapsed[i]" class="collapse show" #locationCollapse="ngbCollapse">
             <div class="card-body">
               <div class="row col-sm-12">
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                   <ul class="list-group list-group-flush">
                     <li *ngFor="let item of location.items" class="list-group-item item d-flex justify-content-between col-md-12">
                       <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
                     </li>
                   </ul>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <div class="location">
-                    <img src="data:image/png;base64,{{location.qrcode}}" class="qrcode"/>
+                    <ngx-qrcode
+                      qrc-element-type="url"
+                      [qrc-value]="currentLocation + '/locations/' + location.id"
+                      qrc-version="5" qrc-class="qrcode"></ngx-qrcode>
                   </div>
                 </div>
               </div>
               <div class="row col-sm-12">
-                <div class="col-sm-4 offset-8 align-middle">
+                <div class="col-sm-4 offset-8 location-content">
                   <button type="button" [attr.id]="'generateSticker' + i" class="btn btn-light btn-block"
                           (click)="generateSticker(location.id)">
-                    Print PDF {{location.location}}
+                    Print {{location.location}}
                   </button>
                 </div>
               </div>

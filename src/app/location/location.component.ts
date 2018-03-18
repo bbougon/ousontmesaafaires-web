@@ -25,8 +25,11 @@ export class LocationComponent implements OnInit {
   addLocationForm: FormGroup;
   locationNameFormControl: FormControl;
   isCollapsed: Boolean[] = [];
+  private currentLocation: string;
 
-  constructor(private locationService: LocationService, private formService: FormService, private modalService: NgbModal) {
+  constructor(private locationService: LocationService, private formService: FormService,
+              private modalService: NgbModal) {
+    this.currentLocation = window.location.origin;
   }
 
   ngOnInit() {
@@ -78,17 +81,17 @@ export class LocationComponent implements OnInit {
 
     this.locationService.addItemToLocation(id, itemComponent.getCreatedItem())
       .subscribe(() => {
-          this.locations.map((location: LocationCreated) => {
-            if (location.id === id) {
-              location.add(itemComponent.getCreatedItem());
-              itemComponent.clearItem();
-            }
-          });
+        this.locations.map((location: LocationCreated) => {
+          if (location.id === id) {
+            location.add(itemComponent.getCreatedItem());
+            itemComponent.clearItem();
+          }
+        });
       });
   }
 
   generateSticker(locationId: String) {
-    this.locationService.generateSticker(locationId)
+    this.locationService.generateSticker(this.currentLocation + '/locations/', locationId)
       .subscribe((pdf: ArrayBuffer) => {
         const modalRef = this.modalService.open(PdfComponent);
         modalRef.componentInstance.pdf = new Uint8Array(pdf);

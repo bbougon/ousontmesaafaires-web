@@ -47,7 +47,7 @@ describe('LocationService', () => {
           expect(locations.length).toBe(2);
         });
 
-        mockBackend.expectOne(environment.locationResource).flush([{
+        mockBackend.expectOne(`${environment.apiUrl}/locations`).flush([{
           'id': 'an id 1', 'items': [{'item': {'type': 'chaussure'}}],
           'location': 'Location 1', 'qrcode': 'qrcode'
         }, {
@@ -65,7 +65,7 @@ describe('LocationService', () => {
     }));
 
     function expectPost(mockBackend: HttpTestingController, locationCreatedUrl: string) {
-      mockBackend.expectOne(environment.locationResource)
+      mockBackend.expectOne(`${environment.apiUrl}/locations`)
         .flush(null, {
           status: 201,
           statusText: 'CREATED',
@@ -79,7 +79,7 @@ describe('LocationService', () => {
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
-          return req.url === environment.locationResource
+          return req.url === environment.apiUrl + '/locations'
             && req.responseType === 'text'
             && req.headers.get('Content-Type') === 'application/json';
         }, 'POST to location with response type and headers');
@@ -119,7 +119,7 @@ describe('LocationService', () => {
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
-          return req.url === environment.locationResource + '/an-id/item'
+          return req.url === environment.apiUrl + '/locations/an-id/item'
             && req.responseType === 'text'
             && req.headers.get('Content-Type') === 'application/json';
         }, 'POST to location with response type and headers');
@@ -133,7 +133,7 @@ describe('LocationService', () => {
 
           });
 
-        mockBackend.expectOne(environment.locationResource + '/an-id/item').flush(null, {
+        mockBackend.expectOne(`${environment.apiUrl}/locations/an-id/item`).flush(null, {
           status: 204,
           statusText: 'NO_CONTENT'
         });

@@ -12,9 +12,8 @@
   text-align: left;
 }
 
-.location .qrcode {
-  width: 64px;
-  height: 64px;
+.location-content {
+  padding-bottom: 8px;
 }
 
 .cursor-pointer {
