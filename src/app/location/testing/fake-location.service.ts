@@ -37,4 +37,8 @@ export class FakeLocationService {
     });
     return of(null);
   }
+
+  generateSticker(url, locationId: String): Observable<ArrayBuffer> {
+    return of(null);
+  }
 }

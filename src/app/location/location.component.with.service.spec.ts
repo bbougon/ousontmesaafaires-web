@@ -113,6 +113,22 @@ describe('LocationComponent Call Service', () => {
     expect(spiedLocationService).not.toHaveBeenCalled();
   });
 
+  it('calls sticker generation service', () => {
+    const locationService = fixture.debugElement.injector.get(LocationService);
+    const spiedLocationService = spyOn(locationService, 'generateSticker');
+    const compiled = fixture.debugElement.nativeElement;
+    setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    compiled.querySelector('#addLocation').click();
+    fixture.detectChanges();
+    const button = compiled.querySelector('#generateSticker0');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(spiedLocationService).toHaveBeenCalled();
+  });
+
   function setValueToInputAndDispatchEvent(value: string, selector: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
     input.value = value;

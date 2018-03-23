@@ -141,4 +141,37 @@ describe('LocationService', () => {
       })));
   });
 
+  describe('when generating sticker', () => {
+    afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
+      backend.verify();
+    }));
+
+    it('should have put an URL to location', async(
+      inject([LocationService, HttpTestingController], (locationService: LocationService, mockBackend: HttpTestingController) => {
+        locationService.generateSticker('an-url', 'an-id').subscribe();
+
+        mockBackend.expectOne((req: HttpRequest<any>) => {
+          return req.url === environment.apiUrl + '/locations/sticker/an-id'
+            && req.responseType === 'arraybuffer'
+            && req.headers.get('Content-Type') === 'application/octet-stream'
+            && req.method === 'PUT';
+        }, 'PUT to location with response type headers and method');
+      })
+    ));
+
+    it('should handle expected response', async(
+      inject([LocationService, HttpTestingController], (locationService: LocationService, mockBackend: HttpTestingController) => {
+        locationService.generateSticker('an-url', 'an-id')
+          .subscribe(() => {
+            expect(this).not.toBeNull();
+          });
+
+        mockBackend.expectOne(`${environment.apiUrl}/locations/sticker/an-id`).flush(new ArrayBuffer(10), {
+          status: 200,
+          statusText: 'OK'
+        });
+      })
+    ));
+  });
+
 });

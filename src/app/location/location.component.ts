@@ -93,9 +93,11 @@ export class LocationComponent implements OnInit {
   generateSticker(locationId: String) {
     this.locationService.generateSticker(this.currentLocation + '/locations/', locationId)
       .subscribe((pdf: ArrayBuffer) => {
-        const modalRef = this.modalService.open(PdfComponent);
-        modalRef.componentInstance.pdf = new Uint8Array(pdf);
-        modalRef.componentInstance.pdfName = 'FileName.pdf';
+        if (pdf != null) {
+          const modalRef = this.modalService.open(PdfComponent);
+          modalRef.componentInstance.pdf = new Uint8Array(pdf);
+          modalRef.componentInstance.pdfName = 'FileName.pdf';
+        }
       });
   }
 }
