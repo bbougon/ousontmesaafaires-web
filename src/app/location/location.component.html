@@ -34,7 +34,7 @@
     <div class="row-fluid">
       <ul class="list-group col-md-12">
         <li *ngFor="let location of locations; let i = index" class="list-group-item col-md-12">
-          <div id="locations" class="row" (click)="collapse(i)">
+          <div id="locations" class="row">
             <div class="col-md-6">
               {{location.location}}
             </div>
@@ -42,7 +42,8 @@
               <span class="badge badge-light badge-pill">{{location.items.length}}</span>
             </div>
             <div class="col-md-1">
-              <span class="badge badge-light badge-pill cursor-pointer" [octicon]="'arrow-down'" width="8" color="grey"></span>
+              <span class="cursor-pointer oi oi-print" width="8" color="grey" (click)="generateSticker(location.id)"></span>
+              <span class="cursor-pointer oi oi-arrow-circle-bottom" width="8" color="grey" (click)="collapse(i)"></span>
             </div>
           </div>
           <div [ngbCollapse]="isCollapsed[i]" class="collapse show" #locationCollapse="ngbCollapse">
