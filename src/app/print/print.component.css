@@ -1,0 +1,12 @@
+.sticker {
+  border: 1px dashed;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1rem;
+  margin-left: 0;
+}
+
+.line {
+  border-bottom: 1px solid grey;
+}

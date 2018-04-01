@@ -95,7 +95,6 @@ describe('LocationService', () => {
           .subscribe(location => {
             expect(location).not.toBeNull();
             expect(location.id).toBe('an id');
-
           });
 
         expectPost(mockBackend, 'location-created-url');
@@ -130,7 +129,6 @@ describe('LocationService', () => {
         locationService.addItemToLocation('an-id', new Item({'couleur': 'rouge'}))
           .subscribe(() => {
             expect(this).not.toBeNull();
-
           });
 
         mockBackend.expectOne(`${environment.apiUrl}/locations/an-id/item`).flush(null, {
@@ -141,37 +139,39 @@ describe('LocationService', () => {
       })));
   });
 
-  describe('when generating sticker', () => {
+  describe('when getting a location', () => {
+
     afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
       backend.verify();
     }));
 
-    it('should have put an URL to location', async(
+    it('should get the expected location with expected request', async(
       inject([LocationService, HttpTestingController], (locationService: LocationService, mockBackend: HttpTestingController) => {
-        locationService.generateSticker('an-url', 'an-id').subscribe();
+        locationService.getLocation('an-id')
+          .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
-          return req.url === environment.apiUrl + '/locations/sticker/an-id'
-            && req.responseType === 'arraybuffer'
-            && req.headers.get('Content-Type') === 'application/octet-stream'
-            && req.method === 'PUT';
-        }, 'PUT to location with response type headers and method');
-      })
-    ));
+          return req.url === environment.apiUrl + '/locations/an-id';
+        }, 'GET location');
+      })));
 
-    it('should handle expected response', async(
+    it('should get location with expected content', async(
       inject([LocationService, HttpTestingController], (locationService: LocationService, mockBackend: HttpTestingController) => {
-        locationService.generateSticker('an-url', 'an-id')
-          .subscribe(() => {
-            expect(this).not.toBeNull();
+        locationService.getLocation('an-id')
+          .subscribe((location) => {
+            expect(location).not.toBeNull();
+            expect(location.id).toBe('an-id');
           });
 
-        mockBackend.expectOne(`${environment.apiUrl}/locations/sticker/an-id`).flush(new ArrayBuffer(10), {
+        mockBackend.expectOne(`${environment.apiUrl}/locations/an-id`).flush({
+          'id': 'an-id', 'items': [{'item': {'type': 'chaussure'}}],
+          'location': 'Location 1', 'qrcode': 'qrcode'
+        }, {
           status: 200,
           statusText: 'OK'
         });
-      })
-    ));
+
+      })));
   });
 
 });

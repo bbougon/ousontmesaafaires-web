@@ -5,7 +5,7 @@ import {LocationService} from './location.service';
 import {By} from '@angular/platform-browser';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
-import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.service';
+import {FakeLocationService} from './testing/fake-location.service';
 import {AppModule} from '../app.module';
 
 describe('LocationComponent', () => {
@@ -150,7 +150,6 @@ describe('LocationComponent', () => {
     selector = selector ? selector.length > 0 ? selector + ' ' : '' : '';
     setValueToInputAndDispatchEvent(selector + '#featureType', featureType);
     setValueToInputAndDispatchEvent(selector.length > 0 ? selector + ' ' : '' + '#featureValue', featureValue);
-    const querySelector = compiled.querySelector('#itemForLocation button');
-    return querySelector;
+    return compiled.querySelector('#itemForLocation button');
   }
 });

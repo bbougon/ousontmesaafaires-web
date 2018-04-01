@@ -6,15 +6,16 @@ import {FakeLocationService, LOCATION_CREATED} from './testing/fake-location.ser
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {AppModule} from '../app.module';
+import {of} from 'rxjs/observable/of';
 
-describe('LocationComponent Call Service', () => {
+describe('LocationComponent ', () => {
   let component: LocationComponent;
   let fixture: ComponentFixture<LocationComponent>;
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
       providers: [{
-        provide: LocationService, useValue: new FakeLocationService()
+        provide: LocationService, useClass: FakeLocationService
       }, HttpErrorHandler, MessageService],
       imports: [AppModule]
     })
@@ -113,9 +114,9 @@ describe('LocationComponent Call Service', () => {
     expect(spiedLocationService).not.toHaveBeenCalled();
   });
 
-  it('calls sticker generation service', () => {
+  it('calls locations service when generating a sticker', () => {
     const locationService = fixture.debugElement.injector.get(LocationService);
-    const spiedLocationService = spyOn(locationService, 'generateSticker');
+    const spiedLocationService = spyOn(locationService, 'getLocation').and.returnValue(of(LOCATION_CREATED));
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(LOCATION_CREATED.location, '#locationName');
     setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();

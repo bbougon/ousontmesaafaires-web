@@ -55,3 +55,33 @@
   width: 128px;
   height: 128px;
 }
+
+@media print {
+  #sticker * {
+    visibility: visible;
+    overflow: visible;
+  }
+
+  .modal-footer {
+    visibility: hidden;
+  }
+
+  .modal-header {
+    visibility: hidden;
+  }
+
+  .modal-body {
+    border: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    visibility: visible !important;
+    overflow: visible !important;
+  }
+
+  .wrapper {
+    display: none;
+  }
+}

@@ -16,9 +16,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
 import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
-import {PdfComponent} from './pdf/pdf.component';
-import {PrintDirective} from './pdf/print.directive';
-import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {PrintComponent} from './print/print.component';
+import {PrintDirective} from './print/print.directive';
 import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 
@@ -35,7 +34,7 @@ const routes: Routes = [
     TruncatePipe,
     LocationItemPipe,
     OcticonDirective,
-    PdfComponent,
+    PrintComponent,
     PrintDirective
   ],
   imports: [
@@ -46,7 +45,6 @@ const routes: Routes = [
     LocationModule,
     FormsModule,
     ReactiveFormsModule,
-    PdfViewerModule,
     NgxQRCodeModule
   ],
   providers: [LocationService, HttpErrorHandler, MessageService, FormService],
@@ -55,7 +53,7 @@ const routes: Routes = [
     TruncatePipe
   ],
   entryComponents: [
-    PdfComponent
+    PrintComponent
   ]
 })
 export class AppModule {

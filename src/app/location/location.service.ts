@@ -37,15 +37,23 @@ export class LocationService {
     })
       .flatMap(response => {
         const locationURL = response.headers.get('Location');
-        return this.httpClient.get<LocationCreated>(locationURL)
-          .pipe(tap(_ => console.log(`Get location location=${locationURL}`)),
-            catchError(this.handleError(`getLocation`, locationURL)))
-          .map((body) => {
-            return new LocationCreated(body);
-          });
+        return this.getLocationFromUrl(locationURL);
       })
       .pipe(tap(_ => console.log(`Post location=${location}`)),
         catchError(this.handleError(`Add location`, location)));
+  }
+
+  private getLocationFromUrl(locationURL: any) {
+    return this.httpClient.get<LocationCreated>(locationURL)
+      .pipe(tap(_ => console.log(`Get location location=${locationURL}`)),
+        catchError(this.handleError(`getLocation`, locationURL)))
+      .map((body) => {
+        return new LocationCreated(body);
+      });
+  }
+
+  getLocation(locationId: String): Observable<LocationCreated> {
+    return this.getLocationFromUrl(`${environment.apiUrl}/locations/${locationId}`);
   }
 
   getLocations(): Observable<LocationCreated[]> {
@@ -65,20 +73,5 @@ export class LocationService {
     })
       .pipe(tap(() => console.log(`Add item (${JSON.stringify(item)}) to location=${locationId}`)),
         catchError(this.handleError(`Add item location`, item)));
-  }
-
-  generateSticker(url, locationId: String): Observable<ArrayBuffer> {
-    return this.httpClient.put(`${environment.apiUrl}/locations/sticker/${locationId}`, {url: url},
-      {
-        headers: new HttpHeaders().set('Content-Type', 'application/octet-stream'),
-        responseType: 'arraybuffer'
-      })
-      .pipe(tap(_ => console.log(`Put sticker=${locationId}`)),
-        catchError(this.handleError(`Generate sticker`, locationId)))
-      .map((arrayBuffer) => {
-        if (arrayBuffer instanceof ArrayBuffer) {
-          return arrayBuffer;
-        }
-      });
   }
 }
