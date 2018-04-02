@@ -8,6 +8,7 @@ import {ItemComponent} from '../item/item.component';
 import {FormService} from '../infrastructure/form.service';
 import {NgbCollapse, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PrintComponent} from '../print/print.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'ng-location',
@@ -27,7 +28,7 @@ export class LocationComponent implements OnInit {
   isCollapsed: Boolean[] = [];
 
   constructor(private locationService: LocationService, private formService: FormService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal, private router: Router) {
   }
 
   ngOnInit() {
@@ -94,5 +95,10 @@ export class LocationComponent implements OnInit {
         const modalRef = this.modalService.open(PrintComponent);
         modalRef.componentInstance.location = location;
       });
+  }
+
+  getDetails(locationId: String) {
+    console.log('Location ID: ' + locationId);
+    this.router.navigate(['locations', locationId ]);
   }
 }

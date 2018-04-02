@@ -20,9 +20,12 @@ import {PrintComponent} from './print/print.component';
 import {PrintDirective} from './print/print.directive';
 import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
+import { LocationDetailComponent } from './location-detail/location-detail.component';
 
 const routes: Routes = [
-  {path: '', component: AppComponent, pathMatch: 'full'}
+  {path: '', redirectTo: 'locations', pathMatch: 'full'},
+  {path: 'locations/:id', component: LocationDetailComponent},
+  {path: 'locations', component: LocationComponent}
 ];
 
 @NgModule({
@@ -35,7 +38,8 @@ const routes: Routes = [
     LocationItemPipe,
     OcticonDirective,
     PrintComponent,
-    PrintDirective
+    PrintDirective,
+    LocationDetailComponent
   ],
   imports: [
     NgbModule.forRoot(),

@@ -1,5 +1,6 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
+import {Location} from '@angular/common';
 import {LocationComponent} from './location.component';
 import {LocationService} from './location.service';
 import {By} from '@angular/platform-browser';
@@ -7,11 +8,14 @@ import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {FakeLocationService} from './testing/fake-location.service';
 import {AppModule} from '../app.module';
+import {Router} from '@angular/router';
 
 describe('LocationComponent', () => {
   let component: LocationComponent;
   let fixture: ComponentFixture<LocationComponent>;
   let locationService: LocationService;
+  let location: Location;
+  let router: Router;
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
@@ -131,6 +135,15 @@ describe('LocationComponent', () => {
     expect(spiedLocationService).not.toHaveBeenCalled();
     expect(compiled.querySelector('#locationName').className).not.toContain('is-invalid');
   });
+
+  it('should navigate to location detail', fakeAsync(() => {
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
+    component.getDetails('an-id');
+
+    tick(50);
+    expect(location.path()).toBe('/locations/an-id');
+  }));
 
   function setValueToInput(selector: string, value: string) {
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
