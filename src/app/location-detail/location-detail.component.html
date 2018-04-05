@@ -12,11 +12,11 @@
             </button>
           </div>
           <div class="row col-sm-12">
-            <ng-item class="row col-sm-12" id="itemForLocation"></ng-item>
+            <ng-item #itemForLocation class="row col-sm-12" id="itemForLocation"></ng-item>
           </div>
           <div class="row col-sm-12">
             <button type="button" id="addItemToLocation" class="btn btn-light btn-block"
-                    (click)="addItemToLocation(location.id, itemToCreate)">
+                    (click)="addItemToLocation(itemForLocation)">
               Add to location
             </button>
           </div>

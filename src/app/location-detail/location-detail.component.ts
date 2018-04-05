@@ -5,6 +5,7 @@ import {LocationCreated} from '../domain/location-created';
 import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PrintComponent} from '../print/print.component';
+import {ItemComponent} from '../item/item.component';
 
 @Component({
   selector: 'app-location-detail',
@@ -29,6 +30,10 @@ export class LocationDetailComponent implements OnInit {
   generateSticker() {
     const modalRef = this.ngbModal.open(PrintComponent);
     modalRef.componentInstance.location = this.location;
+  }
+
+  addItemToLocation(itemComponent: ItemComponent) {
+
   }
 
 }
