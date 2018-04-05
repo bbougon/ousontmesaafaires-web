@@ -10,7 +10,8 @@ import {isUndefined} from 'util';
 @Component({
   selector: 'ng-item',
   templateUrl: './item.component.html',
-  styleUrls: ['./item.component.css']
+  styleUrls: ['./item.component.css'],
+  providers: [PairPipe]
 })
 export class ItemComponent implements OnInit {
 

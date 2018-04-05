@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {LocationDetailComponent} from './location-detail.component';
 import {LocationService} from '../location/location.service';
@@ -44,5 +44,15 @@ describe('LocationDetailComponent', () => {
     component.ngOnInit();
 
     expect(spiedLocationService).toHaveBeenCalled();
+    expect(component.location).not.toBeNull();
+    expect(component.location).toBeTruthy();
+  });
+
+  it('calls locations service when generating a sticker', () => {
+    component.generateSticker();
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+
+    expect(document.querySelectorAll('ngb-modal-window').length).toBe(1);
   });
 });

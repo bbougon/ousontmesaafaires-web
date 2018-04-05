@@ -1,3 +1,46 @@
-<p>
-  location-detail works!
-</p>
+<div class="wrapper">
+  <ng-error-message class="header"></ng-error-message>
+  <div class="content">
+    <div class="sidebar">
+      <div class="container-fluid">
+        <div class="location row">
+          <div *ngIf="location" class="title"><h5>{{location.location}} location detail</h5></div>
+          <div class="row col-sm-12">
+            <button type="button" id="generateSticker" class="btn btn-light btn-block"
+                    (click)="generateSticker()">
+              Print sticker
+            </button>
+          </div>
+          <div class="row col-sm-12">
+            <ng-item class="row col-sm-12" id="itemForLocation"></ng-item>
+          </div>
+          <div class="row col-sm-12">
+            <button type="button" id="addItemToLocation" class="btn btn-light btn-block"
+                    (click)="addItemToLocation(location.id, itemToCreate)">
+              Add to location
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="col-10">
+        <div class="row-fluid">
+          <div class="card-body">
+            <div class="row col-sm-12">
+              <div class="col-sm-9" *ngIf="location">
+                <ul class="list-group list-group-flush">
+                  <li *ngFor="let item of location.items"
+                      class="list-group-item item d-flex justify-content-between col-md-12">
+                    <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

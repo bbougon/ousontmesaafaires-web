@@ -36,6 +36,7 @@
 }
 
 .sidebar {
+  margin-left: 40px;
   grid-column: 1;
   grid-row: 2 / 5;
 }
@@ -43,6 +44,28 @@
 .main-content {
   grid-column: 2/4;
   grid-row: 2 / 5;
+}
+
+.location {
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.location .title h5 {
+  text-transform: uppercase;
+  color: #bbb;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.location-content {
+  padding-bottom: 8px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 @media (min-width: 960px) {
