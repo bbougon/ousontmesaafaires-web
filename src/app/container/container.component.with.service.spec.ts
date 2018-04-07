@@ -51,6 +51,18 @@ describe('ContainerComponent ', () => {
     expect(fixture.debugElement.query(By.css('#items'))).toBeNull(compiled.querySelector('span').outerHTML + 'Should be null');
   });
 
+  it('should have qrversion set to 6', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
+    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    const button = compiled.querySelector('#addContainer');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('6');
+  });
+
   it('can add an item to a container', () => {
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
