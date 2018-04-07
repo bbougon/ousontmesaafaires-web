@@ -49,6 +49,7 @@ describe('ContainerDetailComponent', () => {
   });
 
   it('calls containers service when generating a sticker', () => {
+    component.container = CONTAINER;
     component.generateSticker();
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
