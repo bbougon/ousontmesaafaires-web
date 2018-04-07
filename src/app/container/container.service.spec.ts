@@ -10,14 +10,17 @@ import {environment} from '../../environments/environment';
 import {Container} from '../domain/container';
 import {Item} from '../domain/item';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
-import {MessageService} from '../infrastructure/message.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModalStack} from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
+import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 
 describe('ContainerService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, HttpClientTestingModule],
       providers: [
-        ContainerService, HttpErrorHandler, MessageService
+        {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler},
+        ContainerService, NgbModal, NgbModalStack
       ]
     })
       .compileComponents();
@@ -49,10 +52,10 @@ describe('ContainerService', () => {
 
         mockBackend.expectOne(`${environment.apiUrl}/containers`).flush([{
           'id': 'an id 1', 'items': [{'item': {'type': 'chaussure'}}],
-          'location': 'Location 1', 'qrcode': 'qrcode'
+          'name': 'Container 1', 'qrcode': 'qrcode'
         }, {
           'id': 'an id 2', 'items': [{'item': {'type': 'pantalon'}}],
-          'location': 'Location 2', 'qrcode': 'qrcode'
+          'name': 'Container 2', 'qrcode': 'qrcode'
         }], {status: 200, statusText: 'OK'});
       })));
   });
@@ -165,7 +168,7 @@ describe('ContainerService', () => {
 
         mockBackend.expectOne(`${environment.apiUrl}/containers/an-id`).flush({
           'id': 'an-id', 'items': [{'item': {'type': 'chaussure'}}],
-          'location': 'Location 1', 'qrcode': 'qrcode'
+          'name': 'Container 1', 'qrcode': 'qrcode'
         }, {
           status: 200,
           statusText: 'OK'

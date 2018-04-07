@@ -5,11 +5,11 @@ import {ContainerService} from './container/container.service';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
-import {MessageService} from './infrastructure/message.service';
 import {FakeContainerService} from './container/testing/fake-container.service';
 import {AppModule} from './app.module';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {FakeHttpErrorHandler} from '../testing/fake-http-error-handler';
 
 
 describe('AppComponent', () => {
@@ -20,7 +20,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [{provide: ContainerService, useClass: FakeContainerService},
-        HttpErrorHandler, MessageService],
+        {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler}],
       imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, HttpClientModule, AppModule]
     }).compileComponents();
 
@@ -36,14 +36,6 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
 
     expect(app).toBeTruthy();
-  }));
-
-  it('should have error message component loaded', async(() => {
-    fixture.detectChanges();
-
-    const compiled = fixture.debugElement.nativeElement;
-
-    expect(compiled.querySelector('ng-error-message')).toBeTruthy();
   }));
 
   it('should have container component loaded', async(() => {

@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {ContainerService} from '../container.service';
 
 export const CONTAINER: Container = new Container({
-  'id': 'an-id', 'location': 'Location',
+  'id': 'an-id', 'name': 'Container',
   'items': [{'item': {'type': 'chaussure'}}], 'qrcode': 'a qr code'
 });
 
@@ -16,7 +16,7 @@ export class FakeContainerService extends ContainerService {
   addContainer(container: NewContainer): Observable<Container> {
     const containerCreated = new Container({
       'id': Math.random().toString(36).substring(2, 15),
-      'location': container.name,
+      'name': container.name,
       'items': [{'item': container.item}],
       'qrcode': 'a qr code'
     });

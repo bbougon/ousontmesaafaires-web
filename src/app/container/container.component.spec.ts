@@ -4,11 +4,11 @@ import {Location} from '@angular/common';
 import {ContainerComponent} from './container.component';
 import {ContainerService} from './container.service';
 import {By} from '@angular/platform-browser';
-import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {FakeContainerService} from './testing/fake-container.service';
 import {AppModule} from '../app.module';
 import {Router} from '@angular/router';
+import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
@@ -19,8 +19,10 @@ describe('ContainerComponent', () => {
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      providers: [{provide: ContainerService, useClass: FakeContainerService},
-        HttpErrorHandler, MessageService],
+      providers: [
+        {provide: ContainerService, useClass: FakeContainerService},
+        {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler}
+      ],
       imports: [AppModule]
     })
       .compileComponents();

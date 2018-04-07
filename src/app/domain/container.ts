@@ -9,7 +9,7 @@ export class Container {
   constructor(private body: any) {
     this.id = body.id;
     this.items = body.items.map((item) => new Item(item));
-    this.name = body.location;
+    this.name = body.name;
     this.qrcode = body.qrcode;
   }
 

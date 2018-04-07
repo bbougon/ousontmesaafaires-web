@@ -2,11 +2,11 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ContainerComponent} from './container.component';
 import {ContainerService} from './container.service';
 import {By} from '@angular/platform-browser';
-import {FakeContainerService, CONTAINER} from './testing/fake-container.service';
-import {MessageService} from '../infrastructure/message.service';
+import {CONTAINER, FakeContainerService} from './testing/fake-container.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {AppModule} from '../app.module';
 import {of} from 'rxjs/observable/of';
+import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 
 describe('ContainerComponent ', () => {
   let component: ContainerComponent;
@@ -14,9 +14,10 @@ describe('ContainerComponent ', () => {
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      providers: [{
-        provide: ContainerService, useClass: FakeContainerService
-      }, HttpErrorHandler, MessageService],
+      providers: [
+        {provide: ContainerService, useClass: FakeContainerService},
+        {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler}
+      ],
       imports: [AppModule]
     })
       .compileComponents();
@@ -43,7 +44,7 @@ describe('ContainerComponent ', () => {
     button.click();
     fixture.detectChanges();
 
-    expect(compiled.querySelector('#containers').outerHTML).toContain('Location');
+    expect(compiled.querySelector('#containers').outerHTML).toContain('Container');
     expect(compiled.querySelector('#containerName').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');

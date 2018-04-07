@@ -8,7 +8,6 @@ import {ContainerService} from './container/container.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
-import {MessageService} from './infrastructure/message.service';
 import {ErrorMessageComponent} from './error-message/error-message.component';
 import {ItemComponent} from './item/item.component';
 import {FormService} from './infrastructure/form.service';
@@ -21,6 +20,7 @@ import {PrintDirective} from './print/print.directive';
 import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {ContainerDetailComponent} from './container-detail/container-detail.component';
+import {ClockworkService} from './infrastructure/clockwork.service';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -33,10 +33,10 @@ const routes: Routes = [
     AppComponent,
     ItemComponent,
     ContainerComponent,
-    ErrorMessageComponent,
     TruncatePipe,
     ItemPipe,
     OcticonDirective,
+    ErrorMessageComponent,
     PrintComponent,
     PrintDirective,
     ContainerDetailComponent
@@ -51,12 +51,13 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgxQRCodeModule
   ],
-  providers: [ContainerService, HttpErrorHandler, MessageService, FormService],
+  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe
   ],
   entryComponents: [
+    ErrorMessageComponent,
     PrintComponent
   ]
 })
