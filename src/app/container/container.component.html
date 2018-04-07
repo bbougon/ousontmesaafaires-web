@@ -1,0 +1,99 @@
+<div class="wrapper">
+  <ng-error-message class="header"></ng-error-message>
+  <div class="content">
+    <div class="sidebar">
+      <div class="container-fluid">
+        <div [formGroup]="addContainerForm">
+          <div class="container row">
+            <div class="title"><h5>Add a new container</h5></div>
+            <div class="row">
+              <div class="row col-sm-12 form-group">
+                <label for="containerName">
+                  Container:
+                </label>
+                <input #containerName id="containerName" class="form-control form-control-sm" [ngClass]="{
+                'is-invalid': containerNameFormControl.invalid && (containerNameFormControl.dirty || containerNameFormControl.touched),
+                'is-valid': containerNameFormControl.valid && (containerNameFormControl.dirty || containerNameFormControl.touched)}"
+                       formControlName="containerNameFormControl" required/>
+                <div id="containerNameFeedback" class="invalid-feedback">
+                  Please choose a name for your new container.
+                </div>
+              </div>
+              <ng-item class="row col-sm-12" id="itemForContainer"></ng-item>
+            </div>
+            <div class="row col-sm-12">
+              <button type="button" id="addContainer" class="btn btn-light btn-block"
+                      (click)="addContainer(containerName.value); containerName.value=''">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="col-10">
+        <div class="row-fluid">
+          <ul class="list-group col-md-12">
+            <li *ngFor="let container of containers; let i = index" class="list-group-item col-md-12">
+              <div id="containers" class="row">
+                <div class="col-md-6">
+                  {{container.name}}
+                </div>
+                <div class="col-md-1 offset-4">
+                  <span class="badge badge-light badge-pill">{{container.items.length}}</span>
+                </div>
+                <div class="col-md-1">
+                  <span class="cursor-pointer oi oi-eye" width="8" color="grey" (click)="getDetails(container.id)"></span>
+                  <span class="cursor-pointer oi oi-print" width="8" color="grey" (click)="generateSticker(container.id)"></span>
+                  <span class="cursor-pointer oi oi-arrow-circle-bottom" width="8" color="grey" (click)="collapse(i)"></span>
+                </div>
+              </div>
+              <div [ngbCollapse]="isCollapsed[i]" class="collapse show" #containerCollapse="ngbCollapse">
+                <div class="card-body">
+                  <div class="row col-sm-12">
+                    <div class="col-sm-9">
+                      <ul class="list-group list-group-flush">
+                        <li *ngFor="let item of container.items" class="list-group-item item d-flex justify-content-between col-md-12">
+                          <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="container">
+                        <ngx-qrcode
+                          qrc-element-type="url"
+                          [qrc-value]="currentLocation + '/containers/' + container.id"
+                          qrc-version="5" qrc-class="qrcode"></ngx-qrcode>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row col-sm-12">
+                    <div class="col-sm-4 offset-8 container-content">
+                      <button type="button" [attr.id]="'generateSticker' + i" class="btn btn-light btn-block"
+                              (click)="generateSticker(container.id)">
+                        Print {{container.name}}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row col-sm-12">
+                    <div class="col-sm-8">
+                      <ng-item #itemToCreate [attr.id]="'itemToCreate' + i"></ng-item>
+                    </div>
+                    <div class="col-sm-4 align-middle">
+                      <button type="button" [attr.id]="'addItemToContainer' + i" class="btn btn-light btn-block"
+                              (click)="addItemToContainer(container.id, itemToCreate)">
+                        Add to container {{container.name}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

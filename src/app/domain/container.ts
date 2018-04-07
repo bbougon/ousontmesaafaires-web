@@ -1,15 +1,15 @@
 import {Item} from './item';
 
-export class LocationCreated {
+export class Container {
   public id: string;
   public items: Item[];
-  public location: string;
+  public name: string;
   public qrcode: string;
 
   constructor(private body: any) {
     this.id = body.id;
     this.items = body.items.map((item) => new Item(item));
-    this.location = body.location;
+    this.name = body.location;
     this.qrcode = body.qrcode;
   }
 

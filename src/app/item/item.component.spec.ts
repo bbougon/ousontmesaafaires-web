@@ -27,7 +27,7 @@ describe('ItemComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render location empty', () => {
+  it('should render container empty', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 

@@ -1,25 +1,25 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {Location} from '@angular/common';
-import {LocationComponent} from './location.component';
-import {LocationService} from './location.service';
+import {ContainerComponent} from './container.component';
+import {ContainerService} from './container.service';
 import {By} from '@angular/platform-browser';
 import {MessageService} from '../infrastructure/message.service';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
-import {FakeLocationService} from './testing/fake-location.service';
+import {FakeContainerService} from './testing/fake-container.service';
 import {AppModule} from '../app.module';
 import {Router} from '@angular/router';
 
-describe('LocationComponent', () => {
-  let component: LocationComponent;
-  let fixture: ComponentFixture<LocationComponent>;
-  let locationService: LocationService;
+describe('ContainerComponent', () => {
+  let component: ContainerComponent;
+  let fixture: ComponentFixture<ContainerComponent>;
+  let containerService: ContainerService;
   let location: Location;
   let router: Router;
 
   beforeEach(async(async () => {
     TestBed.configureTestingModule({
-      providers: [{provide: LocationService, useClass: FakeLocationService},
+      providers: [{provide: ContainerService, useClass: FakeContainerService},
         HttpErrorHandler, MessageService],
       imports: [AppModule]
     })
@@ -27,7 +27,7 @@ describe('LocationComponent', () => {
   }));
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(LocationComponent);
+    fixture = TestBed.createComponent(ContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
@@ -38,59 +38,59 @@ describe('LocationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render location empty', () => {
+  it('should render container empty', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
-    expect(fixture.debugElement.query(By.css('.title')).nativeElement.textContent).toContain('Add location');
-    expect(compiled.querySelector('label[for="locationName"]').textContent).toContain('Location name:');
+    expect(fixture.debugElement.query(By.css('.title')).nativeElement.textContent).toContain('Add a new container');
+    expect(compiled.querySelector('label[for="containerName"]').textContent).toContain('Container:');
     expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature type:');
     expect(compiled.querySelector('div span')).toBeNull('Should be null');
   });
 
-  it('should warn if location name is empty', () => {
+  it('should warn if container name is empty', () => {
     const compiled = fixture.debugElement.nativeElement;
-    const locationName = fixture.debugElement.query(By.css('#locationName')).nativeElement;
-    locationName.value = '';
+    const containerName = fixture.debugElement.query(By.css('#containerName')).nativeElement;
+    containerName.value = '';
 
-    locationName.dispatchEvent(new Event('input'));
+    containerName.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(compiled.querySelector('#locationName').className).toContain('is-invalid');
-    expect(compiled.querySelector('#locationNameFeedback').textContent).toContain('Please choose a location name');
+    expect(compiled.querySelector('#containerName').className).toContain('is-invalid');
+    expect(compiled.querySelector('#containerNameFeedback').textContent).toContain('Please choose a name for your new container');
   });
 
-  it('should warn if \'Add\' button is clicked and location name is empty', () => {
-    locationService = fixture.debugElement.injector.get(LocationService);
-    const spiedLocationService = spyOn(locationService, 'addLocation');
+  it('should warn if \'Add\' button is clicked and container name is empty', () => {
+    containerService = fixture.debugElement.injector.get(ContainerService);
+    const spiedService = spyOn(containerService, 'addContainer');
     const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent('#locationName', '');
+    setValueToInputAndDispatchEvent('#containerName', '');
 
-    const button = compiled.querySelector('#addLocation');
+    const button = compiled.querySelector('#addContainer');
     button.click();
     fixture.detectChanges();
 
-    expect(spiedLocationService).not.toHaveBeenCalled();
-    expect(compiled.querySelector('#locationName').className).toContain('is-invalid');
-    expect(compiled.querySelector('#locationNameFeedback').textContent).toContain('Please choose a location name');
+    expect(spiedService).not.toHaveBeenCalled();
+    expect(compiled.querySelector('#containerName').className).toContain('is-invalid');
+    expect(compiled.querySelector('#containerNameFeedback').textContent).toContain('Please choose a name for your new container');
   });
 
 
   it('should warn if \'Add\' button is clicked and all fields are empty', () => {
-    locationService = fixture.debugElement.injector.get(LocationService);
-    const spiedLocationService = spyOn(locationService, 'addLocation');
+    containerService = fixture.debugElement.injector.get(ContainerService);
+    const spiedService = spyOn(containerService, 'addContainer');
     const compiled = fixture.debugElement.nativeElement;
     const spiedOpenComponent = spyOn(component.itemComponent.featureHint, 'open');
-    setValueToInputAndDispatchEvent('#locationName', '');
-    const button = compiled.querySelector('#addLocation');
+    setValueToInputAndDispatchEvent('#containerName', '');
+    const button = compiled.querySelector('#addContainer');
 
     button.click();
     fixture.detectChanges();
 
-    expect(spiedLocationService).not.toHaveBeenCalled();
+    expect(spiedService).not.toHaveBeenCalled();
     expect(spiedOpenComponent).not.toHaveBeenCalled();
-    expect(compiled.querySelector('#locationName').className).toContain('is-invalid');
-    expect(compiled.querySelector('#locationNameFeedback').textContent).toContain('Please choose a location name');
+    expect(compiled.querySelector('#containerName').className).toContain('is-invalid');
+    expect(compiled.querySelector('#containerNameFeedback').textContent).toContain('Please choose a name for your new container');
     expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
@@ -99,17 +99,17 @@ describe('LocationComponent', () => {
   });
 
   it('should warn if \'Add\' button is clicked and no feature is available', () => {
-    locationService = fixture.debugElement.injector.get(LocationService);
-    const spiedLocationService = spyOn(locationService, 'addLocation');
+    containerService = fixture.debugElement.injector.get(ContainerService);
+    const spiedService = spyOn(containerService, 'addContainer');
     const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent('#locationName', 'Location');
-    const button = compiled.querySelector('#addLocation');
+    setValueToInputAndDispatchEvent('#containerName', 'Container');
+    const button = compiled.querySelector('#addContainer');
 
     button.click();
     fixture.detectChanges();
 
-    expect(spiedLocationService).not.toHaveBeenCalled();
-    expect(compiled.querySelector('#locationName').className).not.toContain('is-invalid');
+    expect(spiedService).not.toHaveBeenCalled();
+    expect(compiled.querySelector('#containerName').className).not.toContain('is-invalid');
     expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
@@ -118,31 +118,31 @@ describe('LocationComponent', () => {
   });
 
   it('should release hint if \'Add\' button is clicked, item has already a feature but a new is filled without being added', () => {
-    locationService = fixture.debugElement.injector.get(LocationService);
-    const spiedLocationService = spyOn(locationService, 'addLocation');
+    containerService = fixture.debugElement.injector.get(ContainerService);
+    const spiedService = spyOn(containerService, 'addContainer');
     const compiled = fixture.debugElement.nativeElement;
     const spiedComponent = spyOn(component.itemComponent.featureHint, 'open');
-    setValueToInputAndDispatchEvent('#locationName', 'Location');
+    setValueToInputAndDispatchEvent('#containerName', 'Container');
     setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
     setValueToInput('#featureType', 'noir');
     setValueToInput('#featureValue', 'couleur');
-    const button = compiled.querySelector('#addLocation');
+    const button = compiled.querySelector('#addContainer');
 
     button.click();
     fixture.detectChanges();
 
     expect(spiedComponent).toHaveBeenCalled();
-    expect(spiedLocationService).not.toHaveBeenCalled();
-    expect(compiled.querySelector('#locationName').className).not.toContain('is-invalid');
+    expect(spiedService).not.toHaveBeenCalled();
+    expect(compiled.querySelector('#containerName').className).not.toContain('is-invalid');
   });
 
-  it('should navigate to location detail', fakeAsync(() => {
+  it('should navigate to container detail', fakeAsync(() => {
     router = TestBed.get(Router);
     location = TestBed.get(Location);
     component.getDetails('an-id');
 
     tick(50);
-    expect(location.path()).toBe('/locations/an-id');
+    expect(location.path()).toBe('/containers/an-id');
   }));
 
   function setValueToInput(selector: string, value: string) {
@@ -163,6 +163,6 @@ describe('LocationComponent', () => {
     selector = selector ? selector.length > 0 ? selector + ' ' : '' : '';
     setValueToInputAndDispatchEvent(selector + '#featureType', featureType);
     setValueToInputAndDispatchEvent(selector.length > 0 ? selector + ' ' : '' + '#featureValue', featureValue);
-    return compiled.querySelector('#itemForLocation button');
+    return compiled.querySelector('#itemForContainer button');
   }
 });

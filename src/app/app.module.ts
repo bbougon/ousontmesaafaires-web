@@ -2,9 +2,9 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {LocationModule} from './location/location.module';
-import {LocationComponent} from './location/location.component';
-import {LocationService} from './location/location.service';
+import {ContainerModule} from './container/container.module';
+import {ContainerComponent} from './container/container.component';
+import {ContainerService} from './container/container.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
@@ -15,43 +15,43 @@ import {FormService} from './infrastructure/form.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
-import {LocationItemPipe} from './infrastructure/pipe/location-item-pipe';
+import {ItemPipe} from './infrastructure/pipe/item-pipe';
 import {PrintComponent} from './print/print.component';
 import {PrintDirective} from './print/print.directive';
 import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
-import { LocationDetailComponent } from './location-detail/location-detail.component';
+import {ContainerDetailComponent} from './container-detail/container-detail.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'locations', pathMatch: 'full'},
-  {path: 'locations/:id', component: LocationDetailComponent},
-  {path: 'locations', component: LocationComponent}
+  {path: '', redirectTo: 'containers', pathMatch: 'full'},
+  {path: 'containers/:id', component: ContainerDetailComponent},
+  {path: 'containers', component: ContainerComponent}
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     ItemComponent,
-    LocationComponent,
+    ContainerComponent,
     ErrorMessageComponent,
     TruncatePipe,
-    LocationItemPipe,
+    ItemPipe,
     OcticonDirective,
     PrintComponent,
     PrintDirective,
-    LocationDetailComponent
+    ContainerDetailComponent
   ],
   imports: [
     NgbModule.forRoot(),
     RouterModule.forRoot(routes, {useHash: true}),
     HttpClientModule,
     BrowserModule,
-    LocationModule,
+    ContainerModule,
     FormsModule,
     ReactiveFormsModule,
     NgxQRCodeModule
   ],
-  providers: [LocationService, HttpErrorHandler, MessageService, FormService],
+  providers: [ContainerService, HttpErrorHandler, MessageService, FormService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe

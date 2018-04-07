@@ -1,11 +1,11 @@
-import {LocationItemPipe} from './location-item-pipe';
+import {ItemPipe} from './item-pipe';
 import {Item} from '../../domain/item';
 
-describe('Location Item Pipe', () => {
-  let pipe: LocationItemPipe;
+describe('Item Pipe', () => {
+  let pipe: ItemPipe;
 
   beforeEach(() => {
-    pipe = new LocationItemPipe();
+    pipe = new ItemPipe();
   });
 
   it('should transform an item into a readable string', () => {

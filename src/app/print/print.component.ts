@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {LocationCreated} from '../domain/location-created';
+import {Container} from '../domain/container';
 
 @Component({
   selector: 'app-pdf',
@@ -8,7 +8,7 @@ import {LocationCreated} from '../domain/location-created';
   styleUrls: ['./print.component.css']
 })
 export class PrintComponent implements OnInit {
-  @Input() location: LocationCreated;
+  @Input() container: Container;
   @Input() currentLocation = window.location.origin;
 
   constructor(public activeModal: NgbActiveModal) {

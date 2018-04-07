@@ -1,5 +1,5 @@
 <div class="modal-header col-sm-12">
-  <h4 class="modal-title">{{location.location}}</h4>
+  <h4 class="modal-title">{{container.name}}</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -9,11 +9,11 @@
     <div class="col-sm-6">
       <ngx-qrcode
         qrc-element-type="url"
-        [qrc-value]="currentLocation + '/locations/' + location.id"
+        [qrc-value]="currentLocation + '/containers/' + container.id"
         qrc-version="5" qrc-class="qrcode"></ngx-qrcode>
     </div>
     <div class="col-sm-6">
-      <div class="col-sm-12">{{location.location}}</div>
+      <div class="col-sm-12">{{container.name}}</div>
       <div class="col-sm-12 line">&nbsp;</div>
       <div class="col-sm-12 line">&nbsp;</div>
       <div class="col-sm-12 line">&nbsp;</div>

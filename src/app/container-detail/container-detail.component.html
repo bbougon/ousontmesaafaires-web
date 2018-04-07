@@ -3,8 +3,8 @@
   <div class="content">
     <div class="sidebar">
       <div class="container-fluid">
-        <div class="location row">
-          <div *ngIf="location" class="title"><h5>{{location.location}} location detail</h5></div>
+        <div class="container row">
+          <div *ngIf="container" class="title"><h5>{{container.name}} container details</h5></div>
           <div class="row col-sm-12">
             <button type="button" id="generateSticker" class="btn btn-light btn-block"
                     (click)="generateSticker()">
@@ -12,12 +12,12 @@
             </button>
           </div>
           <div class="row col-sm-12">
-            <ng-item #itemForLocation class="row col-sm-12" id="itemForLocation"></ng-item>
+            <ng-item #itemForContainer class="row col-sm-12" id="itemForContainer"></ng-item>
           </div>
           <div class="row col-sm-12">
-            <button type="button" id="addItemToLocation" class="btn btn-light btn-block"
-                    (click)="addItemToLocation(itemForLocation)">
-              Add to location
+            <button type="button" id="addItemToContainer" class="btn btn-light btn-block"
+                    (click)="addItemToContainer(itemForContainer)">
+              Add to container
             </button>
           </div>
         </div>
@@ -29,9 +29,9 @@
         <div class="row-fluid">
           <div class="card-body">
             <div class="row col-sm-12">
-              <div class="col-sm-9" *ngIf="location">
+              <div class="col-sm-9" *ngIf="container">
                 <ul class="list-group list-group-flush">
-                  <li *ngFor="let item of location.items"
+                  <li *ngFor="let item of container.items"
                       class="list-group-item item d-flex justify-content-between col-md-12">
                     <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
                   </li>

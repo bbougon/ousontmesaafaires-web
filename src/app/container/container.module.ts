@@ -15,5 +15,5 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     PairPipe
   ]
 })
-export class LocationModule {
+export class ContainerModule {
 }

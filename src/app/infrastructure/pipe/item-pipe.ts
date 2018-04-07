@@ -4,14 +4,14 @@ import {InvalidArgumentPipeError} from '../invalid-argument-pipe-error';
 import {isUndefined} from 'util';
 
 @Pipe({name: 'item'})
-export class LocationItemPipe implements PipeTransform {
+export class ItemPipe implements PipeTransform {
 
   constructor() {
   }
 
   transform(value: any): any {
     if (Array.isArray(value) || !isObject(value)) {
-      throw new InvalidArgumentPipeError(LocationItemPipe, value);
+      throw new InvalidArgumentPipeError(ItemPipe, value);
     }
 
     function uppercaseFirstLetter(item: string): string {
