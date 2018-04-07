@@ -60,7 +60,7 @@ describe('ContainerComponent ', () => {
     button.click();
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('6');
+    expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('14');
     expect(component.getContainerURL(CONTAINER.id)).toEqual('http://localhost:9876/#/containers/' + CONTAINER.id);
   });
 

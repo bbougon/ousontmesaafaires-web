@@ -29,8 +29,8 @@ describe('PrintComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have qrc-version set to 6', () => {
-    expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('6');
+  it('should have qrc-version set to 14', () => {
+    expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('14');
   });
 
   it('should have qrc-value set with expected url', () => {
