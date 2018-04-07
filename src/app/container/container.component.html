@@ -44,9 +44,9 @@
                   <span class="badge badge-light badge-pill">{{container.items.length}}</span>
                 </div>
                 <div class="col-md-1">
-                  <span class="cursor-pointer oi oi-eye" width="8" color="grey" (click)="getDetails(container.id)"></span>
-                  <span class="cursor-pointer oi oi-print" width="8" color="grey" (click)="generateSticker(container.id)"></span>
-                  <span class="cursor-pointer oi oi-arrow-circle-bottom" width="8" color="grey" (click)="collapse(i)"></span>
+                  <span class="cursor-pointer oi oi-eye" (click)="getDetails(container.id)"></span>
+                  <span class="cursor-pointer oi oi-print" (click)="generateSticker(container.id)"></span>
+                  <span class="cursor-pointer oi oi-arrow-circle-bottom" (click)="collapse(i)"></span>
                 </div>
               </div>
               <div [ngbCollapse]="isCollapsed[i]" class="collapse show" #containerCollapse="ngbCollapse">
@@ -63,7 +63,7 @@
                       <div class="container">
                         <ngx-qrcode
                           qrc-element-type="url"
-                          [qrc-value]="currentLocation + '/containers/' + container.id"
+                          [qrc-value]="getContainerURL(container.id)"
                           qrc-version="6" qrc-class="qrcode"></ngx-qrcode>
                       </div>
                     </div>

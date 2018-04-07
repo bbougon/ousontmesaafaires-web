@@ -29,8 +29,12 @@ describe('PrintComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have qrversion set to 6', () => {
+  it('should have qrc-version set to 6', () => {
     expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('6');
+  });
+
+  it('should have qrc-value set with expected url', () => {
+    expect(component.getContainerUrl()).toEqual('http://localhost:9876/#/containers/' + CONTAINER.id);
   });
 
 });

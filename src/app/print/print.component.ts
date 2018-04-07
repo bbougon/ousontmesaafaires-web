@@ -10,6 +10,7 @@ import {Container} from '../domain/container';
 export class PrintComponent implements OnInit {
   @Input() container: Container;
   @Input() currentLocation = window.location.origin;
+  @Input() containerURL: string;
 
   constructor(public activeModal: NgbActiveModal) {
   }
@@ -17,4 +18,7 @@ export class PrintComponent implements OnInit {
   ngOnInit() {
   }
 
+  getContainerUrl() {
+    return this.currentLocation + '/#/containers/' + this.container.id;
+  }
 }

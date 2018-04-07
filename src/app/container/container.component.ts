@@ -26,6 +26,7 @@ export class ContainerComponent implements OnInit {
   addContainerForm: FormGroup;
   containerNameFormControl: FormControl;
   isCollapsed: Boolean[] = [];
+  private currentLocation = window.location.origin;
 
   constructor(private containerService: ContainerService, private formService: FormService,
               private modalService: NgbModal, private router: Router) {
@@ -98,7 +99,10 @@ export class ContainerComponent implements OnInit {
   }
 
   getDetails(containerId: String) {
-    console.log('Container ID: ' + containerId);
     this.router.navigate(['containers', containerId ]);
+  }
+
+  getContainerURL(containerId: String) {
+    return this.currentLocation + '/#/containers/' + containerId;
   }
 }

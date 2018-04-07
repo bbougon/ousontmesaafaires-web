@@ -9,7 +9,7 @@
     <div class="col-sm-6">
       <ngx-qrcode
         qrc-element-type="url"
-        [qrc-value]="currentLocation + '/containers/' + container.id"
+        [qrc-value]="getContainerUrl()"
         qrc-version="6" qrc-class="qrcode"></ngx-qrcode>
     </div>
     <div class="col-sm-6">
