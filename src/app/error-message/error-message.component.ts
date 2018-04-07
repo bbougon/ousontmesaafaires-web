@@ -12,9 +12,7 @@ export class ErrorMessageComponent implements OnInit {
   @Input() message: String;
 
   constructor(public activeModal: NgbActiveModal, private clockworkService: ClockworkService) {
-    console.log('clock service to be called' + new Date().getMilliseconds());
     this.clockworkService.delay(3000, function () {
-      console.log('clock service proceeded' + new Date().getMilliseconds());
       activeModal.close();
     });
   }
