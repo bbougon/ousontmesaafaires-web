@@ -28,7 +28,7 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   generateSticker() {
-    const modalRef = this.ngbModal.open(PrintComponent);
+    const modalRef = this.ngbModal.open(PrintComponent, { size: 'lg' });
     modalRef.componentInstance.container = this.container;
   }
 

@@ -93,7 +93,7 @@ export class ContainerComponent implements OnInit {
   generateSticker(containerId: String) {
     this.containerService.getContainer(containerId)
       .subscribe((container: Container) => {
-        const modalRef = this.modalService.open(PrintComponent);
+        const modalRef = this.modalService.open(PrintComponent, { size: 'lg' });
         modalRef.componentInstance.container = container;
       });
   }
