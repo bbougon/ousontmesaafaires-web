@@ -1,19 +1,19 @@
-<div class="wrapper d-print-none">
-  <div class="content">
-    <div class="sidebar">
-      <div class="container-fluid">
-        <div class="container row">
-          <div *ngIf="container" class="title"><h5>{{container.name}} container details</h5></div>
-          <div class="row col-sm-12">
+<div class="container container-fluid d-print-none">
+  <div class="row">
+    <div class="col-md-3 col-12 top">
+      <div class="col-md-12 col-sm-12">
+        <div *ngIf="container" class="title"><h5>{{container.name}} container details</h5></div>
+        <div class="row">
+          <div class="col-sm-12 form-group">
             <button type="button" id="generateSticker" class="btn btn-light btn-block"
                     (click)="generateSticker()">
               Print sticker
             </button>
           </div>
-          <div class="row col-sm-12">
+          <div class="col-sm-12 form-group">
             <ng-item #itemForContainer class="row col-sm-12" id="itemForContainer"></ng-item>
           </div>
-          <div class="row col-sm-12">
+          <div class="col-sm-12 form-group">
             <button type="button" id="addItemToContainer" class="btn btn-light btn-block"
                     (click)="addItemToContainer(itemForContainer)">
               Add to container
@@ -23,21 +23,15 @@
       </div>
     </div>
 
-    <div class="main-content">
-      <div class="col-10">
-        <div class="row-fluid">
-          <div class="card-body">
-            <div class="row col-sm-12">
-              <div class="col-sm-9" *ngIf="container">
-                <ul class="list-group list-group-flush">
-                  <li *ngFor="let item of container.items"
-                      class="list-group-item item d-flex justify-content-between col-md-12">
-                    <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+    <div class="col-md-9 col-sm-12 top">
+      <div class="col-12">
+        <div class="row-fluid" *ngIf="container">
+          <ul class="list-group list-group-flush">
+            <li *ngFor="let item of container.items"
+                class="list-group-item item d-flex justify-content-between col-md-12">
+              <div><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

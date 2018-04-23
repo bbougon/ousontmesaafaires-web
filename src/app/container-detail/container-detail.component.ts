@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ContainerService} from '../container/container.service';
 import {ActivatedRoute} from '@angular/router';
 import {Container} from '../domain/container';
@@ -14,6 +14,9 @@ import {ItemComponent} from '../item/item.component';
   providers: [PairPipe]
 })
 export class ContainerDetailComponent implements OnInit {
+
+  @ViewChildren(ItemComponent) itemComponents: QueryList<ItemComponent>;
+
   container: Container;
 
   constructor(private containerService: ContainerService,
@@ -33,7 +36,11 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   addItemToContainer(itemComponent: ItemComponent) {
-
+    this.route.paramMap.subscribe(pmap => this.containerService.addItemToContainer(pmap.get('id'), itemComponent.getCreatedItem())
+      .subscribe(() => {
+        this.container.add(itemComponent.getCreatedItem());
+        itemComponent.clearItem();
+      }));
   }
 
 }

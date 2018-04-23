@@ -7,6 +7,7 @@ import {AppModule} from '../app.module';
 import {ActivatedRoute} from '@angular/router';
 import {ActivatedRouteStub} from '../../testing/activated-route-stub';
 import {of} from 'rxjs/observable/of';
+import {By} from '@angular/platform-browser';
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -52,8 +53,44 @@ describe('ContainerDetailComponent', () => {
     component.container = CONTAINER;
     component.generateSticker();
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
 
     expect(document.querySelectorAll('ngb-modal-window').length).toBe(1);
   });
+
+  it('calls container service when adding an item to the container', () => {
+    component.container = CONTAINER;
+    const itemComponents = component.itemComponents.toArray();
+    const spiedClearItemComponent = spyOn(itemComponents[0], 'clearItem');
+    const compiled = fixture.debugElement.nativeElement;
+    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemForContainer div div div #featureType',
+      'marron', '#itemForContainer div div div #featureValue', '#itemForContainer div div div button').click();
+    fixture.detectChanges();
+    const addItemButton = compiled.querySelector('#addItemToContainer');
+
+    addItemButton.click();
+    fixture.detectChanges();
+
+    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item item d-flex justify-content-between col-md-12"] div');
+    const querySelector = querySelectorAll[1];
+    expect(querySelector.textContent).toContain('Couleur: marron');
+    expect(spiedClearItemComponent).toHaveBeenCalled();
+  });
+
+  function setValueToInputAndDispatchEvent(value: string, selector: string) {
+    const input = fixture.debugElement.query(By.css(selector)).nativeElement;
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+  }
+
+  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureTypeSelector: string,
+                                              featureValue: string, featureValueSelector: string, buttonSelector: string) {
+    buttonSelector = buttonSelector || 'button';
+    featureValueSelector = featureValueSelector || '#featureValue';
+    featureTypeSelector = featureTypeSelector || '#featureType';
+    featureValue = featureValue || '';
+    featureType = featureType || '';
+    setValueToInputAndDispatchEvent(featureType, featureTypeSelector);
+    setValueToInputAndDispatchEvent(featureValue, featureValueSelector);
+    return compiled.querySelector(buttonSelector);
+  }
 });
