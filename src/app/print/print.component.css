@@ -7,6 +7,10 @@
   margin-left: 0;
 }
 
+.sticker div {
+  padding-top: 0.5rem;
+}
+
 .line {
   border-bottom: 1px solid grey;
 }
