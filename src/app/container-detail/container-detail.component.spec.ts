@@ -70,10 +70,45 @@ describe('ContainerDetailComponent', () => {
     addItemButton.click();
     fixture.detectChanges();
 
-    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item item d-flex justify-content-between col-md-12"] div');
+    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row');
     const querySelector = querySelectorAll[1];
     expect(querySelector.textContent).toContain('Couleur: marron');
     expect(spiedClearItemComponent).toHaveBeenCalled();
+  });
+
+  describe('ContainerDetailComponent toggle description input', () => {
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(ContainerDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('toggles to input when click on pencil', () => {
+      component.container = CONTAINER;
+      const compiled = fixture.debugElement.nativeElement;
+      const pencil = compiled.querySelector('#pencil');
+
+      pencil.click();
+      fixture.detectChanges();
+
+      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeFalsy();
+      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeTruthy();
+    });
+
+    it('toggles to display div when click on pencil a second time', () => {
+      component.container = CONTAINER;
+      const compiled = fixture.debugElement.nativeElement;
+      const pencil = compiled.querySelector('#pencil');
+
+      pencil.click();
+      pencil.click();
+      fixture.detectChanges();
+
+      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
+      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
+    });
+
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {
