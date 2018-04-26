@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ContainerDetailComponent} from './container-detail.component';
 import {ContainerService} from '../container/container.service';
-import {CONTAINER} from '../container/testing/fake-container.service';
+import {CONTAINER, FakeContainerService} from '../container/testing/fake-container.service';
 import {AppModule} from '../app.module';
 import {ActivatedRoute} from '@angular/router';
 import {ActivatedRouteStub} from '../../testing/activated-route-stub';
@@ -23,7 +23,7 @@ describe('ContainerDetailComponent', () => {
     activatedRoute.setParamMap({id: CONTAINER.id});
     TestBed.configureTestingModule({
       providers: [
-        ContainerService,
+        {provide: ContainerService, useClass: FakeContainerService},
         {provide: ActivatedRoute, useValue: activatedRoute}
       ],
       imports: [AppModule]
