@@ -9,6 +9,7 @@ import {environment} from '../../environments/environment';
 import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {Item} from '../domain/item';
 import {Container} from '../domain/container';
+import {of} from 'rxjs/observable/of';
 
 class ContainerMapper {
   map: any;
@@ -73,5 +74,9 @@ export class ContainerService {
     })
       .pipe(tap(() => console.log(`Add item (${JSON.stringify(item)}) to container=${containerId}`)),
         catchError(this.handleError(`Add item to container`, item)));
+  }
+
+  addDescription(description: string): Observable<any> {
+    return of(null);
   }
 }

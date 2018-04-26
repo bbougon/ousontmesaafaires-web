@@ -55,4 +55,10 @@ export class ContainerDetailComponent implements OnInit {
       this.containerDescription.nativeElement.setAttribute('hidden', true);
     }
   }
+
+  addDescription(description: string) {
+    this.containerService.addDescription(description).subscribe(() => {
+      this.toggleContainerDescriptionInput();
+    });
+  }
 }

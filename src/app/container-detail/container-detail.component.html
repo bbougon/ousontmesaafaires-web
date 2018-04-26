@@ -4,7 +4,7 @@
       <div class="col-12">
         <div class="input-group">
           <input #containerDescription id="containerDescription" class="col-10 col-md-11 form-control" hidden
-                 placeholder="Container's description" aria-label="Container's description"/>
+                 placeholder="Container's description" aria-label="Container's description" (keypress.enter)="addDescription(containerDescription.value)"/>
           <div #displayDescription id="displayDescription" class="col-10 col-md-11 description"></div>
           <div class="input-group-append align-middle">
             <span #pencil id="pencil" class="input-group-text align-middle icon"
