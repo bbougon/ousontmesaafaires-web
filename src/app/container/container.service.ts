@@ -76,7 +76,13 @@ export class ContainerService {
         catchError(this.handleError(`Add item to container`, item)));
   }
 
-  addDescription(description: string): Observable<any> {
-    return of(null);
+  addDescription(containerId: string, description: string): Observable<any> {
+    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`, description, {
+      observe: 'response',
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+      responseType: 'text'
+    })
+      .pipe(tap(() => console.log(`Add description (${description}) to container=${containerId}`)),
+        catchError(this.handleError(`Add description to container`, description)));
   }
 }

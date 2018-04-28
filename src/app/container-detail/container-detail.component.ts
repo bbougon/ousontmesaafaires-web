@@ -27,10 +27,12 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(pmap => this.containerService.getContainer(pmap.get('id'))
-      .subscribe((container: Container) => {
-        this.container = container;
-      }));
+    this.route.paramMap
+      .subscribe(pmap =>
+        this.containerService.getContainer(pmap.get('id'))
+          .subscribe((container: Container) => {
+            this.container = container;
+          }));
   }
 
   generateSticker() {
@@ -39,18 +41,23 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   addItemToContainer(itemComponent: ItemComponent) {
-    this.route.paramMap.subscribe(pmap => this.containerService.addItemToContainer(pmap.get('id'), itemComponent.getCreatedItem())
-      .subscribe(() => {
-        this.container.add(itemComponent.getCreatedItem());
-        itemComponent.clearItem();
-      }));
+    this.route.paramMap
+      .subscribe(pmap =>
+        this.containerService.addItemToContainer(pmap.get('id'), itemComponent.getCreatedItem())
+          .subscribe(() => {
+            this.container.add(itemComponent.getCreatedItem());
+            itemComponent.clearItem();
+          }));
   }
 
   addDescription(description: string, event ?: any) {
-    this.containerService.addDescription(description).subscribe(() => {
-      this.hideAndShow(this.containerDescription, this.displayDescription);
-      this.container.description = description.trim();
-    });
+    this.route.paramMap
+      .subscribe(pmap =>
+        this.containerService.addDescription(pmap.get('id'), description)
+          .subscribe(() => {
+            this.hideAndShow(this.containerDescription, this.displayDescription);
+            this.container.description = description.trim();
+          }));
   }
 
   toggleContainerDescriptionInput() {

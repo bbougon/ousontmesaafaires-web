@@ -126,26 +126,31 @@ describe('ContainerDetailComponent', () => {
     });
 
     it('adds the container\'s description on key press enter', async(() => {
-      spiedContainerService = spyOn(containerService, 'addDescription').and.returnValue(of(''));
-      component.container = CONTAINER;
-      const compiled = fixture.debugElement.nativeElement;
-      const pencil = compiled.querySelector('#pencil');
-      pencil.click();
-      fixture.detectChanges();
-      const containerDescription = fixture.debugElement.query(By.css('#containerDescription'));
-      containerDescription.nativeElement.textContent = 'A content';
-      containerDescription.nativeElement.value = 'A content';
+      const {compiled, containerDescription} = setUp();
 
       containerDescription.triggerEventHandler('keyup.enter', {});
       fixture.detectChanges();
 
-      expect(spiedContainerService).toHaveBeenCalledWith('A content');
-      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
-      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
-      expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
+      expectDescriptionCreation(compiled);
     }));
 
     it('adds the container\'s description on blur', async(() => {
+      const {compiled, containerDescription} = setUp();
+
+      containerDescription.triggerEventHandler('blur', {});
+      fixture.detectChanges();
+
+      expectDescriptionCreation(compiled);
+    }));
+
+    const expectDescriptionCreation = function (compiled: any) {
+      expect(spiedContainerService).toHaveBeenCalledWith('an-id', 'A content');
+      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
+      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
+      expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
+    };
+
+    const setUp = function () {
       spiedContainerService = spyOn(containerService, 'addDescription').and.returnValue(of(''));
       component.container = CONTAINER;
       const compiled = fixture.debugElement.nativeElement;
@@ -155,15 +160,8 @@ describe('ContainerDetailComponent', () => {
       const containerDescription = fixture.debugElement.query(By.css('#containerDescription'));
       containerDescription.nativeElement.textContent = 'A content';
       containerDescription.nativeElement.value = 'A content';
-
-      containerDescription.triggerEventHandler('blur', {});
-      fixture.detectChanges();
-
-      expect(spiedContainerService).toHaveBeenCalledWith('A content');
-      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
-      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
-      expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
-    }));
+      return {compiled, containerDescription};
+    };
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {

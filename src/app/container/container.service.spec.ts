@@ -177,4 +177,22 @@ describe('ContainerService', () => {
       })));
   });
 
+  describe('when interacting with a container', () => {
+
+    afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
+      backend.verify();
+    }));
+
+    it('can add a description to container', async(
+      inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
+        containerService.addDescription('an-id', 'A description')
+          .subscribe();
+
+        mockBackend.expectOne((req: HttpRequest<any>) => {
+          return req.url === environment.apiUrl + '/containers/an-id'
+            && req.method === 'PATCH';
+        }, 'PATCH container');
+      })));
+  });
+
 });
