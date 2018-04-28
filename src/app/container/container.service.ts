@@ -77,7 +77,7 @@ export class ContainerService {
   }
 
   addDescription(containerId: string, description: string): Observable<any> {
-    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`, description, {
+    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`, {description: description}, {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'

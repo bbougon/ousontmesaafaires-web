@@ -190,7 +190,8 @@ describe('ContainerService', () => {
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
           return req.url === environment.apiUrl + '/containers/an-id'
-            && req.method === 'PATCH';
+            && req.method === 'PATCH'
+            && JSON.stringify(req.body) === '{"description":"A description"}';
         }, 'PATCH container');
       })));
   });
