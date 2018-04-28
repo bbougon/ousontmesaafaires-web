@@ -6,8 +6,11 @@ import {Observable} from 'rxjs/Observable';
 import {ContainerService} from '../container.service';
 
 export const CONTAINER: Container = new Container({
-  'id': 'an-id', 'name': 'Container',
-  'items': [{'item': {'type': 'chaussure'}}], 'qrcode': 'a qr code'
+  'id': 'an-id',
+  'name': 'Container',
+  'items': [{'item': {'type': 'chaussure'}}],
+  'qrcode': 'a qr code',
+  'description': 'Description'
 });
 
 export class FakeContainerService extends ContainerService {

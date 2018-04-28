@@ -4,8 +4,12 @@
       <div class="col-12">
         <div class="input-group">
           <input #containerDescription id="containerDescription" class="col-10 col-md-11 form-control" hidden
-                 placeholder="Container's description" aria-label="Container's description" (keypress.enter)="addDescription(containerDescription.value)"/>
-          <div #displayDescription id="displayDescription" class="col-10 col-md-11 description"></div>
+                 placeholder="Container's description" aria-label="Container's description"
+                 (keyup.enter)="addDescription(containerDescription.value, $event)"
+                 (blur)="addDescription(containerDescription.value)"/>
+          <div #displayDescription id="displayDescription" class="col-10 col-md-11 description align-middle">
+            <span>{{container ? container.description : ''}}</span>
+          </div>
           <div class="input-group-append align-middle">
             <span #pencil id="pencil" class="input-group-text align-middle icon"
                   (click)="toggleContainerDescriptionInput()">
@@ -55,7 +59,8 @@
                   </span>
                   <span class="cursor-pointer icon">
                     <svg viewBox="0 0 8 8">
-                      <use xlink:href="assets/open-iconic/open-iconic.min.svg#data-transfer-upload" class="data-transfer-upload"></use>
+                      <use xlink:href="assets/open-iconic/open-iconic.min.svg#data-transfer-upload"
+                           class="data-transfer-upload"></use>
                     </svg>
                   </span>
                   <span class="cursor-pointer icon">

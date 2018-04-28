@@ -6,7 +6,7 @@ import {PairPipe} from '../infrastructure/pipe/pair-pipe';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PrintComponent} from '../print/print.component';
 import {ItemComponent} from '../item/item.component';
-import {isUndefined} from "ngx-bootstrap/chronos/utils/type-checks";
+import {isUndefined} from 'ngx-bootstrap/chronos/utils/type-checks';
 
 @Component({
   selector: 'ng-container-detail',
@@ -46,19 +46,31 @@ export class ContainerDetailComponent implements OnInit {
       }));
   }
 
+  addDescription(description: string, event ?: any) {
+    this.containerService.addDescription(description).subscribe(() => {
+      this.hideAndShow(this.containerDescription, this.displayDescription);
+      this.container.description = description.trim();
+    });
+  }
+
   toggleContainerDescriptionInput() {
     if (!isUndefined(this.containerDescription.nativeElement.attributes['hidden'])) {
-      this.containerDescription.nativeElement.removeAttribute('hidden');
-      this.displayDescription.nativeElement.setAttribute('hidden', true);
+      this.hideAndShow(this.displayDescription, this.containerDescription);
     } else {
-      this.displayDescription.nativeElement.removeAttribute('hidden');
-      this.containerDescription.nativeElement.setAttribute('hidden', true);
+      this.hideAndShow(this.containerDescription, this.displayDescription);
     }
   }
 
-  addDescription(description: string) {
-    this.containerService.addDescription(description).subscribe(() => {
-      this.toggleContainerDescriptionInput();
-    });
+  private hide(elementRef: ElementRef) {
+    elementRef.nativeElement.setAttribute('hidden', true);
+  }
+
+  private show(elementRef: ElementRef) {
+    elementRef.nativeElement.removeAttribute('hidden');
+  }
+
+  private hideAndShow(elementToHide: ElementRef, elementToShow: ElementRef) {
+    this.hide(elementToHide);
+    this.show(elementToShow);
   }
 }
