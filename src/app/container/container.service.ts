@@ -9,7 +9,7 @@ import {environment} from '../../environments/environment';
 import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {Item} from '../domain/item';
 import {Container} from '../domain/container';
-import {of} from 'rxjs/observable/of';
+import {Patch} from '../infrastructure/patch/patch';
 
 class ContainerMapper {
   map: any;
@@ -77,11 +77,13 @@ export class ContainerService {
   }
 
   addDescription(containerId: string, description: string): Observable<any> {
-    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`, {description: description}, {
-      observe: 'response',
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
-      responseType: 'text'
-    })
+    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`,
+      new Patch().unwrap({description: description}),
+      {
+        observe: 'response',
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        responseType: 'text'
+      })
       .pipe(tap(() => console.log(`Add description (${description}) to container=${containerId}`)),
         catchError(this.handleError(`Add description to container`, description)));
   }
