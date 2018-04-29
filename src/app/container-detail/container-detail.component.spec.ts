@@ -98,6 +98,7 @@ describe('ContainerDetailComponent', () => {
       fixture.detectChanges();
 
       expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeFalsy();
+      expect(compiled.querySelector('#containerDescription').value).toContain(component.container.description);
       expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeTruthy();
     });
 

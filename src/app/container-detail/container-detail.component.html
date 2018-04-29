@@ -6,7 +6,8 @@
           <input #containerDescription id="containerDescription" class="col-10 col-md-11 form-control" hidden
                  placeholder="Container's description" aria-label="Container's description"
                  (keyup.enter)="addDescription(containerDescription.value, $event)"
-                 (blur)="addDescription(containerDescription.value)"/>
+                 (blur)="addDescription(containerDescription.value)"
+                 value="{{container ? container.description : ''}}"/>
           <div #displayDescription id="displayDescription" class="col-10 col-md-11 description align-middle">
             <span>{{container ? container.description : ''}}</span>
           </div>
