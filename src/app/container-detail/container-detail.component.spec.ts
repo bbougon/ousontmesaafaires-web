@@ -8,7 +8,10 @@ import {ActivatedRoute} from '@angular/router';
 import {ActivatedRouteStub} from '../../testing/activated-route-stub';
 import {of} from 'rxjs/observable/of';
 import {By} from '@angular/platform-browser';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {UploadComponent} from '../upload/upload.component';
 import Spy = jasmine.Spy;
+import {FakeNgbActiveModal, FakeNgbModal} from '../../testing/ng-modal/fake-ngb-modal';
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -17,12 +20,15 @@ describe('ContainerDetailComponent', () => {
   let fixture: ComponentFixture<ContainerDetailComponent>;
   let containerService: ContainerService;
   let spiedContainerService: Spy;
+  let spiedModalService: Spy;
 
   beforeEach(async(() => {
     activatedRoute = new ActivatedRouteStub();
     activatedRoute.setParamMap({id: CONTAINER.id});
     TestBed.configureTestingModule({
       providers: [
+        {provide: NgbModal, useClass: FakeNgbModal},
+        {provide: NgbActiveModal, useClass: FakeNgbActiveModal},
         {provide: ContainerService, useClass: FakeContainerService},
         {provide: ActivatedRoute, useValue: activatedRoute}
       ],
@@ -55,6 +61,8 @@ describe('ContainerDetailComponent', () => {
   });
 
   it('calls containers service when generating a sticker', () => {
+    const ngbModal = fixture.debugElement.injector.get(NgbModal);
+    spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
     component.container = CONTAINER;
     component.generateSticker();
     fixture.detectChanges();
@@ -79,6 +87,19 @@ describe('ContainerDetailComponent', () => {
     const querySelector = querySelectorAll[1];
     expect(querySelector.textContent).toContain('Couleur: marron');
     expect(spiedClearItemComponent).toHaveBeenCalled();
+  });
+
+  it('opens upload image modal', () => {
+    const ngbModal = fixture.debugElement.injector.get(NgbModal);
+    spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
+    component.container = CONTAINER;
+    const compiled = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
+    querySelectorAll[0].click();
+
+    expect(spiedModalService).toHaveBeenCalledWith(UploadComponent, {size: 'lg'});
   });
 
   describe('Toggle description input', () => {
@@ -116,7 +137,6 @@ describe('ContainerDetailComponent', () => {
     });
 
   });
-
 
   describe('Add container description and call service', () => {
 

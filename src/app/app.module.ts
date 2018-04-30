@@ -21,6 +21,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {ContainerDetailComponent} from './container-detail/container-detail.component';
 import {ClockworkService} from './infrastructure/clockwork.service';
+import { UploadComponent } from './upload/upload.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -39,7 +40,8 @@ const routes: Routes = [
     ErrorMessageComponent,
     PrintComponent,
     PrintDirective,
-    ContainerDetailComponent
+    ContainerDetailComponent,
+    UploadComponent
   ],
   imports: [
     NgbModule.forRoot(),
@@ -58,7 +60,8 @@ const routes: Routes = [
   ],
   entryComponents: [
     ErrorMessageComponent,
-    PrintComponent
+    PrintComponent,
+    UploadComponent
   ]
 })
 export class AppModule {

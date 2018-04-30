@@ -53,7 +53,7 @@
               <div class="row">
                 <div class="col-md-10 col-10"><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
                 <div class="col-md-2 col-2 justify-content-end align-self-center">
-                  <span class="cursor-pointer icon">
+                  <span class="cursor-pointer icon" (click)="openUploadModal(item)">
                     <svg viewBox="0 0 8 8">
                       <use xlink:href="assets/open-iconic/open-iconic.min.svg#image" class="image"></use>
                     </svg>

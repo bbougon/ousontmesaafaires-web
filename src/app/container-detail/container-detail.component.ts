@@ -7,6 +7,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PrintComponent} from '../print/print.component';
 import {ItemComponent} from '../item/item.component';
 import {isUndefined} from 'ngx-bootstrap/chronos/utils/type-checks';
+import {UploadComponent} from '../upload/upload.component';
+import {Item} from '../domain/item';
 
 @Component({
   selector: 'ng-container-detail',
@@ -79,5 +81,10 @@ export class ContainerDetailComponent implements OnInit {
   private hideAndShow(elementToHide: ElementRef, elementToShow: ElementRef) {
     this.hide(elementToHide);
     this.show(elementToShow);
+  }
+
+  openUploadModal(item: Item) {
+    const ngbModalRef = this.ngbModal.open(UploadComponent, {size: 'lg'});
+    ngbModalRef.componentInstance.item = item;
   }
 }
