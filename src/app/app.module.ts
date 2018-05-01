@@ -22,6 +22,8 @@ import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {ContainerDetailComponent} from './container-detail/container-detail.component';
 import {ClockworkService} from './infrastructure/clockwork.service';
 import { UploadComponent } from './upload/upload.component';
+import {FileSelectDirective, FileUploadModule} from 'ng2-file-upload';
+import {SignatureService} from './upload/signature.service';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -51,9 +53,10 @@ const routes: Routes = [
     ContainerModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    FileUploadModule
   ],
-  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService],
+  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe

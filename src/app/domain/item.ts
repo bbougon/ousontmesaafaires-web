@@ -1,6 +1,6 @@
 export class Item {
 
-  constructor(public item: {}) {
+  constructor(public item: {[key: string]: any}) {
   }
 
 }

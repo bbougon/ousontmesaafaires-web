@@ -1,0 +1,9 @@
+.drop-file {
+  border: solid 1px #428bca;
+  border-radius: 3px;
+  padding: 4px;
+}
+
+.upload {
+  margin-bottom: 8px;
+}
