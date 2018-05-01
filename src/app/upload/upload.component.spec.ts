@@ -8,6 +8,7 @@ import {of} from 'rxjs/observable/of';
 import {Item} from '../domain/item';
 import {FakeFileUploader} from './testing/fake-file-uploader';
 import {Signature} from './signature';
+import {FakeDateTimeProvider} from '../../testing/fake-date-time-provider';
 import Spy = jasmine.Spy;
 
 describe('UploadComponent', () => {
@@ -19,10 +20,14 @@ describe('UploadComponent', () => {
   let spiedUploaderSetOptions: Spy;
   let spiedUploaderOnBuildItemForm: Spy;
   let fakeFileUploader: FakeFileUploader;
+  let fakeDateTimeProvider: FakeDateTimeProvider;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [NgbActiveModal, SignatureService],
+      providers: [
+        NgbActiveModal,
+        SignatureService
+      ],
       imports: [AppModule]
     })
       .compileComponents();
@@ -40,6 +45,11 @@ describe('UploadComponent', () => {
     fixture.detectChanges();
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature('1234', 'abcd')));
     component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
+    const date = new Date();
+    date.setFullYear(2011, 8, 3);
+    date.setHours(16, 35, 10, 20);
+    fakeDateTimeProvider = new FakeDateTimeProvider(date);
+    component.dateTimeProvider = fakeDateTimeProvider;
   });
 
   it('should create', () => {
@@ -61,7 +71,6 @@ describe('UploadComponent', () => {
   });
 
   it('then upload to third part service', () => {
-    component.timestamp = 1315060510;
     const files: File[] = [new File(['a file content'], 'my_file')];
     component.uploader.addToQueue(files);
 
@@ -82,12 +91,17 @@ describe('UploadComponent', () => {
   });
 
   it('can upload to third part service as many time there is a file to upload', () => {
-    component.timestamp = 1315060510;
+    // const spiedDateTimeProvider = spyOn(component.dateTimeProvider, 'now');
+    const date = new Date();
+    date.setFullYear(2011, 8, 3);
+    date.setHours(16, 35, 25, 20);
+    fakeDateTimeProvider.addDate(date);
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
 
     component.uploadAll();
 
+    // expect(spiedDateTimeProvider).toHaveBeenCalledTimes(2);
     const firstCall = spiedUploaderOnBuildItemForm.calls.first().args;
     expect(firstCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(firstCall[1],
@@ -105,7 +119,7 @@ describe('UploadComponent', () => {
     expect(mostRecentCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(mostRecentCall[1],
       {folder: '123456'},
-      {timestamp: 1315060510},
+      {timestamp: 1315060525},
       {public_id: '123456_2'},
       {api_key: '1234'},
       {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'},

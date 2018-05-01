@@ -21,8 +21,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {ContainerDetailComponent} from './container-detail/container-detail.component';
 import {ClockworkService} from './infrastructure/clockwork.service';
-import { UploadComponent } from './upload/upload.component';
-import {FileSelectDirective, FileUploadModule} from 'ng2-file-upload';
+import {UploadComponent} from './upload/upload.component';
+import {FileUploadModule} from 'ng2-file-upload';
 import {SignatureService} from './upload/signature.service';
 
 const routes: Routes = [

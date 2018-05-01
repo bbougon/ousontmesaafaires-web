@@ -4,6 +4,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 import {SignatureService} from './signature.service';
 import {environment} from '../../environments/environment';
+import {DateTimeProvider} from '../infrastructure/date-time-provider';
 
 @Component({
   selector: 'app-upload',
@@ -13,9 +14,10 @@ import {environment} from '../../environments/environment';
 export class UploadComponent implements OnInit {
 
   @Input() item: Item;
-  timestamp: number;
 
+  timestamp: number;
   public uploader: FileUploader = new FileUploader({});
+  public dateTimeProvider: DateTimeProvider = new DateTimeProvider(new Date());
 
   constructor(public activeModal: NgbActiveModal, private signatureService: SignatureService) {
   }
@@ -36,33 +38,46 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  uploadAll() {
-    // this.timestamp = DateTimeProvider.now().unixTimestamp();
-    const onBuildItemForm = function (value, publicId, signature) {
-      this.uploader.onBuildItemForm(value, {
-        folder: this.item.item.hash,
-        file: value,
+  upload(value, index) {
+    const publicId = this.item.item.hash.concat('_').concat(index + 1);
+    this.timestamp = this.dateTimeProvider.now().unixTimestamp();
+    this.signatureService
+      .sign({
         timestamp: this.timestamp,
         public_id: publicId,
-        api_key: signature.apiKey,
-        eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800',
-        signature: signature.signature
+        eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'
+      })
+      .subscribe(signature => {
+        value.withCredentials = false;
+        this.onBuildItemForm(value, publicId, signature);
+        this.uploader.uploadItem(value);
       });
-    };
+  }
+
+  cancel(item) {
+
+  }
+
+  remove(item) {
+
+  }
+
+  onBuildItemForm(value, publicId, signature) {
+    this.uploader.onBuildItemForm(value, {
+      folder: this.item.item.hash,
+      file: value,
+      timestamp: this.timestamp,
+      public_id: publicId,
+      api_key: signature.apiKey,
+      eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800',
+      signature: signature.signature
+    });
+  }
+
+  uploadAll() {
 
     this.uploader.getNotUploadedItems().forEach((value, index) => {
-      const publicId = this.item.item.hash.concat('_').concat(index + 1);
-      this.signatureService
-        .sign({
-          timestamp: this.timestamp,
-          public_id: publicId,
-          eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'
-        })
-        .subscribe(signature => {
-          value.withCredentials = false;
-          onBuildItemForm.call(this, value, publicId, signature);
-          this.uploader.uploadItem(value);
-        });
+      this.upload(value, index);
     });
   }
 
