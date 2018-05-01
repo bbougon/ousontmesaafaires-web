@@ -53,7 +53,7 @@ describe('UploadComponent', () => {
     const files: File[] = [firstFile, anotherFile];
     component.uploader.addToQueue(files);
 
-    component.upload();
+    component.uploadAll();
 
     expectUploaderOptions();
     expectSignatureServiceCall('123456_1', 'c_scale,w_80|c_scale,w_400|c_scale,w_800');
@@ -65,7 +65,7 @@ describe('UploadComponent', () => {
     const files: File[] = [new File(['a file content'], 'my_file')];
     component.uploader.addToQueue(files);
 
-    component.upload();
+    component.uploadAll();
 
     const call = spiedUploaderOnBuildItemForm.calls.mostRecent().args;
     expect(call[0].withCredentials).toBeFalsy();
@@ -86,7 +86,7 @@ describe('UploadComponent', () => {
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
 
-    component.upload();
+    component.uploadAll();
 
     const firstCall = spiedUploaderOnBuildItemForm.calls.first().args;
     expect(firstCall[0].withCredentials).toBeFalsy();

@@ -36,7 +36,8 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  upload() {
+  uploadAll() {
+    // this.timestamp = DateTimeProvider.now().unixTimestamp();
     const onBuildItemForm = function (value, publicId, signature) {
       this.uploader.onBuildItemForm(value, {
         folder: this.item.item.hash,
