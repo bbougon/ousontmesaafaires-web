@@ -46,8 +46,8 @@ describe('UploadComponent', () => {
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature('1234', 'abcd')));
     component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
     const date = new Date();
-    date.setFullYear(2011, 8, 3);
-    date.setHours(16, 35, 10, 20);
+    date.setUTCFullYear(2011, 8, 3);
+    date.setUTCHours(16, 35, 10, 20);
     fakeDateTimeProvider = new FakeDateTimeProvider(date);
     component.dateTimeProvider = fakeDateTimeProvider;
   });
@@ -57,7 +57,6 @@ describe('UploadComponent', () => {
   });
 
   it('calls signature service', () => {
-    component.timestamp = 1315060510;
     const firstFile = new File(['a file content'], 'my_file');
     const anotherFile = new File(['another file content'], 'my_other_file');
     const files: File[] = [firstFile, anotherFile];
@@ -80,7 +79,7 @@ describe('UploadComponent', () => {
     expect(call[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(call[1],
       {folder: '123456'},
-      {timestamp: 1315060510},
+      {timestamp: 1315067710},
       {public_id: '123456_1'},
       {api_key: '1234'},
       {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'},
@@ -93,8 +92,8 @@ describe('UploadComponent', () => {
   it('can upload to third part service as many time there is a file to upload', () => {
     // const spiedDateTimeProvider = spyOn(component.dateTimeProvider, 'now');
     const date = new Date();
-    date.setFullYear(2011, 8, 3);
-    date.setHours(16, 35, 25, 20);
+    date.setUTCFullYear(2011, 8, 3);
+    date.setUTCHours(16, 35, 25, 20);
     fakeDateTimeProvider.addDate(date);
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
@@ -106,7 +105,7 @@ describe('UploadComponent', () => {
     expect(firstCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(firstCall[1],
       {folder: '123456'},
-      {timestamp: 1315060510},
+      {timestamp: 1315067710},
       {public_id: '123456_1'},
       {api_key: '1234'},
       {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'},
@@ -119,7 +118,7 @@ describe('UploadComponent', () => {
     expect(mostRecentCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(mostRecentCall[1],
       {folder: '123456'},
-      {timestamp: 1315060525},
+      {timestamp: 1315067725},
       {public_id: '123456_2'},
       {api_key: '1234'},
       {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'},
@@ -129,7 +128,7 @@ describe('UploadComponent', () => {
 
   const expectSignatureServiceCall = function (publicId: string, eager: string) {
     expect(spiedSignatureService).toHaveBeenCalledWith({
-      timestamp: 1315060510,
+      timestamp: 1315067710,
       public_id: publicId,
       eager: eager
     });
