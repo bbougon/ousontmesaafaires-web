@@ -56,7 +56,7 @@ export class ContainerDetailComponent implements OnInit {
   addDescription(description: string, event ?: any) {
     this.route.paramMap
       .subscribe(pmap =>
-        this.containerService.patchContainer(pmap.get('id'), new Patch().unwrap({description: description}))
+        this.containerService.patchContainer(pmap.get('id'), new Patch('description').unwrap( description))
           .subscribe(() => {
             this.hideAndShow(this.containerDescription, this.displayDescription);
             this.container.description = description.trim();

@@ -166,7 +166,7 @@ describe('ContainerDetailComponent', () => {
     }));
 
     const expectDescriptionCreation = function (compiled: any) {
-      expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch().unwrap({description: 'A content'}));
+      expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch('description').unwrap('A content'));
       expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
       expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
       expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
