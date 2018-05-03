@@ -118,7 +118,7 @@ describe('ContainerService', () => {
 
     it('should have post an item to a container with expected request', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge'}))
+        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge', hash: 'abcdefgh'}))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -130,7 +130,7 @@ describe('ContainerService', () => {
 
     it('should have post expected item', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge'}))
+        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge', hash: 'zetrydhsk'}))
           .subscribe(() => {
             expect(this).not.toBeNull();
           });

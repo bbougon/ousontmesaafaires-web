@@ -20,7 +20,9 @@ export class ItemPipe implements PipeTransform {
     }
 
     if (!isUndefined(value.item)) {
-      return Object.keys(value.item).map(item => (uppercaseFirstLetter(item) + ':').bold() + ' ' + value.item[item]).join(', ');
+      return Object.keys(value.item)
+        .filter(item => item !== 'hash')
+        .map(item => (uppercaseFirstLetter(item) + ':').bold() + ' ' + value.item[item]).join(', ');
     }
     return Object.keys(value).map(item => (uppercaseFirstLetter(item) + ':').bold() + ' ' + value[item]).join(', ');
   }

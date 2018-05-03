@@ -9,14 +9,14 @@ describe('Item Pipe', () => {
   });
 
   it('should transform an item into a readable string', () => {
-    expect(pipe.transform(new Item({'type': 'chaussure'}))).toEqual('<b>Type:</b> chaussure');
-    expect(pipe.transform(new Item({'type': 'chaussure', 'couleur': 'noir'})))
+    expect(pipe.transform(new Item({'type': 'chaussure', hash: 'dfsdfsfsf'}))).toEqual('<b>Type:</b> chaussure');
+    expect(pipe.transform(new Item({'type': 'chaussure', 'couleur': 'noir', hash: 'sdfshjskdfhs'})))
       .toEqual('<b>Type:</b> chaussure, <b>Couleur:</b> noir');
     expect(pipe.transform({type: 'item'})).toEqual('<b>Type:</b> item');
   });
 
   it('should transform an item with accent into a readable string', () => {
-    expect(pipe.transform(new Item({'matière': 'cuir'}))).toEqual('<b>Matière:</b> cuir');
+    expect(pipe.transform(new Item({'matière': 'cuir', hash: 'sdjhsjfhsfjksf'}))).toEqual('<b>Matière:</b> cuir');
   });
 
   it('should throw an error if not an Object', () => {
