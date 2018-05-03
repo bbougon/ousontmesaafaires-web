@@ -193,7 +193,7 @@ describe('ContainerService', () => {
           console.log(req.body);
           return req.url === environment.apiUrl + '/containers/an-id'
             && req.method === 'PATCH'
-            && JSON.stringify(req.body) === '{"target":"description","id":"","data":"A description"}';
+            && JSON.stringify(req.body) === '{"target":"description","id":"","version":1,"data":"A description"}';
         }, 'PATCH container');
       })));
   });
