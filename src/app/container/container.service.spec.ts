@@ -186,13 +186,14 @@ describe('ContainerService', () => {
 
     it('can add a description to container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.patchContainer('an-id', new Patch().unwrap({description: 'A description'}))
+        containerService.patchContainer('an-id', new Patch('description').unwrap('A description'))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
+          console.log(req.body);
           return req.url === environment.apiUrl + '/containers/an-id'
             && req.method === 'PATCH'
-            && JSON.stringify(req.body) === '{"fields":[{"fieldName":"description","value":"A description"}]}';
+            && JSON.stringify(req.body) === '{"target":"description","id":"","data":"A description"}';
         }, 'PATCH container');
       })));
   });

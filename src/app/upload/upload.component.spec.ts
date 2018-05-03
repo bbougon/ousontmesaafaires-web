@@ -9,11 +9,13 @@ import {Item} from '../domain/item';
 import {FakeFileUploader} from './testing/fake-file-uploader';
 import {Signature} from './signature';
 import {FakeDateTimeProvider} from '../../testing/fake-date-time-provider';
-import Spy = jasmine.Spy;
 import {ContainerService} from '../container/container.service';
 import {FakeContainerService} from '../container/testing/fake-container.service';
+import {FileItem} from 'ng2-file-upload';
+import Spy = jasmine.Spy;
 
 describe('UploadComponent', () => {
+
   let component: UploadComponent;
   let fixture: ComponentFixture<UploadComponent>;
   let signatureService: SignatureService;
@@ -25,6 +27,19 @@ describe('UploadComponent', () => {
   let spiedContainerService: Spy;
   let fakeFileUploader: FakeFileUploader;
   let fakeDateTimeProvider: FakeDateTimeProvider;
+  const response = '{ "public_id": "eneivicys42bq5f2jpn2", "version": 1473596672, "signature": "abcdefghijklmnopqrstuvwxyz12345",'
+    + '"width": 1000, "height": 672, "access_control": [{ "access_type": "token" },{ "access_type": "anonymous", '
+    + '"start": "2017-12-15T12:00Z", "end": "2018-01-20T12:00Z" }],'
+    + '"format": "jpg","resource_type": "image","created_at": "2017-08-11T12:24:32Z","tags": [],"bytes": 350749,"type": "upload",'
+    + '"etag": "5297bd123ad4ddad723483c176e35f6e","url": '
+    + '"http://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg",'
+    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg","original_filename": "sample",'
+    + '"eager": [{ "transformation": "c_pad,h_300,w_400","width": 400,"height": 300,'
+    + '"url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg",'
+    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg" },'
+    + '{ "transformation": "c_crop,g_north,h_200,w_260","width": 260,"height": 200,'
+    + '"url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg",'
+    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg" }]}';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,17 +60,18 @@ describe('UploadComponent', () => {
     signatureService = fixture.debugElement.injector.get(SignatureService);
     containerService = fixture.debugElement.injector.get(ContainerService);
     component.uploader = fakeFileUploader;
-    spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem');
+    const uploadedFileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {});
+    spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem')
+      .and.callFake(() => {
+        component.uploader.onCompleteItem(uploadedFileItem, response, 200, {});
+      });
     spiedUploaderSetOptions = spyOn(component.uploader, 'setOptions');
     spiedUploaderOnBuildItemForm = spyOn(component.uploader, 'onBuildItemForm');
     fixture.detectChanges();
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature('1234', 'abcd')));
     spiedContainerService = spyOn(containerService, 'patchContainer');
     component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
-    const date = new Date();
-    date.setUTCFullYear(2011, 8, 3);
-    date.setUTCHours(16, 35, 10, 20);
-    fakeDateTimeProvider = new FakeDateTimeProvider(date);
+    fakeDateTimeProvider = new FakeDateTimeProvider(createDateAtUTC(2011, 8, 3, 16, 35, 10, 20));
     component.dateTimeProvider = fakeDateTimeProvider;
   });
 
@@ -64,10 +80,7 @@ describe('UploadComponent', () => {
   });
 
   it('calls signature service', () => {
-    const firstFile = new File(['a file content'], 'my_file');
-    const anotherFile = new File(['another file content'], 'my_other_file');
-    const files: File[] = [firstFile, anotherFile];
-    component.uploader.addToQueue(files);
+    component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
 
     component.uploadAll();
 
@@ -77,8 +90,7 @@ describe('UploadComponent', () => {
   });
 
   it('then upload to third part service', () => {
-    const files: File[] = [new File(['a file content'], 'my_file')];
-    component.uploader.addToQueue(files);
+    component.uploader.addToQueue([new File(['a file content'], 'my_file')]);
 
     component.uploadAll();
 
@@ -97,10 +109,7 @@ describe('UploadComponent', () => {
   });
 
   it('can upload to third part service as many time there is a file to upload', () => {
-    const date = new Date();
-    date.setUTCFullYear(2011, 8, 3);
-    date.setUTCHours(16, 35, 25, 20);
-    fakeDateTimeProvider.addDate(date);
+    fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
 
@@ -109,12 +118,8 @@ describe('UploadComponent', () => {
     const firstCall = spiedUploaderOnBuildItemForm.calls.first().args;
     expect(firstCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(firstCall[1],
-      {folder: '123456'},
-      {timestamp: 1315067710},
-      {public_id: '123456_1'},
-      {api_key: '1234'},
-      {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'},
-      {signature: 'abcd'}))
+      {folder: '123456'}, {timestamp: 1315067710}, {public_id: '123456_1'},
+      {api_key: '1234'}, {eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'}, {signature: 'abcd'}))
       .toBeTruthy();
     expect(spiedUploaderOnBuildItemForm).toHaveBeenCalled();
     expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(2);
@@ -131,18 +136,23 @@ describe('UploadComponent', () => {
       .toBeTruthy();
   });
 
-  // it('once upload done send result to api', async(() => {
-  //   const date = new Date();
-  //   date.setFullYear(2011, 8, 3);
-  //   date.setHours(16, 35, 25, 20);
-  //   fakeDateTimeProvider.addDate(date);
-  //   const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
-  //   component.uploader.addToQueue(files);
-  //
-  //   component.uploadAll();
-  //
-  //   expect(spiedContainerService).toHaveBeenCalledTimes(2);
-  // }));
+  it('once upload done send result to api', async(() => {
+    const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload');
+    fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
+    const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
+    component.uploader.addToQueue(files);
+
+    component.uploadAll();
+
+    expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
+  }));
+
+  const createDateAtUTC = function (year: number, month: number, date2: number, hours: number, min: number, sec: number, ms: number) {
+    const date = new Date();
+    date.setUTCFullYear(year, month, date2);
+    date.setUTCHours(hours, min, sec, ms);
+    return date;
+  };
 
   const expectSignatureServiceCall = function (publicId: string, eager: string) {
     expect(spiedSignatureService).toHaveBeenCalledWith({

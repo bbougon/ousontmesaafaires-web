@@ -1,12 +1,17 @@
-
-import {Field} from './field';
+import {Data} from './field';
 
 export class Patch {
 
-  fields: Field[] = [];
 
-  unwrap(param: any): Patch {
-    this.fields = Object.keys(param).map(par => new Field(par, param[par]));
+  constructor(private target: string, private id?: string) {
+    this.target = target;
+    this.id = id || '';
+  }
+
+  data: Data = null;
+
+  unwrap(data: any): Patch {
+    this.data = data;
     return this;
   }
 }
