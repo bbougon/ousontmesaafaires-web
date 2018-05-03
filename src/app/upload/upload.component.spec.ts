@@ -10,15 +10,19 @@ import {FakeFileUploader} from './testing/fake-file-uploader';
 import {Signature} from './signature';
 import {FakeDateTimeProvider} from '../../testing/fake-date-time-provider';
 import Spy = jasmine.Spy;
+import {ContainerService} from '../container/container.service';
+import {FakeContainerService} from '../container/testing/fake-container.service';
 
 describe('UploadComponent', () => {
   let component: UploadComponent;
   let fixture: ComponentFixture<UploadComponent>;
   let signatureService: SignatureService;
+  let containerService: ContainerService;
   let spiedSignatureService: Spy;
   let spiedUploaderUploadItem: Spy;
   let spiedUploaderSetOptions: Spy;
   let spiedUploaderOnBuildItemForm: Spy;
+  let spiedContainerService: Spy;
   let fakeFileUploader: FakeFileUploader;
   let fakeDateTimeProvider: FakeDateTimeProvider;
 
@@ -26,7 +30,8 @@ describe('UploadComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         NgbActiveModal,
-        SignatureService
+        SignatureService,
+        {provide: ContainerService, useClass: FakeContainerService}
       ],
       imports: [AppModule]
     })
@@ -38,12 +43,14 @@ describe('UploadComponent', () => {
     fixture = TestBed.createComponent(UploadComponent);
     component = fixture.componentInstance;
     signatureService = fixture.debugElement.injector.get(SignatureService);
+    containerService = fixture.debugElement.injector.get(ContainerService);
     component.uploader = fakeFileUploader;
     spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem');
     spiedUploaderSetOptions = spyOn(component.uploader, 'setOptions');
     spiedUploaderOnBuildItemForm = spyOn(component.uploader, 'onBuildItemForm');
     fixture.detectChanges();
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature('1234', 'abcd')));
+    spiedContainerService = spyOn(containerService, 'patchContainer');
     component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
     const date = new Date();
     date.setUTCFullYear(2011, 8, 3);
@@ -90,7 +97,6 @@ describe('UploadComponent', () => {
   });
 
   it('can upload to third part service as many time there is a file to upload', () => {
-    // const spiedDateTimeProvider = spyOn(component.dateTimeProvider, 'now');
     const date = new Date();
     date.setUTCFullYear(2011, 8, 3);
     date.setUTCHours(16, 35, 25, 20);
@@ -100,7 +106,6 @@ describe('UploadComponent', () => {
 
     component.uploadAll();
 
-    // expect(spiedDateTimeProvider).toHaveBeenCalledTimes(2);
     const firstCall = spiedUploaderOnBuildItemForm.calls.first().args;
     expect(firstCall[0].withCredentials).toBeFalsy();
     expect(fakeFileUploader.onBuildItemFormHaveBeenCalledWith(firstCall[1],
@@ -125,6 +130,19 @@ describe('UploadComponent', () => {
       {signature: 'abcd'}))
       .toBeTruthy();
   });
+
+  // it('once upload done send result to api', async(() => {
+  //   const date = new Date();
+  //   date.setFullYear(2011, 8, 3);
+  //   date.setHours(16, 35, 25, 20);
+  //   fakeDateTimeProvider.addDate(date);
+  //   const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
+  //   component.uploader.addToQueue(files);
+  //
+  //   component.uploadAll();
+  //
+  //   expect(spiedContainerService).toHaveBeenCalledTimes(2);
+  // }));
 
   const expectSignatureServiceCall = function (publicId: string, eager: string) {
     expect(spiedSignatureService).toHaveBeenCalledWith({

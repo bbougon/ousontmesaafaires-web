@@ -13,6 +13,7 @@ import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgbModalStack} from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
 import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
+import {Patch} from '../infrastructure/patch/patch';
 
 describe('ContainerService', () => {
   beforeEach(async(() => {
@@ -185,7 +186,7 @@ describe('ContainerService', () => {
 
     it('can add a description to container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addDescription('an-id', 'A description')
+        containerService.patchContainer('an-id', new Patch().unwrap({description: 'A description'}))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {

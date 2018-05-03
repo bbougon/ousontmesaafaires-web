@@ -9,6 +9,7 @@ import {ItemComponent} from '../item/item.component';
 import {isUndefined} from 'ngx-bootstrap/chronos/utils/type-checks';
 import {UploadComponent} from '../upload/upload.component';
 import {Item} from '../domain/item';
+import {Patch} from '../infrastructure/patch/patch';
 
 @Component({
   selector: 'ng-container-detail',
@@ -55,7 +56,7 @@ export class ContainerDetailComponent implements OnInit {
   addDescription(description: string, event ?: any) {
     this.route.paramMap
       .subscribe(pmap =>
-        this.containerService.addDescription(pmap.get('id'), description)
+        this.containerService.patchContainer(pmap.get('id'), new Patch().unwrap({description: description}))
           .subscribe(() => {
             this.hideAndShow(this.containerDescription, this.displayDescription);
             this.container.description = description.trim();

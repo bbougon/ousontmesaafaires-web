@@ -12,6 +12,7 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UploadComponent} from '../upload/upload.component';
 import Spy = jasmine.Spy;
 import {FakeNgbActiveModal, FakeNgbModal} from '../../testing/ng-modal/fake-ngb-modal';
+import {Patch} from '../infrastructure/patch/patch';
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -165,14 +166,14 @@ describe('ContainerDetailComponent', () => {
     }));
 
     const expectDescriptionCreation = function (compiled: any) {
-      expect(spiedContainerService).toHaveBeenCalledWith('an-id', 'A content');
+      expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch().unwrap({description: 'A content'}));
       expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
       expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
       expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
     };
 
     const setUp = function () {
-      spiedContainerService = spyOn(containerService, 'addDescription').and.returnValue(of(''));
+      spiedContainerService = spyOn(containerService, 'patchContainer').and.returnValue(of(''));
       component.container = CONTAINER;
       const compiled = fixture.debugElement.nativeElement;
       const pencil = compiled.querySelector('#pencil');

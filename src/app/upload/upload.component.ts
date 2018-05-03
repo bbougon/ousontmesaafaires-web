@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Item} from '../domain/item';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FileUploader} from 'ng2-file-upload';
+import {FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
 import {SignatureService} from './signature.service';
 import {environment} from '../../environments/environment';
 import {DateTimeProvider} from '../infrastructure/date-time-provider';
+import {ContainerService} from '../container/container.service';
 
 @Component({
   selector: 'app-upload',
@@ -19,7 +20,7 @@ export class UploadComponent implements OnInit {
   public uploader: FileUploader = new FileUploader({});
   public dateTimeProvider: DateTimeProvider = new DateTimeProvider(new Date());
 
-  constructor(public activeModal: NgbActiveModal, private signatureService: SignatureService) {
+  constructor(public activeModal: NgbActiveModal, private signatureService: SignatureService, private containerService: ContainerService) {
   }
 
   ngOnInit() {
@@ -51,10 +52,46 @@ export class UploadComponent implements OnInit {
         value.withCredentials = false;
         this.onBuildItemForm(value, publicId, signature);
         this.uploader.uploadItem(value);
+        this.uploader.onCompleteItem = (item: any, response: string, status: number, headers: ParsedResponseHeaders) => {
+          // this.containerService.patchContainer('', '');
+        };
       });
   }
 
-  cancel(item) {
+// {
+//   "public_id": "eneivicys42bq5f2jpn2",
+//   "version": 1473596672,
+//   "signature": "abcdefghijklmnopqrstuvwxyz12345",
+//   "width": 1000,
+//   "height": 672,
+//   "access_control": [
+//     { access_type: "token" },
+//     { access_type: "anonymous", start: "2017-12-15T12:00Z", end: "2018-01-20T12:00Z" }],
+//   "format": "jpg",
+//   "resource_type": "image",
+//   "created_at": "2017-08-11T12:24:32Z",
+//   "tags": [],
+//   "bytes": 350749,
+//   "type": "upload",
+//   "etag": "5297bd123ad4ddad723483c176e35f6e",
+//   "url": "http://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg",
+//   "secure_url": "https://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg",
+//   "original_filename": "sample",
+//   "eager": [
+//     { "transformation": "c_pad,h_300,w_400",
+//       "width": 400,
+//       "height": 300,
+//       "url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg",
+//       "secure_url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg" },
+//     { "transformation": "c_crop,g_north,h_200,w_260",
+//       "width": 260,
+//       "height": 200,
+//       "url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg",
+//       "secure_url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg" }]
+// }
+
+
+cancel(item) {
 
   }
 
@@ -75,7 +112,6 @@ export class UploadComponent implements OnInit {
   }
 
   uploadAll() {
-
     this.uploader.getNotUploadedItems().forEach((value, index) => {
       this.upload(value, index);
     });
