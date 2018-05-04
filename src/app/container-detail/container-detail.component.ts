@@ -87,5 +87,6 @@ export class ContainerDetailComponent implements OnInit {
   openUploadModal(item: Item) {
     const ngbModalRef = this.ngbModal.open(UploadComponent, {size: 'lg'});
     ngbModalRef.componentInstance.item = item;
+    this.route.paramMap.subscribe(pmap => ngbModalRef.componentInstance.containerId = pmap.get('id'));
   }
 }

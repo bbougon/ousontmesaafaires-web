@@ -50,7 +50,7 @@ describe('ContainerDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get container details on init', () => {
+  it('is loaded with container details on init', () => {
     containerService = fixture.debugElement.injector.get(ContainerService);
     const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(CONTAINER));
 
@@ -59,35 +59,6 @@ describe('ContainerDetailComponent', () => {
     expect(spiedService).toHaveBeenCalled();
     expect(component.container).not.toBeNull();
     expect(component.container).toBeTruthy();
-  });
-
-  it('calls containers service when generating a sticker', () => {
-    const ngbModal = fixture.debugElement.injector.get(NgbModal);
-    spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
-    component.container = CONTAINER;
-    component.generateSticker();
-    fixture.detectChanges();
-
-    expect(document.querySelectorAll('ngb-modal-window')).not.toBeNull();
-  });
-
-  it('calls container service when adding an item to the container', () => {
-    component.container = CONTAINER;
-    const itemComponents = component.itemComponents.toArray();
-    const spiedClearItemComponent = spyOn(itemComponents[0], 'clearItem');
-    const compiled = fixture.debugElement.nativeElement;
-    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemForContainer div div div #featureType',
-      'marron', '#itemForContainer div div div #featureValue', '#itemForContainer div div div button').click();
-    fixture.detectChanges();
-    const addItemButton = compiled.querySelector('#addItemToContainer');
-
-    addItemButton.click();
-    fixture.detectChanges();
-
-    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row');
-    const querySelector = querySelectorAll[1];
-    expect(querySelector.textContent).toContain('Couleur: marron');
-    expect(spiedClearItemComponent).toHaveBeenCalled();
   });
 
   it('opens upload image modal', () => {
@@ -103,7 +74,92 @@ describe('ContainerDetailComponent', () => {
     expect(spiedModalService).toHaveBeenCalledWith(UploadComponent, {size: 'lg'});
   });
 
-  describe('Toggle description input', () => {
+  describe('interacts with container service when', () => {
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(ContainerDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('generating a sticker', () => {
+      const ngbModal = fixture.debugElement.injector.get(NgbModal);
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
+      component.container = CONTAINER;
+      component.generateSticker();
+      fixture.detectChanges();
+
+      expect(document.querySelectorAll('ngb-modal-window')).not.toBeNull();
+    });
+
+    it('adding an item to the container', () => {
+      component.container = CONTAINER;
+      const itemComponents = component.itemComponents.toArray();
+      const spiedClearItemComponent = spyOn(itemComponents[0], 'clearItem');
+      const compiled = fixture.debugElement.nativeElement;
+      setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemForContainer div div div #featureType',
+        'marron', '#itemForContainer div div div #featureValue', '#itemForContainer div div div button').click();
+      fixture.detectChanges();
+      const addItemButton = compiled.querySelector('#addItemToContainer');
+
+      addItemButton.click();
+      fixture.detectChanges();
+
+      const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row');
+      const querySelector = querySelectorAll[1];
+      expect(querySelector.textContent).toContain('Couleur: marron');
+      expect(spiedClearItemComponent).toHaveBeenCalled();
+    });
+
+    describe('adding a description to the container', () => {
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(ContainerDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      it('on key press enter', async(() => {
+        const {compiled, containerDescription} = setUp();
+
+        containerDescription.triggerEventHandler('keyup.enter', {});
+        fixture.detectChanges();
+
+        expectDescriptionCreation(compiled);
+      }));
+
+      it('on blur', async(() => {
+        const {compiled, containerDescription} = setUp();
+
+        containerDescription.triggerEventHandler('blur', {});
+        fixture.detectChanges();
+
+        expectDescriptionCreation(compiled);
+      }));
+
+      const expectDescriptionCreation = function (compiled: any) {
+        expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch('description').unwrap('A content'));
+        expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
+        expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
+        expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
+      };
+
+      const setUp = function () {
+        spiedContainerService = spyOn(containerService, 'patchContainer').and.returnValue(of(''));
+        component.container = CONTAINER;
+        const compiled = fixture.debugElement.nativeElement;
+        const pencil = compiled.querySelector('#pencil');
+        pencil.click();
+        fixture.detectChanges();
+        const containerDescription = fixture.debugElement.query(By.css('#containerDescription'));
+        containerDescription.nativeElement.textContent = 'A content';
+        containerDescription.nativeElement.value = 'A content';
+        return {compiled, containerDescription};
+      };
+    });
+  });
+
+  describe('toggles with description input', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(ContainerDetailComponent);
@@ -137,53 +193,6 @@ describe('ContainerDetailComponent', () => {
       expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
     });
 
-  });
-
-  describe('Add container description and call service', () => {
-
-    beforeEach(() => {
-      fixture = TestBed.createComponent(ContainerDetailComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-    });
-
-    it('adds the container\'s description on key press enter', async(() => {
-      const {compiled, containerDescription} = setUp();
-
-      containerDescription.triggerEventHandler('keyup.enter', {});
-      fixture.detectChanges();
-
-      expectDescriptionCreation(compiled);
-    }));
-
-    it('adds the container\'s description on blur', async(() => {
-      const {compiled, containerDescription} = setUp();
-
-      containerDescription.triggerEventHandler('blur', {});
-      fixture.detectChanges();
-
-      expectDescriptionCreation(compiled);
-    }));
-
-    const expectDescriptionCreation = function (compiled: any) {
-      expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch('description').unwrap('A content'));
-      expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
-      expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
-      expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
-    };
-
-    const setUp = function () {
-      spiedContainerService = spyOn(containerService, 'patchContainer').and.returnValue(of(''));
-      component.container = CONTAINER;
-      const compiled = fixture.debugElement.nativeElement;
-      const pencil = compiled.querySelector('#pencil');
-      pencil.click();
-      fixture.detectChanges();
-      const containerDescription = fixture.debugElement.query(By.css('#containerDescription'));
-      containerDescription.nativeElement.textContent = 'A content';
-      containerDescription.nativeElement.value = 'A content';
-      return {compiled, containerDescription};
-    };
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {

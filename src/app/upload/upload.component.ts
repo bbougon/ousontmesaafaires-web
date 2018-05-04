@@ -16,6 +16,7 @@ import {Patch} from '../infrastructure/patch/patch';
 export class UploadComponent implements OnInit {
 
   @Input() item: Item;
+  @Input() containerId: string;
 
   timestamp: number;
   public uploader: FileUploader = new FileUploader({});
@@ -40,7 +41,7 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  upload(value, index) {
+  upload(fileItem, index) {
     const publicId = this.item.item.hash.concat('_').concat(index + 1);
     this.timestamp = this.dateTimeProvider.now().unixTimestamp();
     this.signatureService
@@ -50,9 +51,9 @@ export class UploadComponent implements OnInit {
         eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'
       })
       .subscribe(signature => {
-        value.withCredentials = false;
-        this.onBuildItemForm(value, publicId, signature);
-        this.uploader.uploadItem(value);
+        fileItem.withCredentials = false;
+        this.onBuildItemForm(fileItem, publicId, signature);
+        this.uploader.uploadItem(fileItem);
         this.onCompleteUpload();
       });
   }
@@ -76,7 +77,8 @@ export class UploadComponent implements OnInit {
 
 
   persistUpload(patch: Patch) {
-
+    this.containerService.patchContainer(this.containerId, patch)
+      .subscribe(() => this.activeModal.close());
   }
 
   cancel(item) {
@@ -87,10 +89,10 @@ export class UploadComponent implements OnInit {
 
   }
 
-  onBuildItemForm(value, publicId, signature) {
-    this.uploader.onBuildItemForm(value, {
+  onBuildItemForm(fileItem, publicId, signature) {
+    this.uploader.onBuildItemForm(fileItem, {
       folder: this.item.item.hash,
-      file: value,
+      file: fileItem,
       timestamp: this.timestamp,
       public_id: publicId,
       api_key: signature.apiKey,
@@ -100,8 +102,8 @@ export class UploadComponent implements OnInit {
   }
 
   uploadAll() {
-    this.uploader.getNotUploadedItems().forEach((value, index) => {
-      this.upload(value, index);
+    this.uploader.getNotUploadedItems().forEach((fileItem, index) => {
+      this.upload(fileItem, index);
     });
   }
 

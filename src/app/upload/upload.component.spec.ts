@@ -12,6 +12,8 @@ import {FakeDateTimeProvider} from '../../testing/fake-date-time-provider';
 import {ContainerService} from '../container/container.service';
 import {FakeContainerService} from '../container/testing/fake-container.service';
 import {FileItem} from 'ng2-file-upload';
+import {response} from './cloudinary-response';
+import {Patch} from '../infrastructure/patch/patch';
 import Spy = jasmine.Spy;
 
 describe('UploadComponent', () => {
@@ -25,21 +27,10 @@ describe('UploadComponent', () => {
   let spiedUploaderSetOptions: Spy;
   let spiedUploaderOnBuildItemForm: Spy;
   let spiedContainerService: Spy;
+  let spiedCloseModal: Spy;
   let fakeFileUploader: FakeFileUploader;
   let fakeDateTimeProvider: FakeDateTimeProvider;
-  const response = '{ "public_id": "eneivicys42bq5f2jpn2", "version": 1473596672, "signature": "abcdefghijklmnopqrstuvwxyz12345",'
-    + '"width": 1000, "height": 672, "access_control": [{ "access_type": "token" },{ "access_type": "anonymous", '
-    + '"start": "2017-12-15T12:00Z", "end": "2018-01-20T12:00Z" }],'
-    + '"format": "jpg","resource_type": "image","created_at": "2017-08-11T12:24:32Z","tags": [],"bytes": 350749,"type": "upload",'
-    + '"etag": "5297bd123ad4ddad723483c176e35f6e","url": '
-    + '"http://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg",'
-    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/v1473596672/eneivicys42bq5f2jpn2.jpg","original_filename": "sample",'
-    + '"eager": [{ "transformation": "c_pad,h_300,w_400","width": 400,"height": 300,'
-    + '"url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg",'
-    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/c_pad,h_300,w_400/v1473596672/eneivicys42bq5f2jpn2.jpg" },'
-    + '{ "transformation": "c_crop,g_north,h_200,w_260","width": 260,"height": 200,'
-    + '"url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg",'
-    + '"secure_url": "https://res.cloudinary.com/demo/image/upload/c_crop,g_north,h_200,w_260/v1473596672/eneivicys42bq5f2jpn2.jpg" }]}';
+
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -69,10 +60,12 @@ describe('UploadComponent', () => {
     spiedUploaderOnBuildItemForm = spyOn(component.uploader, 'onBuildItemForm');
     fixture.detectChanges();
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature('1234', 'abcd')));
-    spiedContainerService = spyOn(containerService, 'patchContainer');
+    spiedContainerService = spyOn(containerService, 'patchContainer').and.returnValue(of({response: {status: 200}}));
     component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
+    component.containerId = '12345';
     fakeDateTimeProvider = new FakeDateTimeProvider(createDateAtUTC(2011, 8, 3, 16, 35, 10, 20));
     component.dateTimeProvider = fakeDateTimeProvider;
+    spiedCloseModal = spyOn(component.activeModal, 'close');
   });
 
   it('should create', () => {
@@ -108,7 +101,7 @@ describe('UploadComponent', () => {
     expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(1);
   });
 
-  it('can upload to third part service as many time there is a file to upload', () => {
+  it('as many time there is a file to upload', () => {
     fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
@@ -146,6 +139,20 @@ describe('UploadComponent', () => {
 
     expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
   }));
+
+  it('and api service is called', () => {
+    const patch = new Patch('item', component.item.item.hash).unwrap({
+      signature: 'signature',
+      url: 'image url',
+      secure_url: 'image secure url',
+      resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+    });
+
+    component.persistUpload(patch);
+
+    expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
+    expect(spiedCloseModal).toHaveBeenCalled();
+  });
 
   const createDateAtUTC = function (year: number, month: number, date2: number, hours: number, min: number, sec: number, ms: number) {
     const date = new Date();
