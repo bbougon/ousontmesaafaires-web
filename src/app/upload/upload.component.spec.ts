@@ -15,6 +15,8 @@ import {FileItem} from 'ng2-file-upload';
 import {response} from './cloudinary-response';
 import {Patch} from '../infrastructure/patch/patch';
 import Spy = jasmine.Spy;
+import {UuidService} from '../infrastructure/uuid.service';
+import {FakeUuidService} from '../../testing/fake-uuid.service';
 
 describe('UploadComponent', () => {
 
@@ -37,7 +39,8 @@ describe('UploadComponent', () => {
       providers: [
         NgbActiveModal,
         SignatureService,
-        {provide: ContainerService, useClass: FakeContainerService}
+        {provide: ContainerService, useClass: FakeContainerService},
+        {provide: UuidService, useClass: FakeUuidService}
       ],
       imports: [AppModule]
     })
@@ -45,17 +48,13 @@ describe('UploadComponent', () => {
   }));
 
   beforeEach(() => {
-    fakeFileUploader = new FakeFileUploader({});
     fixture = TestBed.createComponent(UploadComponent);
     component = fixture.componentInstance;
+    fakeFileUploader = new FakeFileUploader({}, component);
     signatureService = fixture.debugElement.injector.get(SignatureService);
     containerService = fixture.debugElement.injector.get(ContainerService);
     component.uploader = fakeFileUploader;
-    const uploadedFileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {});
-    spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem')
-      .and.callFake(() => {
-        component.uploader.onCompleteItem(uploadedFileItem, response, 200, {});
-      });
+    spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem');
     spiedUploaderSetOptions = spyOn(component.uploader, 'setOptions');
     spiedUploaderOnBuildItemForm = spyOn(component.uploader, 'onBuildItemForm');
     fixture.detectChanges();
@@ -66,6 +65,8 @@ describe('UploadComponent', () => {
     fakeDateTimeProvider = new FakeDateTimeProvider(createDateAtUTC(2011, 8, 3, 16, 35, 10, 20));
     component.dateTimeProvider = fakeDateTimeProvider;
     spiedCloseModal = spyOn(component.activeModal, 'close');
+    const fakeUuidService: FakeUuidService = <FakeUuidService>fixture.debugElement.injector.get(UuidService);
+    fakeUuidService.uuids = ['123456_1', '123456_2'];
   });
 
   it('should create', () => {
@@ -129,8 +130,12 @@ describe('UploadComponent', () => {
       .toBeTruthy();
   });
 
-  it('once upload done send result to api', async(() => {
-    const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload');
+  it('once upload done send result to api', () => {
+    spiedUploaderUploadItem.and.callFake(() => {
+      component.uploader.onCompleteItem(
+        new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {}), response, 200, {});
+    });
+    const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload').and.callThrough();
     fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
     const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
     component.uploader.addToQueue(files);
@@ -138,7 +143,8 @@ describe('UploadComponent', () => {
     component.uploadAll();
 
     expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
-  }));
+    expect(spiedCloseModal).toHaveBeenCalledTimes(1);
+  });
 
   it('and api service is called', () => {
     const patch = new Patch('item', component.item.item.hash).unwrap({
@@ -148,10 +154,29 @@ describe('UploadComponent', () => {
       resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
     });
 
-    component.persistUpload(patch);
+    component.persistUpload(patch, function () {
+      component.closeModal();
+    });
 
     expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
     expect(spiedCloseModal).toHaveBeenCalled();
+  });
+
+  it('modal is closed once all uploads ended', () => {
+    const patch = new Patch('item', component.item.item.hash).unwrap({
+      signature: 'signature',
+      url: 'image url',
+      secure_url: 'image secure url',
+      resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+    });
+
+    component.persistUpload(patch);
+    component.persistUpload(patch, () => {
+      component.closeModal();
+    });
+
+    expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
+    expect(spiedCloseModal).toHaveBeenCalledTimes(1);
   });
 
   const createDateAtUTC = function (year: number, month: number, date2: number, hours: number, min: number, sec: number, ms: number) {

@@ -1,7 +1,12 @@
 import {FileItem, FileUploader, FileUploaderOptions, ParsedResponseHeaders} from 'ng2-file-upload';
 import {isUndefined} from 'util';
+import {UploadComponent} from '../upload.component';
 
 export class FakeFileUploader extends FileUploader {
+  constructor(param: {}, private component: UploadComponent) {
+    super(param);
+  }
+
 
   uploadItem(value: FileItem): void {
   }
@@ -12,6 +17,7 @@ export class FakeFileUploader extends FileUploader {
 
 
   onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    this.component.onCompleteUpload(response, () => this.component.closeModal());
     return {item: item, response: response, status: status, headers: headers};
   }
 

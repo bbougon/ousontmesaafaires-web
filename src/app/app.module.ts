@@ -24,6 +24,7 @@ import {ClockworkService} from './infrastructure/clockwork.service';
 import {UploadComponent} from './upload/upload.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {SignatureService} from './upload/signature.service';
+import {UuidService} from './infrastructure/uuid.service';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -56,7 +57,7 @@ const routes: Routes = [
     NgxQRCodeModule,
     FileUploadModule
   ],
-  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService],
+  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService, UuidService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe

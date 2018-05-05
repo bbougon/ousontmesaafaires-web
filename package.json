@@ -25,6 +25,7 @@
     "@angular/router": "^5.2.9",
     "@cloudinary/angular-5.x": "^1.0.1",
     "@ng-bootstrap/ng-bootstrap": "^1.0.1",
+    "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.0.0",
     "cloudinary-core": "^2.5.0",
     "core-js": "^2.4.1",
