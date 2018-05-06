@@ -1,6 +1,6 @@
-import {TestBed, inject, async} from '@angular/core/testing';
+import {async, inject, TestBed} from '@angular/core/testing';
 
-import { UuidService } from './uuid.service';
+import {UuidService} from './uuid.service';
 
 describe('UuidService', () => {
   beforeEach(() => {
@@ -19,6 +19,7 @@ describe('UuidService', () => {
 
       const regex = /[a-zA-Z0-9]{48}/gm;
       expect(regex.test(base64Encoded)).toBeTruthy();
-    })));
+    }))
+  );
 
 });

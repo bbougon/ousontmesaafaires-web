@@ -50,13 +50,15 @@ export class UploadComponent implements OnInit {
     this.timestamp = this.dateTimeProvider.now().unixTimestamp();
     this.signatureService
       .sign({
-        timestamp: this.timestamp,
+        eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800',
+        folder: this.item.item.hash,
         public_id: publicId,
-        eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800'
+        timestamp: this.timestamp
       })
       .subscribe(signature => {
-        fileItem.withCredentials = false;
-        this.onBuildItemForm(fileItem, publicId, signature);
+        this.uploader.onBuildItemForm = (item, form) => {
+          this.onBuildItemForm(item, form, publicId, this.timestamp, signature);
+        };
         this.uploader.uploadItem(fileItem);
         this.uploader.onCompleteItem = (item: any, response: string, status: number, headers: ParsedResponseHeaders) => {
           this.onCompleteUpload(response, files.length === index + 1 ? () => this.closeModal() : null);
@@ -96,16 +98,15 @@ export class UploadComponent implements OnInit {
 
   }
 
-  onBuildItemForm(fileItem, publicId, signature) {
-    this.uploader.onBuildItemForm(fileItem, {
-      folder: this.item.item.hash,
-      file: fileItem,
-      timestamp: this.timestamp,
-      public_id: publicId,
-      api_key: signature.apiKey,
-      eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800',
-      signature: signature.signature
-    });
+  onBuildItemForm(fileItem, form, publicId, timestamp, signature) {
+    fileItem.withCredentials = false;
+    form.append('folder', this.item.item.hash);
+    form.append('file', fileItem);
+    form.append('timestamp', timestamp);
+    form.append('public_id', publicId);
+    form.append('api_key', signature.apiKey);
+    form.append('eager', 'c_scale,w_80|c_scale,w_400|c_scale,w_800');
+    form.append('signature', signature.signature);
   }
 
   uploadAll() {
