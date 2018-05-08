@@ -10,9 +10,10 @@ import {of} from 'rxjs/observable/of';
 import {By} from '@angular/platform-browser';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UploadComponent} from '../upload/upload.component';
-import Spy = jasmine.Spy;
 import {FakeNgbActiveModal, FakeNgbModal} from '../../testing/ng-modal/fake-ngb-modal';
 import {Patch} from '../infrastructure/patch/patch';
+import {CarouselComponent} from '../carousel/carousel.component';
+import Spy = jasmine.Spy;
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -50,28 +51,76 @@ describe('ContainerDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('is loaded with container details on init', () => {
-    containerService = fixture.debugElement.injector.get(ContainerService);
-    const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(CONTAINER));
+  describe('is displayed on init', () => {
 
-    component.ngOnInit();
+    beforeEach(() => {
+      fixture = TestBed.createComponent(ContainerDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
 
-    expect(spiedService).toHaveBeenCalled();
-    expect(component.container).not.toBeNull();
-    expect(component.container).toBeTruthy();
+    it('with container details', () => {
+      containerService = fixture.debugElement.injector.get(ContainerService);
+      const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(CONTAINER));
+
+      component.ngOnInit();
+
+      expect(spiedService).toHaveBeenCalled();
+      expect(component.container).not.toBeNull();
+      expect(component.container).toBeTruthy();
+    });
+
+    it('and thumbnail image', () => {
+      component.container = CONTAINER;
+
+      const url: string = component.getThumbnail(component.container.items[0].item.images[0]);
+
+      expect(url).toBe('assets/testing/secureUrl2.png');
+    });
+
   });
 
-  it('opens upload image modal', () => {
-    const ngbModal = fixture.debugElement.injector.get(NgbModal);
-    spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
-    component.container = CONTAINER;
-    const compiled = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
+  describe('opens modal', () => {
 
-    const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
-    querySelectorAll[0].click();
+    let ngbModal: NgbModal;
 
-    expect(spiedModalService).toHaveBeenCalledWith(UploadComponent, {size: 'lg'});
+    beforeEach(() => {
+      fixture = TestBed.createComponent(ContainerDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      ngbModal = null;
+      component = null;
+      fixture = null;
+    });
+
+    it('for image upload', () => {
+      ngbModal = fixture.debugElement.injector.get(NgbModal);
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {item: CONTAINER.items[0]}});
+      component.container = CONTAINER;
+      const compiled = fixture.debugElement.nativeElement;
+      fixture.detectChanges();
+
+      const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
+      querySelectorAll[0].click();
+
+      expect(spiedModalService).toHaveBeenCalledWith(UploadComponent, {size: 'lg'});
+    });
+
+    it('to display carousel for an item', () => {
+      component.container = CONTAINER;
+      ngbModal = fixture.debugElement.injector.get(NgbModal);
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {images: CONTAINER.items[0].item.images}});
+      const compiled = fixture.debugElement.nativeElement;
+      fixture.detectChanges();
+
+      const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > div > img');
+      querySelectorAll[0].click();
+
+      expect(spiedModalService).toHaveBeenCalledWith(CarouselComponent, {size: 'lg', centered: true});
+    });
   });
 
   describe('interacts with container service when', () => {
@@ -105,7 +154,7 @@ describe('ContainerDetailComponent', () => {
       addItemButton.click();
       fixture.detectChanges();
 
-      const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row');
+      const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row div.col-md-10.col-10');
       const querySelector = querySelectorAll[1];
       expect(querySelector.textContent).toContain('Couleur: marron');
       expect(spiedClearItemComponent).toHaveBeenCalled();

@@ -1,0 +1,18 @@
+<div class="modal-header col-sm-12">
+  <h4 class="modal-title">Upload Images</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body col-sm-12">
+  <ngb-carousel *ngIf="images">
+    <ng-template ngbSlide *ngFor="let image of getCarouselImages()">
+      <img [src]="image.secureUrl">
+    </ng-template>
+  </ngb-carousel>
+</div>
+
+<div class="modal-footer col-sm-12">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close()">Close</button>
+</div>

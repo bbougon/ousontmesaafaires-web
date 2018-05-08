@@ -10,6 +10,8 @@ import {isUndefined} from 'ngx-bootstrap/chronos/utils/type-checks';
 import {UploadComponent} from '../upload/upload.component';
 import {Item} from '../domain/item';
 import {Patch} from '../infrastructure/patch/patch';
+import {Image} from '../domain/image';
+import {CarouselComponent} from '../carousel/carousel.component';
 
 @Component({
   selector: 'ng-container-detail',
@@ -56,7 +58,7 @@ export class ContainerDetailComponent implements OnInit {
   addDescription(description: string, event ?: any) {
     this.route.paramMap
       .subscribe(pmap =>
-        this.containerService.patchContainer(pmap.get('id'), new Patch('description').unwrap( description))
+        this.containerService.patchContainer(pmap.get('id'), new Patch('description').unwrap(description))
           .subscribe(() => {
             this.hideAndShow(this.containerDescription, this.displayDescription);
             this.container.description = description.trim();
@@ -88,5 +90,18 @@ export class ContainerDetailComponent implements OnInit {
     const ngbModalRef = this.ngbModal.open(UploadComponent, {size: 'lg'});
     ngbModalRef.componentInstance.item = item;
     this.route.paramMap.subscribe(pmap => ngbModalRef.componentInstance.containerId = pmap.get('id'));
+  }
+
+  getThumbnail(image: Image): string {
+    const minimumWdth = Math.min.apply(Math, image.resizedImages.map(function (resizedImage) {
+      return resizedImage.width;
+    }));
+    return image.resizedImages
+      .filter(value => value.width === minimumWdth)[0].secureUrl;
+  }
+
+  openCarousel(images: Image[]) {
+    const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'lg', centered: true});
+    ngbModalRef.componentInstance.images = images;
   }
 }

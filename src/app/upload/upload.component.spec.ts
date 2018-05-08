@@ -79,8 +79,8 @@ describe('UploadComponent', () => {
     component.uploadAll();
 
     expectUploaderOptions();
-    expectSignatureServiceCall(component.item.item.hash, '123456_1', 'c_scale,w_80|c_scale,w_400|c_scale,w_800');
-    expectSignatureServiceCall(component.item.item.hash, '123456_2', 'c_scale,w_80|c_scale,w_400|c_scale,w_800');
+    expectSignatureServiceCall(component.item.item.hash, '123456_1', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+    expectSignatureServiceCall(component.item.item.hash, '123456_2', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
   });
 
   it('then upload to third part service', () => {
@@ -96,7 +96,7 @@ describe('UploadComponent', () => {
     component.uploadAll();
 
     expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
-      'c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
+      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
     expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(1);
   });
 
@@ -121,9 +121,9 @@ describe('UploadComponent', () => {
     component.uploadAll();
 
     expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
-      'c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
+      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
     expectFormDataAndFileItem(formData2, '123456', '1315067725', '123456_2', '1234',
-      'c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem2);
+      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem2);
     expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(2);
   });
 

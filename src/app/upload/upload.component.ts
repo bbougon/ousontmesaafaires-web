@@ -50,7 +50,7 @@ export class UploadComponent implements OnInit {
     this.timestamp = this.dateTimeProvider.now().unixTimestamp();
     this.signatureService
       .sign({
-        eager: 'c_scale,w_80|c_scale,w_400|c_scale,w_800',
+        eager: 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800',
         folder: this.item.item.hash,
         public_id: publicId,
         timestamp: this.timestamp
@@ -105,7 +105,7 @@ export class UploadComponent implements OnInit {
     form.append('timestamp', timestamp);
     form.append('public_id', publicId);
     form.append('api_key', signature.apiKey);
-    form.append('eager', 'c_scale,w_80|c_scale,w_400|c_scale,w_800');
+    form.append('eager', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
     form.append('signature', signature.signature);
   }
 

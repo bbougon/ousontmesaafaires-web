@@ -51,7 +51,14 @@
           <ul class="list-group">
             <li *ngFor="let item of container.items" class="list-group-item">
               <div class="row">
-                <div class="col-md-10 col-10"><span *ngIf="item" [outerHTML]="item.item | item"></span></div>
+                <div class="col-md-10 col-10">
+                  <div>
+                    <span *ngIf="item" [outerHTML]="item.item | item"></span>
+                  </div>
+                  <div *ngIf="item.item.images" class="row col-4">
+                    <img src="{{getThumbnail(item.item.images[0])}}" (click)="openCarousel(item.item.images)">
+                  </div>
+                </div>
                 <div class="col-md-2 col-2 justify-content-end align-self-center">
                   <span class="cursor-pointer icon" (click)="openUploadModal(item)">
                     <svg viewBox="0 0 8 8">

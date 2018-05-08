@@ -25,6 +25,7 @@ import {UploadComponent} from './upload/upload.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {SignatureService} from './upload/signature.service';
 import {UuidService} from './infrastructure/uuid.service';
+import { CarouselComponent } from './carousel/carousel.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -44,7 +45,8 @@ const routes: Routes = [
     PrintComponent,
     PrintDirective,
     ContainerDetailComponent,
-    UploadComponent
+    UploadComponent,
+    CarouselComponent
   ],
   imports: [
     NgbModule.forRoot(),
@@ -65,7 +67,8 @@ const routes: Routes = [
   entryComponents: [
     ErrorMessageComponent,
     PrintComponent,
-    UploadComponent
+    UploadComponent,
+    CarouselComponent
   ]
 })
 export class AppModule {
