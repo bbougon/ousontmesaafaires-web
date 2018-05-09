@@ -26,5 +26,9 @@ cache:
   directories:
     — node_modules
 
-script:
+scripts:
+  - npm install codecov -g
   - ng test --single-run -sm=false
+
+after_success:
+  - codecov
