@@ -55,6 +55,9 @@
   "test": {
     "karma": {
       "config": "./karma.conf.js"
+    },
+    "options": {
+      "codeCoverage": true
     }
   },
   "defaults": {

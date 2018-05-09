@@ -28,7 +28,7 @@ cache:
     — node_modules
 
 script:
-  - ng test --code-coverage --single-run
+  - ng test --watch=false --code-coverage
 
 after_success:
   - codecov
