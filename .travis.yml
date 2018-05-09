@@ -28,7 +28,7 @@ cache:
 
 scripts:
   - npm install codecov -g
-  - ng test --single-run -sm=false
+  - ng test --single-run
 
 after_success:
   - codecov
