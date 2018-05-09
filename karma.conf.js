@@ -23,7 +23,13 @@ module.exports = function (config) {
       environment: 'dev',
       sourcemap: true
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress', 'kjhtml','coverage'],
+    coverageReporter: {
+      reporters: [
+        {type:'lcovonly', subdir: '.'},
+        {type:'json', subdir: '.'},
+      ]
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
