@@ -10,7 +10,7 @@ import {FakeFileUploader} from './testing/fake-file-uploader';
 import {Signature} from './signature';
 import {FakeDateTimeProvider} from '../../testing/fake-date-time-provider';
 import {ContainerService} from '../container/container.service';
-import {FakeContainerService} from '../container/testing/fake-container.service';
+import {CONTAINER, FakeContainerService} from '../container/testing/fake-container.service';
 import {FileItem} from 'ng2-file-upload';
 import {response} from './cloudinary-response';
 import {Patch} from '../infrastructure/patch/patch';
@@ -27,6 +27,7 @@ describe('UploadComponent', () => {
   let spiedSignatureService: Spy;
   let spiedUploaderUploadItem: Spy;
   let spiedUploaderSetOptions: Spy;
+  let spiedUploaderCancelAll: Spy;
   let spiedContainerService: Spy;
   let spiedCloseModal: Spy;
   let fakeFileUploader: FakeFileUploader;
@@ -54,6 +55,7 @@ describe('UploadComponent', () => {
     component.uploader = fakeFileUploader;
     spiedUploaderUploadItem = spyOn(component.uploader, 'uploadItem');
     spiedUploaderSetOptions = spyOn(component.uploader, 'setOptions');
+    spiedUploaderCancelAll = spyOn(component.uploader, 'cancelAll');
     fixture.detectChanges();
     spiedSignatureService = spyOn(signatureService, 'sign').and.returnValue(of(new Signature({
       apiKey: '1234',
@@ -73,107 +75,141 @@ describe('UploadComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('calls signature service', () => {
-    component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
+  describe('execute upload actions', () => {
+    it('calls signature service', () => {
+      component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
 
-    component.uploadAll();
+      component.uploadAll();
 
-    expectUploaderOptions();
-    expectSignatureServiceCall(component.item.item.hash, '123456_1', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
-    expectSignatureServiceCall(component.item.item.hash, '123456_2', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+      expectUploaderOptions();
+      expectSignatureServiceCall(component.item.item.hash, '123456_1', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+      expectSignatureServiceCall(component.item.item.hash, '123456_2', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+    });
+
+    it('then upload to third part service', () => {
+      const formData = new FormData();
+      const fileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {});
+      spiedUploaderUploadItem.and.callFake(() => {
+        component.uploader.onBuildItemForm(fileItem,
+          formData
+        );
+      });
+      component.uploader.addToQueue([new File(['a file content'], 'my_file')]);
+
+      component.uploadAll();
+
+      expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
+        'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
+      expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(1);
+    });
+
+    it('as many time there is a file to upload', () => {
+      let alreadyCalled = false;
+      const formData = new FormData();
+      const formData2 = new FormData();
+      const fileItem = new FileItem(component.uploader, new File(['a file content'], 'my_file'), {});
+      const fileItem2 = new FileItem(component.uploader, new File(['another file content'], 'my_other_file'), {});
+      spiedUploaderUploadItem.and.callFake(() => {
+        if (alreadyCalled) {
+          component.uploader.onBuildItemForm(fileItem2, formData2);
+        } else {
+          component.uploader.onBuildItemForm(fileItem, formData);
+        }
+        alreadyCalled = true;
+      });
+      fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
+      const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
+      component.uploader.addToQueue(files);
+
+      component.uploadAll();
+
+      expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
+        'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
+      expectFormDataAndFileItem(formData2, '123456', '1315067725', '123456_2', '1234',
+        'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem2);
+      expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(2);
+    });
+
+    it('once upload done send result to api', () => {
+      spiedUploaderUploadItem.and.callFake(() => {
+        component.uploader.onCompleteItem(
+          new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {}), response, 200, {});
+      });
+      const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload').and.callThrough();
+      fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
+      const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
+      component.uploader.addToQueue(files);
+
+      component.uploadAll();
+
+      expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
+      expect(spiedCloseModal).toHaveBeenCalledTimes(1);
+    });
+
+    it('and api service is called', () => {
+      const patch = new Patch('item', component.item.item.hash).unwrap({
+        signature: 'signature',
+        url: 'image url',
+        secure_url: 'image secure url',
+        resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+      });
+
+      component.persistUpload(patch, function () {
+        component.closeModal();
+      });
+
+      expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
+      expect(spiedCloseModal).toHaveBeenCalled();
+    });
+
+    it('modal is closed once all uploads ended', () => {
+      const patch = new Patch('item', component.item.item.hash).unwrap({
+        signature: 'signature',
+        url: 'image url',
+        secure_url: 'image secure url',
+        resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+      });
+
+      component.persistUpload(patch);
+      component.persistUpload(patch, () => {
+        component.closeModal();
+      });
+
+      expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
+      expect(spiedCloseModal).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('then upload to third part service', () => {
-    const formData = new FormData();
-    const fileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {});
-    spiedUploaderUploadItem.and.callFake(() => {
-      component.uploader.onBuildItemForm(fileItem,
-        formData
-      );
-    });
-    component.uploader.addToQueue([new File(['a file content'], 'my_file')]);
+  describe('execute other actions', () => {
 
-    component.uploadAll();
+    it('removes image from queue list', () => {
+      component.item = CONTAINER.items[0];
+      component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
 
-    expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
-      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
-    expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(1);
-  });
+      component.remove(component.uploader.queue[0]);
 
-  it('as many time there is a file to upload', () => {
-    let alreadyCalled = false;
-    const formData = new FormData();
-    const formData2 = new FormData();
-    const fileItem = new FileItem(component.uploader, new File(['a file content'], 'my_file'), {});
-    const fileItem2 = new FileItem(component.uploader, new File(['another file content'], 'my_other_file'), {});
-    spiedUploaderUploadItem.and.callFake(() => {
-      if (alreadyCalled) {
-        component.uploader.onBuildItemForm(fileItem2, formData2);
-      } else {
-        component.uploader.onBuildItemForm(fileItem, formData);
-      }
-      alreadyCalled = true;
-    });
-    fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
-    const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
-    component.uploader.addToQueue(files);
-
-    component.uploadAll();
-
-    expectFormDataAndFileItem(formData, '123456', '1315067710', '123456_1', '1234',
-      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem);
-    expectFormDataAndFileItem(formData2, '123456', '1315067725', '123456_2', '1234',
-      'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800', 'abcd', fileItem2);
-    expect(spiedUploaderUploadItem).toHaveBeenCalledTimes(2);
-  });
-
-  it('once upload done send result to api', () => {
-    spiedUploaderUploadItem.and.callFake(() => {
-      component.uploader.onCompleteItem(
-        new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {}), response, 200, {});
-    });
-    const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload').and.callThrough();
-    fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
-    const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
-    component.uploader.addToQueue(files);
-
-    component.uploadAll();
-
-    expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
-    expect(spiedCloseModal).toHaveBeenCalledTimes(1);
-  });
-
-  it('and api service is called', () => {
-    const patch = new Patch('item', component.item.item.hash).unwrap({
-      signature: 'signature',
-      url: 'image url',
-      secure_url: 'image secure url',
-      resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+      expect(component.uploader.queue.length).toBe(1);
+      expect(component.uploader.queue[0].file.name).toBe('my_other_file');
     });
 
-    component.persistUpload(patch, function () {
-      component.closeModal();
+    it('removes all images from queue list', () => {
+      component.item = CONTAINER.items[0];
+      component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
+
+      component.removeAll();
+
+      expect(component.uploader.queue.length).toBe(0);
     });
 
-    expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
-    expect(spiedCloseModal).toHaveBeenCalled();
-  });
+    it('aborts all images upload', () => {
+      component.item = CONTAINER.items[0];
+      component.uploader.addToQueue([new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')]);
 
-  it('modal is closed once all uploads ended', () => {
-    const patch = new Patch('item', component.item.item.hash).unwrap({
-      signature: 'signature',
-      url: 'image url',
-      secure_url: 'image secure url',
-      resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+      component.cancelAll();
+
+      expect(spiedUploaderCancelAll).toHaveBeenCalledTimes(1);
     });
 
-    component.persistUpload(patch);
-    component.persistUpload(patch, () => {
-      component.closeModal();
-    });
-
-    expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
-    expect(spiedCloseModal).toHaveBeenCalledTimes(1);
   });
 
   const expectFormDataAndFileItem = function (formData: FormData, expectedFolder: string, expectedTimestamp: string,

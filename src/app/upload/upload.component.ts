@@ -45,7 +45,13 @@ export class UploadComponent implements OnInit {
     });
   }
 
-  upload(fileItem: FileItem, index: number, files: any[]) {
+  uploadAll() {
+    this.uploader.getNotUploadedItems().forEach((fileItem, index, array) => {
+      this.upload(fileItem, index, array);
+    });
+  }
+
+  private upload(fileItem: FileItem, index: number, files: any[]) {
     const publicId = this.uuidService.base64Encoded();
     this.timestamp = this.dateTimeProvider.now().unixTimestamp();
     this.signatureService
@@ -90,14 +96,6 @@ export class UploadComponent implements OnInit {
       });
   }
 
-  cancel(item) {
-
-  }
-
-  remove(item) {
-
-  }
-
   onBuildItemForm(fileItem, form, publicId, timestamp, signature) {
     fileItem.withCredentials = false;
     form.append('folder', this.item.item.hash);
@@ -109,18 +107,16 @@ export class UploadComponent implements OnInit {
     form.append('signature', signature.signature);
   }
 
-  uploadAll() {
-    this.uploader.getNotUploadedItems().forEach((fileItem, index, array) => {
-      this.upload(fileItem, index, array);
-    });
+  remove(item: FileItem) {
+    this.uploader.removeFromQueue(item);
   }
 
   cancelAll() {
-
+    this.uploader.cancelAll();
   }
 
-  clearQueue() {
-
+  removeAll() {
+    this.uploader.clearQueue();
   }
 
   closeModal() {

@@ -5,8 +5,8 @@
   </button>
 </div>
 
-<div class="modal-body col-sm-12">
-  <div class="row col-sm-12 upload">
+<div class="modal-body col-12">
+  <div class="row col-12 upload">
     <div class="col-sm-4">
       <div ng2FileDrop
            [uploader]="uploader"
@@ -19,76 +19,68 @@
       <input type="file" ng2FileSelect [uploader]="uploader" multiple/><br/>
     </div>
   </div>
-  <div>
-    <div class="col-12">
+  <div class="col-12">
+    <div>
       <h3>Upload queue</h3>
       <p>Queue length: {{ uploader?.queue?.length }}</p>
-
-      <table class="table">
-        <thead>
-        <tr>
-          <th width="50%">Name</th>
-          <th>Size</th>
-          <th>Progress</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of uploader.queue; let i = index" [attr.data-index]="i">
-          <td><strong>{{ item?.file?.name }}</strong></td>
-          <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-          <td *ngIf="uploader.isHTML5">
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
-            </div>
-          </td>
-          <td class="text-center">
-            <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-            <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-            <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-          </td>
-          <td nowrap>
-            <button type="button" class="btn btn-success btn-xs"
-                    (click)="upload(item,i,array)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
-              <span class="glyphicon glyphicon-upload"></span> Upload
-            </button>
-            <button type="button" class="btn btn-warning btn-xs"
-                    (click)="cancel(item)" [disabled]="!item.isUploading">
-              <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-            </button>
-            <button type="button" class="btn btn-danger btn-xs"
-                    (click)="remove(item)">
-              <span class="glyphicon glyphicon-trash"></span> Remove
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-      <div>
-        <div>
-          Queue progress:
-          <div class="progress upload">
-            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-success btn-s"
-                (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
-          <span class="glyphicon glyphicon-upload"></span> Upload all
-        </button>
-        <button type="button" class="btn btn-warning btn-s"
-                (click)="cancelAll()" [disabled]="!uploader.isUploading">
-          <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-        </button>
-        <button type="button" class="btn btn-danger btn-s"
-                (click)="clearQueue()" [disabled]="!uploader.queue.length">
-          <span class="glyphicon glyphicon-trash"></span> Remove all
-        </button>
-      </div>
-
     </div>
 
+    <div class="row">
+      <div class="col-5">Name</div>
+      <div class="col-4">Status</div>
+      <div class="col-3">Delete</div>
+    </div>
+    <div class="row" *ngFor="let item of uploader.queue; let i = index" [attr.data-index]="i">
+      <div class="col-5"><strong>{{ item?.file?.name | truncate:12}}</strong></div>
+      <div class="col-4">
+            <span *ngIf="item.isSuccess" class="icon">
+              <svg viewBox="0 0 18 18" class="icon">
+                <use xlink:href="assets/open-iconic/open-iconic.min.svg#check"
+                     class="check"></use>
+              </svg>
+            </span>
+        <span *ngIf="item.isCancel" class="icon">
+              <svg viewBox="0 0 18 18" class="icon">
+                <use xlink:href="assets/open-iconic/open-iconic.min.svg#ban"
+                     class="ban"></use>
+              </svg>
+            </span>
+        <span *ngIf="item.isError" class="icon">
+              <svg viewBox="0 0 8 8" class="icon">
+                <use xlink:href="assets/open-iconic/open-iconic.min.svg#x"
+                     class="x"></use>
+              </svg></span>
+      </div>
+      <div class="col-3 col-md-2 justify-content-end align-self-center">
+          <span class="cursor-pointer icon">
+            <svg viewBox="0 0 8 8" class="icon" (click)="remove(item)">
+              <use xlink:href="assets/open-iconic/open-iconic.min.svg#trash"
+                   class="trash"></use>
+            </svg>
+          </span>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        Queue progress:
+        <div class="progress upload">
+          <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-success btn-s"
+              (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Upload all
+      </button>
+      <button type="button" class="btn btn-warning btn-s"
+              (click)="cancelAll()" [disabled]="!uploader.isUploading">
+        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+      </button>
+      <button type="button" class="btn btn-danger btn-s"
+              (click)="removeAll()" [disabled]="!uploader.queue.length">
+        <span class="glyphicon glyphicon-trash"></span> Remove all
+      </button>
+    </div>
   </div>
 </div>
 

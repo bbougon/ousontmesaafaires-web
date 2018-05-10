@@ -1,5 +1,6 @@
 # Où sont mes affaires web
 [![Build Status](https://travis-ci.org/bbougon/ousontmesaafaires-web.svg)](https://travis-ci.org/bbougon/ousontmesaafaires-web)
+[![codecov.io](https://codecov.io/gh/bbougon/ousontmesaafaires-web/coverage.svg?branch=master)](https://codecov.io/gh/bbougon/ousontmesaafaires-web/codecov.io?branch=master)
 
 ## CI
 https://travis-ci.org/bbougon/ousontmesaafaires-web

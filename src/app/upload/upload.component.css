@@ -7,3 +7,29 @@
 .upload {
   margin-bottom: 8px;
 }
+
+.trash {
+  fill: grey;
+}
+
+.check {
+  fill: #5cb85c;
+}
+
+.ban {
+  fill: #ffc107;
+}
+
+.x {
+  fill: #d9534f;
+}
+
+.icon {
+  padding-left: 10px;
+}
+
+.icon > * {
+  width: 12px;
+  height: 12px;
+  padding-left: 0px;
+}
