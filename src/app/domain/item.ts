@@ -1,8 +1,8 @@
-import {Image} from './image';
+import {ImageStore} from './image-store';
 
 export class Item {
 
-  constructor(public item: {[key: string]: any, hash?: string, images?: Image[]}) {
+  constructor(public item: {[key: string]: any, hash?: string, imageStore?: ImageStore}) {
   }
 
 }

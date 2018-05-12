@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Image} from '../domain/image';
 import {ResizedImage} from '../domain/resized-image';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {ImageStore} from "../domain/image-store";
 
 @Component({
   selector: 'app-carousel',
@@ -10,7 +11,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class CarouselComponent implements OnInit {
 
-  @Input() images: Image[];
+  @Input() imageStore: ImageStore;
 
   constructor(public activeModal: NgbActiveModal) {
   }
@@ -19,7 +20,7 @@ export class CarouselComponent implements OnInit {
   }
 
   getCarouselImages(): ResizedImage[] {
-    return this.images.map(value => {
+    return this.imageStore.images.map(value => {
       return value.resizedImages
         .filter(resizedImage => resizedImage.width === 400)[0];
     });

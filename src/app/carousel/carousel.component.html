@@ -6,7 +6,7 @@
 </div>
 
 <div class="modal-body col-sm-12">
-  <ngb-carousel *ngIf="images">
+  <ngb-carousel *ngIf="imageStore">
     <ng-template ngbSlide *ngFor="let image of getCarouselImages()">
       <img [src]="image.secureUrl">
     </ng-template>

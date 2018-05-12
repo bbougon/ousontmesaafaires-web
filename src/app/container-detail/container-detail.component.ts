@@ -12,6 +12,7 @@ import {Item} from '../domain/item';
 import {Patch} from '../infrastructure/patch/patch';
 import {Image} from '../domain/image';
 import {CarouselComponent} from '../carousel/carousel.component';
+import {ImageStore} from "../domain/image-store";
 
 @Component({
   selector: 'ng-container-detail',
@@ -100,8 +101,8 @@ export class ContainerDetailComponent implements OnInit {
       .filter(value => value.width === minimumWdth)[0].secureUrl;
   }
 
-  openCarousel(images: Image[]) {
+  openCarousel(imageStore: ImageStore) {
     const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'lg', centered: true});
-    ngbModalRef.componentInstance.images = images;
+    ngbModalRef.componentInstance.imageStore = imageStore;
   }
 }

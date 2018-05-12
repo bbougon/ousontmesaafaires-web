@@ -29,7 +29,7 @@ describe('CarouselComponent', () => {
   });
 
   it('get carousel at expected size', () => {
-    component.images = CONTAINER.items[0].item.images;
+    component.imageStore = CONTAINER.items[0].item.imageStore;
 
     const resizedImages: ResizedImage[] = component.getCarouselImages();
 

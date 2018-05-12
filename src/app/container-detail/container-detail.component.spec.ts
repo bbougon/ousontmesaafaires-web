@@ -73,7 +73,7 @@ describe('ContainerDetailComponent', () => {
     it('and thumbnail image', () => {
       component.container = CONTAINER;
 
-      const url: string = component.getThumbnail(component.container.items[0].item.images[0]);
+      const url: string = component.getThumbnail(component.container.items[0].item.imageStore.images[0]);
 
       expect(url).toBe('assets/testing/secureUrl2.png');
     });
@@ -112,7 +112,7 @@ describe('ContainerDetailComponent', () => {
     it('to display carousel for an item', () => {
       component.container = CONTAINER;
       ngbModal = fixture.debugElement.injector.get(NgbModal);
-      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {images: CONTAINER.items[0].item.images}});
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {images: CONTAINER.items[0].item.imageStore}});
       const compiled = fixture.debugElement.nativeElement;
       fixture.detectChanges();
 
