@@ -122,7 +122,7 @@ export class UploadComponent implements OnInit {
 
   onBuildItemForm(fileItem, form, publicId, timestamp, signature) {
     fileItem.withCredentials = false;
-    form.append('folder', this.item.item.hash);
+    form.append('folder', this.item.item.imageStore.folder);
     form.append('file', fileItem);
     form.append('timestamp', timestamp);
     form.append('public_id', publicId);

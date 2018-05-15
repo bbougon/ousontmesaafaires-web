@@ -119,7 +119,7 @@ describe('ContainerDetailComponent', () => {
       const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > div > img');
       querySelectorAll[0].click();
 
-      expect(spiedModalService).toHaveBeenCalledWith(CarouselComponent, {size: 'lg', centered: true});
+      expect(spiedModalService).toHaveBeenCalledWith(CarouselComponent, {size: 'sm', centered: true});
     });
   });
 

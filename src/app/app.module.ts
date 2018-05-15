@@ -26,6 +26,7 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {SignatureService} from './upload/signature.service';
 import {UuidService} from './infrastructure/uuid.service';
 import { CarouselComponent } from './carousel/carousel.component';
+import {CryptoService} from "./infrastructure/crypto.service";
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -59,7 +60,7 @@ const routes: Routes = [
     NgxQRCodeModule,
     FileUploadModule
   ],
-  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService, UuidService],
+  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService, UuidService, CryptoService],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe

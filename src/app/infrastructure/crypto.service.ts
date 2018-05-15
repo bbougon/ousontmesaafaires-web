@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import CryptoJS = require('crypto-js');
+import * as CryptoJS from 'crypto-js';
 
 export class Encryptor {
 
