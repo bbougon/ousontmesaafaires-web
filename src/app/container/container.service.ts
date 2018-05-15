@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NewContainer} from '../domain/new-container';
 import {Observable} from 'rxjs/Observable';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import {catchError, tap} from 'rxjs/operators';
@@ -76,15 +76,16 @@ export class ContainerService {
         catchError(this.handleError(`Add item to container`, item)));
   }
 
-  patchContainer(containerId: string, body: Patch): Observable<any> {
-    return this.httpClient.patch(`${environment.apiUrl}/containers/${containerId}`,
-      body,
+  patchContainer(containerId: string, patch: Patch): Observable<Container> {
+    return this.httpClient.patch<Container>(`${environment.apiUrl}/containers/${containerId}`,
+      patch,
       {
         observe: 'response',
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
-        responseType: 'text'
+        responseType: 'json'
       })
-      .pipe(tap(() => console.log(`Patch container with (${body}) for container=${containerId}`)),
-        catchError(this.handleError(`Patch container with`, body)));
+      .map((response: HttpResponse<Container>) => {
+        return new Container(response.body);
+      });
   }
 }

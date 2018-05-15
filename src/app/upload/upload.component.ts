@@ -8,15 +8,22 @@ import {DateTimeProvider} from '../infrastructure/date-time-provider';
 import {ContainerService} from '../container/container.service';
 import {Patch} from '../infrastructure/patch/patch';
 import {UuidService} from '../infrastructure/uuid.service';
+import {Container} from '../domain/container';
+import {Image} from '../domain/image';
+import {CryptoService} from '../infrastructure/crypto.service';
+import {isUndefined} from 'util';
+import {ItemStringFormatter} from '../infrastructure/item-string-formatter';
+import {ResizedImage} from '../domain/resized-image';
 
 @Component({
-  selector: 'app-upload',
+  selector: 'ng-upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
 
   @Input() item: Item;
+  @Input() container: Container;
   @Input() containerId: string;
 
   timestamp: number;
@@ -26,7 +33,8 @@ export class UploadComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
               private signatureService: SignatureService,
               private containerService: ContainerService,
-              private uuidService: UuidService) {
+              private uuidService: UuidService,
+              private cryptoService: CryptoService) {
   }
 
   ngOnInit() {
@@ -57,7 +65,7 @@ export class UploadComponent implements OnInit {
     this.signatureService
       .sign({
         eager: 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800',
-        folder: this.item.item.hash,
+        folder: this.item.item.imageStore.folder,
         public_id: publicId,
         timestamp: this.timestamp
       })
@@ -88,8 +96,24 @@ export class UploadComponent implements OnInit {
   }
 
   persistUpload(patch: Patch, callBack?: () => void) {
+    const addImageTo = function () {
+      this.item.item.imageStore.images.push(
+        new Image(patch.data.signature, patch.data.url, patch.data.secure_url,
+          patch.data.resizedImages
+            .map(resizedImage => new ResizedImage(resizedImage.url, resizedImage.secure_url,
+              resizedImage.height, resizedImage.width))));
+    };
+
     this.containerService.patchContainer(this.containerId, patch)
-      .subscribe(() => {
+      .subscribe((container: Container) => {
+        if (isUndefined(this.item.item.imageStore.images)) {
+          this.item.item.imageStore.images = [];
+        }
+        addImageTo.call(this);
+        this.item.item.hash = this.cryptoService.sha1().encrypt(new ItemStringFormatter(this.item).format());
+        if (isUndefined(container.items.find(item => item.item.hash === this.item.item.hash))) {
+          throw new Error('Error, could not find item ' + this.item.item.hash + ' in updated container!');
+        }
         if (callBack) {
           callBack();
         }

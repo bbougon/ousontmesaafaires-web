@@ -14,6 +14,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgbModalStack} from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
 import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 import {Patch} from '../infrastructure/patch/patch';
+import {ImageStore} from '../domain/image-store';
 
 describe('ContainerService', () => {
   beforeEach(async(() => {
@@ -118,7 +119,8 @@ describe('ContainerService', () => {
 
     it('should have post an item to a container with expected request', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge', hash: 'abcdefgh'}))
+        containerService.addItemToContainer('an-id',
+          new Item({'couleur': 'rouge', hash: 'abcdefgh', 'imageStore': new ImageStore('folder')}))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -130,7 +132,8 @@ describe('ContainerService', () => {
 
     it('should have post expected item', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addItemToContainer('an-id', new Item({'couleur': 'rouge', hash: 'zetrydhsk'}))
+        containerService.addItemToContainer('an-id',
+          new Item({'couleur': 'rouge', hash: 'zetrydhsk', 'imageStore': new ImageStore('folder')}))
           .subscribe(() => {
             expect(this).not.toBeNull();
           });
@@ -157,7 +160,8 @@ describe('ContainerService', () => {
         mockBackend.expectOne((req: HttpRequest<any>) => {
           return req.url === environment.apiUrl + '/containers/an-id';
         }, 'GET container');
-      })));
+      }))
+    );
 
     it('should get container with expected content', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
@@ -175,10 +179,11 @@ describe('ContainerService', () => {
           statusText: 'OK'
         });
 
-      })));
+      }))
+    );
   });
 
-  describe('when interacting with a container', () => {
+  describe('when patching a container', () => {
 
     afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
       backend.verify();
@@ -195,6 +200,26 @@ describe('ContainerService', () => {
             && req.method === 'PATCH'
             && JSON.stringify(req.body) === '{"target":"description","id":"","version":1,"data":"A description"}';
         }, 'PATCH container');
+      }))
+    );
+
+
+    it('return expected container', async(
+      inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
+        containerService.patchContainer('an-id', new Patch('description').unwrap('A description'))
+          .subscribe((container) => {
+            expect(container).not.toBeNull();
+            expect(container.id).toBe('an-id');
+          });
+
+        mockBackend.expectOne(`${environment.apiUrl}/containers/an-id`).flush({
+          'id': 'an-id', 'items': [{'item': {'type': 'chaussure'}, 'imageStore': {'folder': 'folder'}}],
+          'name': 'Container 1', 'qrcode': 'qrcode'
+        }, {
+          status: 200,
+          statusText: 'OK'
+        });
+
       })));
   });
 

@@ -98,7 +98,7 @@ describe('ContainerDetailComponent', () => {
 
     it('for image upload', () => {
       ngbModal = fixture.debugElement.injector.get(NgbModal);
-      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {item: CONTAINER.items[0]}});
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {item: CONTAINER.items[0], container: CONTAINER}});
       component.container = CONTAINER;
       const compiled = fixture.debugElement.nativeElement;
       fixture.detectChanges();

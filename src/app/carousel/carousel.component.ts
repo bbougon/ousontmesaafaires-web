@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Image} from '../domain/image';
 import {ResizedImage} from '../domain/resized-image';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {ImageStore} from "../domain/image-store";
+import {ImageStore} from '../domain/image-store';
 
 @Component({
   selector: 'app-carousel',

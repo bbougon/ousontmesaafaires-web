@@ -16,9 +16,95 @@ import {response} from './cloudinary-response';
 import {Patch} from '../infrastructure/patch/patch';
 import {UuidService} from '../infrastructure/uuid.service';
 import {FakeUuidService} from '../../testing/fake-uuid.service';
+import {ImageStore} from '../domain/image-store';
+import {Image} from '../domain/image';
+import {Container} from '../domain/container';
+import {CryptoService} from '../infrastructure/crypto.service';
+import {FakeCryptoService} from '../../testing/fake-crypto-service';
 import Spy = jasmine.Spy;
 
 describe('UploadComponent', () => {
+
+  const retrievedContainer = {
+      'id': 'an-id',
+      'name': 'Bureau',
+      'items': [{
+        'item': {'type': 'chaussure'},
+        'imageStore': {
+          'folder': 'folder_name',
+          'images': [{
+            'signature': 'signature',
+            'url': 'url',
+            'secureUrl': 'secureUrl',
+            'resizedImages': [{
+              'url': 'assets/testing/url2.png',
+              'secureUrl': 'assets/testing/secureUrl2.png',
+              'height': 110.0,
+              'width': 80.0
+            }, {
+              'url': 'assets/testing/url3.png',
+              'secureUrl': 'assets/testing/secureUrl3.png',
+              'height': 552.0,
+              'width': 400.0
+            }, {
+              'url': 'assets/testing/url4.png',
+              'secureUrl': 'assets/testing/secureUrl4.png',
+              'height': 1103.0,
+              'width': 800.0
+            }]
+          }, {
+            'signature': 'signature2',
+            'url': 'url5',
+            'secureUrl': 'secureUrl5',
+            'resizedImages': [{
+              'url': 'assets/testing/url6.png',
+              'secureUrl': 'assets/testing/secureUrl6.png',
+              'height': 110.0,
+              'width': 80.0
+            }, {
+              'url': 'assets/testing/url7.png',
+              'secureUrl': 'assets/testing/secureUrl7.png',
+              'height': 552.0,
+              'width': 400.0
+            }, {
+              'url': 'assets/testing/url8.png',
+              'secureUrl': 'assets/testing/secureUrl8.png',
+              'height': 1103.0,
+              'width': 800.0
+            }]
+          }]
+        },
+        'hash': '5acba3dc1c6bb5d7df07230d2538f4f938a002da'
+      }, {
+        'item': {'type': 'pantalon', 'couleur': 'marron'},
+        'imageStore': {
+          'folder': 'folder_name_2',
+          'images': [{
+            'signature': 'signature_2',
+            'url': 'assets/testing/url5.png',
+            'secureUrl': 'assets/testing/secureUrl5.png',
+            'resizedImages': [{
+              'url': 'assets/testing/url6.png',
+              'secureUrl': 'assets/testing/secureUrl6.png',
+              'height': 110.0,
+              'width': 80.0
+            }, {
+              'url': 'assets/testing/url7.png',
+              'secureUrl': 'assets/testing/secureUrl7.png',
+              'height': 552.0,
+              'width': 400.0
+            }, {
+              'url': 'assets/testing/url8.png',
+              'secureUrl': 'assets/testing/secureUrl8.png',
+              'height': 1103.0,
+              'width': 800.0
+            }]
+          }]
+        },
+        'hash': '1de26eb55d4baa7a24ac94715b075103630bf2c9'
+      }]
+    }
+  ;
 
   let component: UploadComponent;
   let fixture: ComponentFixture<UploadComponent>;
@@ -39,7 +125,8 @@ describe('UploadComponent', () => {
         NgbActiveModal,
         SignatureService,
         {provide: ContainerService, useClass: FakeContainerService},
-        {provide: UuidService, useClass: FakeUuidService}
+        {provide: UuidService, useClass: FakeUuidService},
+        CryptoService
       ],
       imports: [AppModule]
     })
@@ -61,8 +148,32 @@ describe('UploadComponent', () => {
       apiKey: '1234',
       signature: 'abcd'
     })));
-    spiedContainerService = spyOn(containerService, 'patchContainer').and.returnValue(of({response: {status: 200}}));
-    component.item = new Item({'hash': '123456', 'couleur': 'rouge'});
+    spiedContainerService = spyOn(containerService, 'patchContainer')
+      .and.returnValue(of(new Container(retrievedContainer)));
+    component.item = new Item({
+      item: {
+        'type': 'chaussure'
+      },
+      imageStore: new ImageStore('folder_name', [new Image(
+        'signature', 'url', 'secureUrl', [{
+          'url': 'assets/testing/url2.png',
+          'secureUrl': 'assets/testing/secureUrl2.png',
+          'height': 110.0,
+          'width': 80.0
+        }, {
+          'url': 'assets/testing/url3.png',
+          'secureUrl': 'assets/testing/secureUrl3.png',
+          'height': 552.0,
+          'width': 400.0
+        }, {
+          'url': 'assets/testing/url4.png',
+          'secureUrl': 'assets/testing/secureUrl4.png',
+          'height': 1103.0,
+          'width': 800.0
+        }]
+      )]),
+      hash: '123456'
+    });
     component.containerId = '12345';
     fakeDateTimeProvider = new FakeDateTimeProvider(createDateAtUTC(2011, 8, 3, 16, 35, 10, 20));
     component.dateTimeProvider = fakeDateTimeProvider;
@@ -82,13 +193,15 @@ describe('UploadComponent', () => {
       component.uploadAll();
 
       expectUploaderOptions();
-      expectSignatureServiceCall(component.item.item.hash, '123456_1', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
-      expectSignatureServiceCall(component.item.item.hash, '123456_2', 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+      expectSignatureServiceCall(component.item.item.imageStore.folder, '123456_1',
+        'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
+      expectSignatureServiceCall(component.item.item.imageStore.folder, '123456_2',
+        'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
     });
 
     it('then upload to third part service', () => {
       const formData = new FormData();
-      const fileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {});
+      const fileItem = new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uploaded_file'), {});
       spiedUploaderUploadItem.and.callFake(() => {
         component.uploader.onBuildItemForm(fileItem,
           formData
@@ -133,25 +246,32 @@ describe('UploadComponent', () => {
     it('once upload done send result to api', () => {
       spiedUploaderUploadItem.and.callFake(() => {
         component.uploader.onCompleteItem(
-          new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uplobded_file'), {}), response, 200, {});
+          new FileItem(component.uploader, new File(['an uploaded file content'], 'an_uploaded_file'), {}), response, 200, {});
       });
       const spiedOnCompleteUpload = spyOn(component, 'onCompleteUpload').and.callThrough();
       fakeDateTimeProvider.addDate(createDateAtUTC(2011, 8, 3, 16, 35, 25, 20));
-      const files: File[] = [new File(['a file content'], 'my_file'), new File(['another file content'], 'my_other_file')];
+      const files: File[] = [new File(['a file content'], 'my_file')];
       component.uploader.addToQueue(files);
 
       component.uploadAll();
 
-      expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(2);
+      expect(spiedOnCompleteUpload).toHaveBeenCalledTimes(1);
       expect(spiedCloseModal).toHaveBeenCalledTimes(1);
     });
 
     it('and api service is called', () => {
       const patch = new Patch('item', component.item.item.hash).unwrap({
-        signature: 'signature',
-        url: 'image url',
-        secure_url: 'image secure url',
-        resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+        signature: 'signature2',
+        url: 'url5',
+        secure_url: 'secureUrl5',
+        resizedImages: [{
+          url: 'assets/testing/url6.png',
+          secure_url: 'assets/testing/secureUrl6.png',
+          height: 110.0,
+          width: 80.0
+        },
+          {url: 'assets/testing/url7.png', secure_url: 'assets/testing/secureUrl7.png', height: 552.0, width: 400.0},
+          {url: 'assets/testing/url8.png', secure_url: 'assets/testing/secureUrl8.png', height: 1103.0, width: 800.0}]
       });
 
       component.persistUpload(patch, function () {
@@ -160,14 +280,77 @@ describe('UploadComponent', () => {
 
       expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
       expect(spiedCloseModal).toHaveBeenCalled();
+      expect(component.item.item.hash).toBe('5acba3dc1c6bb5d7df07230d2538f4f938a002da');
+      expect(component.item.item.imageStore.images.length).toBe(2);
     });
 
     it('modal is closed once all uploads ended', () => {
+      spiedContainerService.and.returnValue(of(new Container({
+          'id': 'an-id',
+          'name': 'Bureau',
+          'items': [{
+            'item': {'type': 'chaussure'},
+            'imageStore': {
+              'folder': 'folder_name',
+              'images': [{
+                'signature': 'signature',
+                'url': 'url',
+                'secureUrl': 'secureUrl',
+                'resizedImages': [{
+                  'url': 'assets/testing/url2.png',
+                  'secureUrl': 'assets/testing/secureUrl2.png',
+                  'height': 110.0,
+                  'width': 80.0
+                }, {
+                  'url': 'assets/testing/url3.png',
+                  'secureUrl': 'assets/testing/secureUrl3.png',
+                  'height': 552.0,
+                  'width': 400.0
+                }, {
+                  'url': 'assets/testing/url4.png',
+                  'secureUrl': 'assets/testing/secureUrl4.png',
+                  'height': 1103.0,
+                  'width': 800.0
+                }]
+              }, {
+                'signature': 'signature2',
+                'url': 'url5',
+                'secureUrl': 'secureUrl5',
+                'resizedImages': [{
+                  'url': 'assets/testing/url6.png',
+                  'secureUrl': 'assets/testing/secureUrl6.png',
+                  'height': 110.0,
+                  'width': 80.0
+                }, {
+                  'url': 'assets/testing/url7.png',
+                  'secureUrl': 'assets/testing/secureUrl7.png',
+                  'height': 552.0,
+                  'width': 400.0
+                }, {
+                  'url': 'assets/testing/url8.png',
+                  'secureUrl': 'assets/testing/secureUrl8.png',
+                  'height': 1103.0,
+                  'width': 800.0
+                }]
+              }]
+            },
+            'hash': 'sha-1'
+          }]
+        })));
+      const cryptoService: CryptoService = fixture.debugElement.injector.get(CryptoService);
+      spyOn(cryptoService, 'sha1').and.returnValue(new FakeCryptoService((message) => 'sha-1'));
       const patch = new Patch('item', component.item.item.hash).unwrap({
-        signature: 'signature',
-        url: 'image url',
-        secure_url: 'image secure url',
-        resizedImages: [{url: 'url', secure_url: 'secure_url', width: 100, height: 200}]
+        signature: 'signature2',
+        url: 'url5',
+        secure_url: 'secureUrl5',
+        resizedImages: [{
+          url: 'assets/testing/url6.png',
+          secure_url: 'assets/testing/secureUrl6.png',
+          height: 110.0,
+          width: 80.0
+        },
+          {url: 'assets/testing/url7.png', secure_url: 'assets/testing/secureUrl7.png', height: 552.0, width: 400.0},
+          {url: 'assets/testing/url8.png', secure_url: 'assets/testing/secureUrl8.png', height: 1103.0, width: 800.0}]
       });
 
       component.persistUpload(patch);

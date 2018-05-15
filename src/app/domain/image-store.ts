@@ -3,6 +3,6 @@ import {Image} from './image';
 export class ImageStore {
 
 
-  constructor(public folder: string, public images: Image[]) {
+  constructor(public folder: string, public images?: Image[]) {
   }
 }

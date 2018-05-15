@@ -12,7 +12,7 @@ import {Item} from '../domain/item';
 import {Patch} from '../infrastructure/patch/patch';
 import {Image} from '../domain/image';
 import {CarouselComponent} from '../carousel/carousel.component';
-import {ImageStore} from "../domain/image-store";
+import {ImageStore} from '../domain/image-store';
 
 @Component({
   selector: 'ng-container-detail',
@@ -56,7 +56,7 @@ export class ContainerDetailComponent implements OnInit {
           }));
   }
 
-  addDescription(description: string, event ?: any) {
+  addDescription(description: string) {
     this.route.paramMap
       .subscribe(pmap =>
         this.containerService.patchContainer(pmap.get('id'), new Patch('description').unwrap(description))
@@ -74,22 +74,15 @@ export class ContainerDetailComponent implements OnInit {
     }
   }
 
-  private hide(elementRef: ElementRef) {
-    elementRef.nativeElement.setAttribute('hidden', true);
-  }
-
-  private show(elementRef: ElementRef) {
-    elementRef.nativeElement.removeAttribute('hidden');
-  }
-
   private hideAndShow(elementToHide: ElementRef, elementToShow: ElementRef) {
-    this.hide(elementToHide);
-    this.show(elementToShow);
+    elementToHide.nativeElement.setAttribute('hidden', true);
+    elementToShow.nativeElement.removeAttribute('hidden');
   }
 
   openUploadModal(item: Item) {
     const ngbModalRef = this.ngbModal.open(UploadComponent, {size: 'lg'});
     ngbModalRef.componentInstance.item = item;
+    ngbModalRef.componentInstance.container = this.container;
     this.route.paramMap.subscribe(pmap => ngbModalRef.componentInstance.containerId = pmap.get('id'));
   }
 
