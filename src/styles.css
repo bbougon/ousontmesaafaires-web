@@ -79,6 +79,22 @@
   height: 164px;
 }
 
+.carousel-modal .modal-content {
+   position: relative;
+   display: -ms-flexbox;
+   display: flex;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   width: 100%;
+   pointer-events: auto;
+   background-color: transparent;
+   background-clip: padding-box;
+   border: 0;
+   border-radius: 0;
+   outline: 0;
+ }
+
+
 @media print {
 
   @page {

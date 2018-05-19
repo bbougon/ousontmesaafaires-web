@@ -95,7 +95,7 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   openCarousel(imageStore: ImageStore) {
-    const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'sm', centered: true});
+    const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'sm', centered: true, windowClass: 'carousel-modal'});
     ngbModalRef.componentInstance.imageStore = imageStore;
   }
 }
