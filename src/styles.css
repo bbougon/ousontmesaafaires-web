@@ -63,12 +63,6 @@
   cursor: pointer;
 }
 
-@media only screen and (min-width: 960px) {
-  .sidebar {
-    width: 240px;
-  }
-}
-
 .container .qrcode img {
   width: 128px;
   height: 128px;
@@ -80,20 +74,32 @@
 }
 
 .carousel-modal .modal-content {
-   position: relative;
-   display: -ms-flexbox;
-   display: flex;
-   -ms-flex-direction: column;
-   flex-direction: column;
-   width: 100%;
-   pointer-events: auto;
-   background-color: transparent;
-   background-clip: padding-box;
-   border: 0;
-   border-radius: 0;
-   outline: 0;
- }
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+}
 
+@media only screen and (min-width: 960px) {
+  .sidebar {
+    width: 240px;
+  }
+}
+
+@media (min-width: 576px) {
+  .carousel-modal .modal-sm {
+    max-width: 400px;
+    min-width: 400px;
+  }
+}
 
 @media print {
 
