@@ -48,38 +48,43 @@
     <div class="col-md-9 col-sm-12 top">
       <div class="col-12">
         <div class="row-fluid" *ngIf="container">
-          <ul class="list-group">
-            <li *ngFor="let item of container.items" class="list-group-item">
-              <div class="row">
-                <div class="col-md-10 col-10">
-                  <div>
-                    <span *ngIf="item" [outerHTML]="item.item | item"></span>
+          <div class="col-12 align-self-end text-right">
+            <h5># of item(s): {{container.items?.length}}</h5>
+          </div>
+          <div>
+            <ul class="list-group">
+              <li *ngFor="let item of container.items" class="list-group-item">
+                <div class="row">
+                  <div class="col-md-10 col-10">
+                    <div>
+                      <span *ngIf="item" [outerHTML]="item.item | item"></span>
+                    </div>
+                    <div *ngIf="item.item.imageStore" class="row col-4">
+                      <img *ngIf="item.item.imageStore.images" src="{{getThumbnail(item.item.imageStore.images[0])}}" (click)="openCarousel(item.item.imageStore)">
+                    </div>
                   </div>
-                  <div *ngIf="item.item.imageStore" class="row col-4">
-                    <img *ngIf="item.item.imageStore.images" src="{{getThumbnail(item.item.imageStore.images[0])}}" (click)="openCarousel(item.item.imageStore)">
-                  </div>
-                </div>
-                <div class="col-md-2 col-2 justify-content-end align-self-center">
+                  <div class="col-md-2 col-2 justify-content-end align-self-center">
                   <span class="cursor-pointer icon" (click)="openUploadModal(item)">
                     <svg viewBox="0 0 8 8">
                       <use xlink:href="assets/open-iconic/open-iconic.min.svg#image" class="image"></use>
                     </svg>
                   </span>
-                  <span class="cursor-pointer icon">
+                    <span class="cursor-pointer icon" (click)="openTransferToNewContainer(item)">
                     <svg viewBox="0 0 8 8">
                       <use xlink:href="assets/open-iconic/open-iconic.min.svg#data-transfer-upload"
                            class="data-transfer-upload"></use>
                     </svg>
                   </span>
-                  <span class="cursor-pointer icon">
+                    <span class="cursor-pointer icon" (click)="openTransferToExistingContainer(item)">
                     <svg viewBox="0 0 8 8" class="icon">
                       <use xlink:href="assets/open-iconic/open-iconic.min.svg#transfer" class="transfer"></use>
                     </svg>
                   </span>
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

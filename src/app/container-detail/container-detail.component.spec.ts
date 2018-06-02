@@ -14,6 +14,7 @@ import {FakeNgbActiveModal, FakeNgbModal} from '../../testing/ng-modal/fake-ngb-
 import {Patch} from '../infrastructure/patch/patch';
 import {CarouselComponent} from '../carousel/carousel.component';
 import Spy = jasmine.Spy;
+import {MoveItemToContainerComponent} from "../move-item-to-container/move-item-to-container.component";
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -80,7 +81,7 @@ describe('ContainerDetailComponent', () => {
 
   });
 
-  describe('opens modal', () => {
+  describe('opens modal to upload image', () => {
 
     let ngbModal: NgbModal;
 
@@ -205,6 +206,51 @@ describe('ContainerDetailComponent', () => {
         containerDescription.nativeElement.value = 'A content';
         return {compiled, containerDescription};
       };
+    });
+
+    describe('moving an item to ', () => {
+
+      let ngbModal: NgbModal;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(ContainerDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      afterEach(() => {
+        ngbModal = null;
+        component = null;
+        fixture = null;
+      });
+
+      it('a new container', () => {
+        ngbModal = fixture.debugElement.injector.get(NgbModal);
+        spiedModalService = spyOn(ngbModal, 'open').and
+          .returnValue({componentInstance: {item: CONTAINER.items[0], containerId: 'an-id', target: 'NEW'}});
+        component.container = CONTAINER;
+        const compiled = fixture.debugElement.nativeElement;
+        fixture.detectChanges();
+
+        const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
+        querySelectorAll[1].click();
+
+        expect(spiedModalService).toHaveBeenCalledWith(MoveItemToContainerComponent, {size: 'sm'});
+      });
+
+      it('an existing container', () => {
+        ngbModal = fixture.debugElement.injector.get(NgbModal);
+        spiedModalService = spyOn(ngbModal, 'open').and
+          .returnValue({componentInstance: {item: CONTAINER.items[0], containerId: 'an-id'}});
+        component.container = CONTAINER;
+        const compiled = fixture.debugElement.nativeElement;
+        fixture.detectChanges();
+
+        const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
+        querySelectorAll[2].click();
+
+        expect(spiedModalService).toHaveBeenCalledWith(MoveItemToContainerComponent, {size: 'sm'});
+      });
     });
   });
 

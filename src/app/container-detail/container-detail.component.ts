@@ -13,6 +13,7 @@ import {Patch} from '../infrastructure/patch/patch';
 import {Image} from '../domain/image';
 import {CarouselComponent} from '../carousel/carousel.component';
 import {ImageStore} from '../domain/image-store';
+import {MoveItemToContainerComponent} from '../move-item-to-container/move-item-to-container.component';
 
 @Component({
   selector: 'ng-container-detail',
@@ -97,5 +98,20 @@ export class ContainerDetailComponent implements OnInit {
   openCarousel(imageStore: ImageStore) {
     const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'sm', centered: true, windowClass: 'carousel-modal'});
     ngbModalRef.componentInstance.imageStore = imageStore;
+  }
+
+  openTransferToNewContainer(item: Item) {
+    this.openTransferToComponent(item, 'NEW');
+  }
+
+  openTransferToExistingContainer(item: Item) {
+    this.openTransferToComponent(item, 'EXISTING');
+  }
+
+  private openTransferToComponent(item: Item, target: string) {
+    const ngbModalRef = this.ngbModal.open(MoveItemToContainerComponent, {size: 'sm'});
+    ngbModalRef.componentInstance.item = item;
+    ngbModalRef.componentInstance.target = target;
+    this.route.paramMap.subscribe(pmap => ngbModalRef.componentInstance.containerId = pmap.get('id'));
   }
 }

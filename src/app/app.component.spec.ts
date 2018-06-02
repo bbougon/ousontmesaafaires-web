@@ -10,6 +10,8 @@ import {AppModule} from './app.module';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FakeHttpErrorHandler} from '../testing/fake-http-error-handler';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FakeNgbActiveModal, FakeNgbModal} from '../testing/ng-modal/fake-ngb-modal';
 
 
 describe('AppComponent', () => {
@@ -19,7 +21,10 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [{provide: ContainerService, useClass: FakeContainerService},
+      providers: [
+        {provide: NgbModal, useClass: FakeNgbModal},
+        {provide: NgbActiveModal, useClass: FakeNgbActiveModal},
+        {provide: ContainerService, useClass: FakeContainerService},
         {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler}],
       imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, HttpClientModule, AppModule]
     }).compileComponents();

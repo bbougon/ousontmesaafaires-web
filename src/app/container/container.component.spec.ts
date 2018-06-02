@@ -17,7 +17,7 @@ describe('ContainerComponent', () => {
   let location: Location;
   let router: Router;
 
-  beforeEach(async(async () => {
+  beforeEach(async(async() => {
     TestBed.configureTestingModule({
       providers: [
         {provide: ContainerService, useClass: FakeContainerService},

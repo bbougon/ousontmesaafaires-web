@@ -10,6 +10,8 @@ import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handle
 import {Item} from '../domain/item';
 import {Container} from '../domain/container';
 import {Patch} from '../infrastructure/patch/patch';
+import {of} from 'rxjs/observable/of';
+import {Destination} from '../domain/destination';
 
 class ContainerMapper {
   map: any;
@@ -87,5 +89,9 @@ export class ContainerService {
       .map((response: HttpResponse<Container>) => {
         return new Container(response.body);
       });
+  }
+
+  moveItemToContainer(containerId: string, destination: Destination): Observable<Container> {
+    return of(null);
   }
 }

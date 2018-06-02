@@ -27,6 +27,7 @@ import {SignatureService} from './upload/signature.service';
 import {UuidService} from './infrastructure/uuid.service';
 import { CarouselComponent } from './carousel/carousel.component';
 import {CryptoService} from "./infrastructure/crypto.service";
+import { MoveItemToContainerComponent } from './move-item-to-container/move-item-to-container.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -47,7 +48,8 @@ const routes: Routes = [
     PrintDirective,
     ContainerDetailComponent,
     UploadComponent,
-    CarouselComponent
+    CarouselComponent,
+    MoveItemToContainerComponent
   ],
   imports: [
     NgbModule.forRoot(),
