@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Item} from '../domain/item';
 import {Router} from '@angular/router';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {ExtractedItemsService} from '../extracted-items.service';
+import {ExtractedItemService} from '../extracted-item/extracted-item.service';
 
 @Component({
   selector: 'app-extract-item-from-container-component',
@@ -14,7 +14,7 @@ export class ExtractItemFromContainerComponent implements OnInit {
   item: Item;
 
   constructor(public activeModal: NgbActiveModal,
-              private route: Router, private extractedItems: ExtractedItemsService) {
+              private route: Router, private extractedItems: ExtractedItemService) {
   }
 
   ngOnInit() {

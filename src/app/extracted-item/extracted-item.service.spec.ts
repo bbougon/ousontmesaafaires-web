@@ -1,16 +1,16 @@
 import {async, inject, TestBed} from '@angular/core/testing';
 
-import {ExtractedItemsService} from './extracted-items.service';
-import {FakeHttpErrorHandler} from '../testing/fake-http-error-handler';
-import {HttpErrorHandler} from './infrastructure/http-error-handler.service';
+import {ExtractedItemService} from './extracted-item.service';
+import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
+import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Item} from './domain/item';
+import {Item} from '../domain/item';
 import {HttpClientModule, HttpHeaders, HttpRequest} from '@angular/common/http';
-import {environment} from '../environments/environment';
-import {ExtractedItem} from './domain/extracted-item';
-import {CONTAINER} from './container/testing/fake-container.service';
+import {environment} from '../../environments/environment';
+import {ExtractedItem} from '../domain/extracted-item';
+import {CONTAINER} from '../container/testing/fake-container.service';
 
-describe('ExtractedItemsService', () => {
+describe('ExtractedItemService', () => {
 
   const item = {
     'item': {'type': 'chaussure'},
@@ -46,7 +46,7 @@ describe('ExtractedItemsService', () => {
       imports: [HttpClientModule, HttpClientTestingModule],
       providers: [
         {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler},
-        ExtractedItemsService
+        ExtractedItemService
       ]
     });
 
@@ -56,13 +56,13 @@ describe('ExtractedItemsService', () => {
     backend.verify();
   }));
 
-  it('should be created', inject([ExtractedItemsService], (service: ExtractedItemsService) => {
+  it('should be created', inject([ExtractedItemService], (service: ExtractedItemService) => {
     expect(service).toBeTruthy();
   }));
 
   it('creates an extracted-item', async(
-    inject([ExtractedItemsService, HttpTestingController],
-      (extractedItemsService: ExtractedItemsService, mockBackend: HttpTestingController) => {
+    inject([ExtractedItemService, HttpTestingController],
+      (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
         extractedItemsService.extractItem(new Item(item), 'an-id').subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -77,8 +77,8 @@ describe('ExtractedItemsService', () => {
   );
 
   it('return expected extracted item', async(
-    inject([ExtractedItemsService, HttpTestingController],
-      (extractedItemsService: ExtractedItemsService, mockBackend: HttpTestingController) => {
+    inject([ExtractedItemService, HttpTestingController],
+      (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
         const expectedExtractedItem = new ExtractedItem('an-id', item, CONTAINER);
 
         extractedItemsService.extractItem(new Item(item), 'an-id')

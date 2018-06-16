@@ -25,15 +25,18 @@ import {UploadComponent} from './upload/upload.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {SignatureService} from './upload/signature.service';
 import {UuidService} from './infrastructure/uuid.service';
-import { CarouselComponent } from './carousel/carousel.component';
-import {CryptoService} from "./infrastructure/crypto.service";
-import { MoveItemToContainerComponent } from './move-item-to-container/move-item-to-container.component';
-import { ExtractItemFromContainerComponent } from './extract-item-from-container/extract-item-from-container.component';
+import {CarouselComponent} from './carousel/carousel.component';
+import {CryptoService} from './infrastructure/crypto.service';
+import {MoveItemToContainerComponent} from './move-item-to-container/move-item-to-container.component';
+import {ExtractItemFromContainerComponent} from './extract-item-from-container/extract-item-from-container.component';
+import {ExtractedItemComponent} from './extracted-item/extracted-item.component';
+import {ExtractedItemService} from './extracted-item/extracted-item.service';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
   {path: 'containers/:id', component: ContainerDetailComponent},
-  {path: 'containers', component: ContainerComponent}
+  {path: 'containers', component: ContainerComponent},
+  {path: 'extracted-items/:id', component: ExtractedItemComponent}
 ];
 
 @NgModule({
@@ -51,7 +54,8 @@ const routes: Routes = [
     UploadComponent,
     CarouselComponent,
     MoveItemToContainerComponent,
-    ExtractItemFromContainerComponent
+    ExtractItemFromContainerComponent,
+    ExtractedItemComponent
   ],
   imports: [
     NgbModule.forRoot(),
@@ -64,7 +68,16 @@ const routes: Routes = [
     NgxQRCodeModule,
     FileUploadModule
   ],
-  providers: [ContainerService, HttpErrorHandler, FormService, ClockworkService, SignatureService, UuidService, CryptoService],
+  providers: [
+    ContainerService,
+    HttpErrorHandler,
+    FormService,
+    ClockworkService,
+    SignatureService,
+    UuidService,
+    CryptoService,
+    ExtractedItemService
+  ],
   bootstrap: [AppComponent],
   exports: [
     TruncatePipe

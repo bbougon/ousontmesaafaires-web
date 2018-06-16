@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
-import {Item} from './domain/item';
+import {Item} from '../domain/item';
 import {Observable} from 'rxjs/Observable';
-import {ExtractedItem} from './domain/extracted-item';
-import {HandleError, HttpErrorHandler} from './infrastructure/http-error-handler.service';
+import {ExtractedItem} from '../domain/extracted-item';
+import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../environments/environment';
+import {environment} from '../../environments/environment';
 import {catchError, map, tap} from 'rxjs/operators';
 
 @Injectable()
-export class ExtractedItemsService {
+export class ExtractedItemService {
   private handleError: HandleError;
 
   constructor(private httpClient: HttpClient,
               httpErrorHandler: HttpErrorHandler) {
-    this.handleError = httpErrorHandler.createHandleError('ExtractedItemsService');
+    this.handleError = httpErrorHandler.createHandleError('ExtractedItemService');
   }
 
   extractItem(item: Item, containerId: string): Observable<ExtractedItem> {

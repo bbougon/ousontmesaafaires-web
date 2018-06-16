@@ -13,7 +13,7 @@ import {Item} from '../domain/item';
 import {Router} from '@angular/router';
 import {ExtractedItem} from '../domain/extracted-item';
 import {of} from 'rxjs/observable/of';
-import {ExtractedItemsService} from '../extracted-items.service';
+import {ExtractedItemService} from '../extracted-item/extracted-item.service';
 import Spy = jasmine.Spy;
 
 describe('ExtractItemFromContainerComponent', () => {
@@ -50,7 +50,7 @@ describe('ExtractItemFromContainerComponent', () => {
   let component: ExtractItemFromContainerComponent;
   let fixture: ComponentFixture<ExtractItemFromContainerComponent>;
   let spiedExtractedItemsService: Spy;
-  let extractedItemsService: ExtractedItemsService;
+  let extractedItemsService: ExtractedItemService;
   let spiedCloseModal: Spy;
   let spiedRouter: Spy;
 
@@ -59,7 +59,7 @@ describe('ExtractItemFromContainerComponent', () => {
       imports: [HttpClientModule, HttpClientTestingModule, AppModule],
       providers: [
         NgbActiveModal,
-        ExtractedItemsService,
+        ExtractedItemService,
         {provide: HttpErrorHandler, useClass: FakeHttpErrorHandler}
       ]
     })
@@ -69,7 +69,7 @@ describe('ExtractItemFromContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ExtractItemFromContainerComponent);
     component = fixture.componentInstance;
-    extractedItemsService = fixture.debugElement.injector.get(ExtractedItemsService);
+    extractedItemsService = fixture.debugElement.injector.get(ExtractedItemService);
     spiedExtractedItemsService = spyOn(extractedItemsService, 'extractItem')
       .and.returnValue(of(new ExtractedItem('new-id', CONTAINER.items[0], CONTAINER)));
     component.containerId = CONTAINER.id;
