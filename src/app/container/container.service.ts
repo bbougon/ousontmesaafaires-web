@@ -66,7 +66,9 @@ export class ContainerService {
         tap(_ => console.log(`Get all containers`)),
         catchError(this.handleError(`getContainers`)),
         map((response) => {
-          return new ContainerMapper(response).map;
+          return response.map((container: Container) => {
+            return container;
+          });
         }));
   }
 

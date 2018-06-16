@@ -44,4 +44,15 @@ export class ExtractedItemService {
         tap(_ => console.log(`Post Extracted item=${containerId}, ${item}`)),
         catchError(this.handleError(`postExtractedItem`, `${containerId}, ${item}`)));
   }
+
+  getAllExtractedItems(): Observable<ExtractedItem[]> {
+    return this.httpClient.get(`${environment.apiUrl}/extracted-items`)
+      .pipe(
+        map((response) => response.map((extractedItem: ExtractedItem) => {
+          return extractedItem;
+        })),
+        tap(() => console.log(`Getting all extracted items '${environment.apiUrl}/extracted-items'`)),
+        catchError(this.handleError('Getting all extracted items', `${environment.apiUrl}/extracted-items`))
+      );
+  }
 }

@@ -60,43 +60,73 @@ describe('ExtractedItemService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('creates an extracted-item', async(
-    inject([ExtractedItemService, HttpTestingController],
-      (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
-        extractedItemsService.extractItem(new Item(item), 'an-id').subscribe();
+  describe('Extracted item creation', () => {
+    it('creates an extracted-item', async(
+      inject([ExtractedItemService, HttpTestingController],
+        (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
+          extractedItemsService.extractItem(new Item(item), 'an-id').subscribe();
 
-        mockBackend.expectOne((req: HttpRequest<any>) => {
-          console.log(req.body);
-          return req.url === `${environment.apiUrl}/extracted-items`
-            && req.method === 'POST'
-            && req.responseType === 'text'
-            && req.headers.get('Content-Type') === 'application/json'
-            && JSON.stringify(req.body) === `{"containerId":"an-id","itemHash":"hash"}`;
-        }, 'POST extract item');
-      }))
-  );
+          mockBackend.expectOne((req: HttpRequest<any>) => {
+            console.log(req.body);
+            return req.url === `${environment.apiUrl}/extracted-items`
+              && req.method === 'POST'
+              && req.responseType === 'text'
+              && req.headers.get('Content-Type') === 'application/json'
+              && JSON.stringify(req.body) === `{"containerId":"an-id","itemHash":"hash"}`;
+          }, 'POST extract item');
+        }))
+    );
 
-  it('return expected extracted item', async(
-    inject([ExtractedItemService, HttpTestingController],
-      (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
-        const expectedExtractedItem = new ExtractedItem('an-id', item, CONTAINER);
+    it('returns expected extracted item', async(
+      inject([ExtractedItemService, HttpTestingController],
+        (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
+          const expectedExtractedItem = new ExtractedItem('an-id', item, CONTAINER);
 
-        extractedItemsService.extractItem(new Item(item), 'an-id')
-          .subscribe((extractedItem) => {
-            expect(extractedItem).not.toBeNull();
+          extractedItemsService.extractItem(new Item(item), 'an-id')
+            .subscribe((extractedItem) => {
+              expect(extractedItem).not.toBeNull();
+            });
+
+
+          mockBackend.expectOne(`${environment.apiUrl}/extracted-items`).flush(null, {
+            status: 201,
+            statusText: 'CREATED',
+            headers: new HttpHeaders().set('Location', 'new-extracted-item-url')
+          });
+          mockBackend.expectOne('new-extracted-item-url').flush(expectedExtractedItem, {
+            status: 200,
+            statusText: 'OK'
           });
 
+        }))
+    );
 
-        mockBackend.expectOne(`${environment.apiUrl}/extracted-items`).flush(null, {
-          status: 201,
-          statusText: 'CREATED',
-          headers: new HttpHeaders().set('Location', 'new-extracted-item-url')
-        });
-        mockBackend.expectOne('new-extracted-item-url').flush(expectedExtractedItem, {
-          status: 200,
-          statusText: 'OK'
-        });
+  });
 
-      }))
-  );
+  describe('Getting Extracted Item', () => {
+    it('get all extracted items', async(
+      inject(
+        [ExtractedItemService, HttpTestingController],
+        (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
+          extractedItemsService.getAllExtractedItems()
+            .subscribe(containers => {
+              expect(containers.length).toBe(2);
+            });
+
+          mockBackend.expectOne(`${environment.apiUrl}/extracted-items`)
+            .flush([
+              {
+                id: '12345TRET',
+                item: item,
+                sourceContainer: CONTAINER
+              },
+              {
+                id: 'JKJDOFBDS',
+                item: item,
+                sourceContainer: CONTAINER
+              }
+            ], {status: 200, statusText: 'OK'});
+        }
+      )));
+  });
 });
