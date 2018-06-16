@@ -1,12 +1,13 @@
 <div class="modal-header col-sm-12">
-  <h4 class="modal-title">Move to container</h4>
+  <h4 class="modal-title">Extract item from container</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body col-sm-12">
   <div class="col-sm-12">
-    <div class="col-sm-12">Are you sure you want to extract this item {{item.item | item}}?</div>
+    <div class="col-sm-12">Are you sure you want to extract the following item?</div>
+    <div class="col-sm-12"><span [outerHTML]="item.item | item"></span></div>
   </div>
 </div>
 <div class="modal-footer col-sm-12">

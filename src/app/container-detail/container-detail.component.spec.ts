@@ -244,7 +244,7 @@ describe('ContainerDetailComponent', () => {
         const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
         querySelectorAll[1].click();
 
-        expect(spiedModalService).toHaveBeenCalledWith(ExtractItemFromContainerComponent, {size: 'sm'});
+        expect(spiedModalService).toHaveBeenCalledWith(ExtractItemFromContainerComponent, {size: 'lg'});
       });
     });
 
@@ -275,7 +275,7 @@ describe('ContainerDetailComponent', () => {
         const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
         querySelectorAll[2].click();
 
-        expect(spiedModalService).toHaveBeenCalledWith(MoveItemToContainerComponent, {size: 'sm'});
+        expect(spiedModalService).toHaveBeenCalledWith(MoveItemToContainerComponent, {size: 'lg'});
       });
     });
   });

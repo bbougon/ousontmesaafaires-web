@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {Item} from '../domain/item';
@@ -37,21 +37,23 @@ export class ContainerService {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
     })
-      .flatMap(response => {
-        const containerURL = response.headers.get('Location');
-        return this.getContainerFromUrl(containerURL);
-      })
-      .pipe(tap(_ => console.log(`Post container=${container}`)),
-        catchError(this.handleError(`Add container`, container)));
+      .pipe(
+        map(response => response.headers.get('Location')),
+        tap(_ => console.log(`Post container=${container}`)),
+        catchError(this.handleError(`Add container`, container)))
+      .mergeMap(location => {
+        return this.getContainerFromUrl(location);
+      });
   }
 
   private getContainerFromUrl(containerURL: any) {
     return this.httpClient.get<Container>(containerURL)
-      .pipe(tap(_ => console.log(`Get container=${containerURL}`)),
-        catchError(this.handleError(`getContainer`, containerURL)))
-      .map((body) => {
-        return new Container(body);
-      });
+      .pipe(
+        tap(_ => console.log(`Get container=${containerURL}`)),
+        catchError(this.handleError(`getContainer`, containerURL)),
+        map((container: Container) => {
+          return container;
+        }));
   }
 
   getContainer(containerId: String): Observable<Container> {
@@ -60,11 +62,12 @@ export class ContainerService {
 
   getContainers(): Observable<Container[]> {
     return this.httpClient.get<Container[]>(`${environment.apiUrl}/containers`)
-      .pipe(tap(_ => console.log(`Get all containers`)),
-        catchError(this.handleError(`getContainers`)))
-      .map((response) => {
-        return new ContainerMapper(response).map;
-      });
+      .pipe(
+        tap(_ => console.log(`Get all containers`)),
+        catchError(this.handleError(`getContainers`)),
+        map((response) => {
+          return new ContainerMapper(response).map;
+        }));
   }
 
   addItemToContainer(containerId: String, item: Item): Observable<any> {
@@ -73,7 +76,8 @@ export class ContainerService {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
     })
-      .pipe(tap(() => console.log(`Add item (${JSON.stringify(item)}) to container=${containerId}`)),
+      .pipe(
+        tap(() => console.log(`Add item (${JSON.stringify(item)}) to container=${containerId}`)),
         catchError(this.handleError(`Add item to container`, item)));
   }
 
@@ -85,9 +89,12 @@ export class ContainerService {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
         responseType: 'json'
       })
-      .map((response: HttpResponse<Container>) => {
-        return new Container(response.body);
-      });
+      .pipe(
+        tap(() => console.log(`Patching container ${containerId} (${JSON.stringify(patch)})`)),
+        catchError(this.handleError(`Patching container`, patch)),
+        map((response: HttpResponse<Container>) => {
+          return new Container(response.body);
+        }));
   }
 
   moveItemToContainer(item: Item, containerId: string, destination: Destination): Observable<Container> {
@@ -95,9 +102,13 @@ export class ContainerService {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'
-    }).flatMap(response => {
-      const location = response.headers.get('Location');
-      return this.getContainerFromUrl(location);
-    });
+    })
+      .pipe(
+        map(response => response.headers.get('Location')),
+        tap(() => console.log(`Post item '${item}' to container '${containerId}'`)),
+        catchError(this.handleError(`Posting item to container`, `${item}, ${containerId}`)))
+      .mergeMap(location => {
+        return this.getContainerFromUrl(location);
+      });
   }
 }
