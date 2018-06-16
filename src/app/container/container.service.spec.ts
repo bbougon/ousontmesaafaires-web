@@ -15,6 +15,7 @@ import {NgbModalStack} from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
 import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 import {Patch} from '../infrastructure/patch/patch';
 import {ImageStore} from '../domain/image-store';
+import {Destination} from "../domain/destination";
 
 describe('ContainerService', () => {
   beforeEach(async(() => {
@@ -203,7 +204,6 @@ describe('ContainerService', () => {
       }))
     );
 
-
     it('return expected container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
         containerService.patchContainer('an-id', new Patch('description').unwrap('A description'))
@@ -221,6 +221,81 @@ describe('ContainerService', () => {
         });
 
       })));
+  });
+
+  describe('when moving an item to a container', () => {
+
+    const item = {
+      'item': {'type': 'chaussure'},
+      'imageStore': {
+        'folder': 'folder_name',
+        'images': [{
+          'signature': 'signature',
+          'url': 'assets/testing/url.png',
+          'secureUrl': 'assets/testing/secureUrl.png',
+          'resizedImages': [{
+            'url': 'assets/testing/url2.png',
+            'secureUrl': 'assets/testing/secureUrl2.png',
+            'height': 110.0,
+            'width': 80.0
+          }, {
+            'url': 'assets/testing/url3.png',
+            'secureUrl': 'assets/testing/secureUrl3.png',
+            'height': 552.0,
+            'width': 400.0
+          }, {
+            'url': 'assets/testing/url4.png',
+            'secureUrl': 'assets/testing/secureUrl4.png',
+            'height': 1103.0,
+            'width': 800.0
+          }]
+        }]
+      },
+      'hash': 'hash'
+    };
+
+    afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
+      backend.verify();
+    }));
+
+    it('moves item to a container', async(
+      inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
+        containerService.moveItemToContainer(new Item(item), 'an-id', new Destination('another-container-id')).subscribe();
+
+        mockBackend.expectOne((req: HttpRequest<any>) => {
+          console.log(req.body);
+          return req.url === `${environment.apiUrl}/containers/an-id/items/hash`
+            && req.method === 'POST'
+            && JSON.stringify(req.body) === '{"destination":"another-container-id"}';
+        }, 'POST moving item to new container container');
+      }))
+    );
+
+    it('return expected container', async(
+      inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
+        const expectedContainer = new Container({
+          'id': 'an-id', 'items': [item],
+          'name': 'A container', 'qrcode': 'qrcode'
+        });
+        containerService.moveItemToContainer(new Item(item), 'an-id', new Destination('another-container-id'))
+          .subscribe((container) => {
+            expect(container).not.toBeNull();
+            expect(container.id).toBe('an-id');
+          });
+
+
+        mockBackend.expectOne(`${environment.apiUrl}/containers/an-id/items/hash`).flush(null, {
+          status: 201,
+          statusText: 'CREATED',
+          headers: new HttpHeaders().set('Location', 'new-container-url')
+        });
+        mockBackend.expectOne('new-container-url').flush(expectedContainer, {
+          status: 200,
+          statusText: 'OK'
+        });
+
+      }))
+    );
   });
 
 });

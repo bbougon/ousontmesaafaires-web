@@ -28,6 +28,7 @@ import {UuidService} from './infrastructure/uuid.service';
 import { CarouselComponent } from './carousel/carousel.component';
 import {CryptoService} from "./infrastructure/crypto.service";
 import { MoveItemToContainerComponent } from './move-item-to-container/move-item-to-container.component';
+import { ExtractItemFromContainerComponent } from './extract-item-from-container/extract-item-from-container.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
@@ -49,7 +50,8 @@ const routes: Routes = [
     ContainerDetailComponent,
     UploadComponent,
     CarouselComponent,
-    MoveItemToContainerComponent
+    MoveItemToContainerComponent,
+    ExtractItemFromContainerComponent
   ],
   imports: [
     NgbModule.forRoot(),
@@ -71,7 +73,9 @@ const routes: Routes = [
     ErrorMessageComponent,
     PrintComponent,
     UploadComponent,
-    CarouselComponent
+    CarouselComponent,
+    MoveItemToContainerComponent,
+    ExtractItemFromContainerComponent
   ]
 })
 export class AppModule {

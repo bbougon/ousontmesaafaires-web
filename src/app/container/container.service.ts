@@ -10,7 +10,6 @@ import {HandleError, HttpErrorHandler} from '../infrastructure/http-error-handle
 import {Item} from '../domain/item';
 import {Container} from '../domain/container';
 import {Patch} from '../infrastructure/patch/patch';
-import {of} from 'rxjs/observable/of';
 import {Destination} from '../domain/destination';
 
 class ContainerMapper {
@@ -91,7 +90,14 @@ export class ContainerService {
       });
   }
 
-  moveItemToContainer(containerId: string, destination: Destination): Observable<Container> {
-    return of(null);
+  moveItemToContainer(item: Item, containerId: string, destination: Destination): Observable<Container> {
+    return this.httpClient.post(`${environment.apiUrl}/containers/${containerId}/items/${item.item.hash}`, destination, {
+      observe: 'response',
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+      responseType: 'text'
+    }).flatMap(response => {
+      const location = response.headers.get('Location');
+      return this.getContainerFromUrl(location);
+    });
   }
 }

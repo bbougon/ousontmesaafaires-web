@@ -10,10 +10,9 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {HttpErrorHandler} from '../infrastructure/http-error-handler.service';
 import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
-import {Destination} from '../domain/destination';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
+import {AppModule} from '../app.module';
 import Spy = jasmine.Spy;
-import {AppModule} from "../app.module";
 
 describe('MoveItemToContainerComponent', () => {
 
@@ -90,18 +89,5 @@ describe('MoveItemToContainerComponent', () => {
     inject([HttpClient, HttpErrorHandler], (httpClient: HttpClient, errorHandler: HttpErrorHandler) => {
       expect(component).toBeTruthy();
     }));
-
-  describe('Move item to new container', () => {
-    it('', inject([HttpClient, HttpErrorHandler], (httpClient: HttpClient, errorHandler: HttpErrorHandler) => {
-      const compiled = fixture.debugElement.nativeElement;
-
-      const button = compiled.querySelectorAll('button');
-      button[1].click();
-
-      expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, new Destination('NEW'));
-      expect(spiedCloseModal).toHaveBeenCalledTimes(1);
-      expect(spiedRouter).toHaveBeenCalledWith('/containers/new-id');
-    }));
-  });
 
 });

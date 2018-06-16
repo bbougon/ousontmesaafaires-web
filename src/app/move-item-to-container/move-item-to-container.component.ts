@@ -23,7 +23,7 @@ export class MoveItemToContainerComponent implements OnInit {
   }
 
   moveToNewContainer() {
-    this.containerService.moveItemToContainer(this.containerId, new Destination('NEW'))
+    this.containerService.moveItemToContainer(this.item, this.containerId, new Destination('NEW'))
       .subscribe((container) => {
         this.activeModal.close();
         this.route.navigateByUrl(`/containers/${container.id}`);

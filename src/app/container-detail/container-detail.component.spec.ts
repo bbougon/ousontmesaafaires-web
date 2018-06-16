@@ -13,8 +13,9 @@ import {UploadComponent} from '../upload/upload.component';
 import {FakeNgbActiveModal, FakeNgbModal} from '../../testing/ng-modal/fake-ngb-modal';
 import {Patch} from '../infrastructure/patch/patch';
 import {CarouselComponent} from '../carousel/carousel.component';
+import {MoveItemToContainerComponent} from '../move-item-to-container/move-item-to-container.component';
+import {ExtractItemFromContainerComponent} from '../extract-item-from-container/extract-item-from-container.component';
 import Spy = jasmine.Spy;
-import {MoveItemToContainerComponent} from "../move-item-to-container/move-item-to-container.component";
 
 let activatedRoute: ActivatedRouteStub;
 
@@ -99,7 +100,12 @@ describe('ContainerDetailComponent', () => {
 
     it('for image upload', () => {
       ngbModal = fixture.debugElement.injector.get(NgbModal);
-      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {item: CONTAINER.items[0], container: CONTAINER}});
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({
+        componentInstance: {
+          item: CONTAINER.items[0],
+          container: CONTAINER
+        }
+      });
       component.container = CONTAINER;
       const compiled = fixture.debugElement.nativeElement;
       fixture.detectChanges();
@@ -120,7 +126,11 @@ describe('ContainerDetailComponent', () => {
       const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > div > img');
       querySelectorAll[0].click();
 
-      expect(spiedModalService).toHaveBeenCalledWith(CarouselComponent, {size: 'sm', centered: true, windowClass: 'carousel-modal'});
+      expect(spiedModalService).toHaveBeenCalledWith(CarouselComponent, {
+        size: 'sm',
+        centered: true,
+        windowClass: 'carousel-modal'
+      });
     });
   });
 
@@ -208,8 +218,7 @@ describe('ContainerDetailComponent', () => {
       };
     });
 
-    describe('moving an item to ', () => {
-
+    describe('extracting an item from a container', () => {
       let ngbModal: NgbModal;
 
       beforeEach(() => {
@@ -235,7 +244,24 @@ describe('ContainerDetailComponent', () => {
         const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div > div > span');
         querySelectorAll[1].click();
 
-        expect(spiedModalService).toHaveBeenCalledWith(MoveItemToContainerComponent, {size: 'sm'});
+        expect(spiedModalService).toHaveBeenCalledWith(ExtractItemFromContainerComponent, {size: 'sm'});
+      });
+    });
+
+    describe('moving an item to', () => {
+
+      let ngbModal: NgbModal;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(ContainerDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+      });
+
+      afterEach(() => {
+        ngbModal = null;
+        component = null;
+        fixture = null;
       });
 
       it('an existing container', () => {
