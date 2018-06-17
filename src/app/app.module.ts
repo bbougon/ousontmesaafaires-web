@@ -31,11 +31,13 @@ import {MoveItemToContainerComponent} from './move-item-to-container/move-item-t
 import {ExtractItemFromContainerComponent} from './extract-item-from-container/extract-item-from-container.component';
 import {ExtractedItemComponent} from './extracted-item/extracted-item.component';
 import {ExtractedItemService} from './extracted-item/extracted-item.service';
+import {ExtractedItemsComponent} from './extracted-items/extracted-items.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
   {path: 'containers/:id', component: ContainerDetailComponent},
   {path: 'containers', component: ContainerComponent},
+  {path: 'extracted-items', component: ExtractedItemsComponent},
   {path: 'extracted-items/:id', component: ExtractedItemComponent}
 ];
 
@@ -55,7 +57,8 @@ const routes: Routes = [
     CarouselComponent,
     MoveItemToContainerComponent,
     ExtractItemFromContainerComponent,
-    ExtractedItemComponent
+    ExtractedItemComponent,
+    ExtractedItemsComponent
   ],
   imports: [
     NgbModule.forRoot(),

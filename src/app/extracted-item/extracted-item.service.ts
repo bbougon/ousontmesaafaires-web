@@ -48,11 +48,11 @@ export class ExtractedItemService {
   getAllExtractedItems(): Observable<ExtractedItem[]> {
     return this.httpClient.get(`${environment.apiUrl}/extracted-items`)
       .pipe(
-        map((response) => response.map((extractedItem: ExtractedItem) => {
-          return extractedItem;
-        })),
         tap(() => console.log(`Getting all extracted items '${environment.apiUrl}/extracted-items'`)),
-        catchError(this.handleError('Getting all extracted items', `${environment.apiUrl}/extracted-items`))
+        catchError(this.handleError('Getting all extracted items', `${environment.apiUrl}/extracted-items`)),
+        map((response: Array<ExtractedItem>) => response.map((extractedItem: ExtractedItem) => {
+          return extractedItem;
+        }))
       );
   }
 }
