@@ -15,7 +15,7 @@ import {NgbModalStack} from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
 import {FakeHttpErrorHandler} from '../../testing/fake-http-error-handler';
 import {Patch} from '../infrastructure/patch/patch';
 import {ImageStore} from '../domain/image-store';
-import {Destination} from "../domain/destination";
+import {Destination} from '../domain/destination';
 
 describe('ContainerService', () => {
   beforeEach(async(() => {
@@ -260,7 +260,8 @@ describe('ContainerService', () => {
 
     it('moves item to a container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.moveItemToContainer(new Item(item), 'an-id', new Destination('another-container-id')).subscribe();
+        containerService.moveItemToContainer(new Item(item, item.imageStore, item.hash), 'an-id',
+          new Destination('another-container-id')).subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
           console.log(req.body);
@@ -277,7 +278,7 @@ describe('ContainerService', () => {
           'id': 'an-id', 'items': [item],
           'name': 'A container', 'qrcode': 'qrcode'
         });
-        containerService.moveItemToContainer(new Item(item), 'an-id', new Destination('another-container-id'))
+        containerService.moveItemToContainer(new Item(item, item.imageStore, item.hash), 'an-id', new Destination('another-container-id'))
           .subscribe((container) => {
             expect(container).not.toBeNull();
             expect(container.id).toBe('an-id');

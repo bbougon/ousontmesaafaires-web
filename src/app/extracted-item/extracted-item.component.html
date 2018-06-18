@@ -1,3 +1,9 @@
-<p>
-  extracted-item works!
-</p>
+<div class="row" *ngIf="extractedItem">
+  <div class="col-8">
+      <span [outerHTML]="extractedItem.item.item | item"></span>
+  </div>
+  <div class="col-4">
+    <span>from container: </span>
+    <span><b>{{extractedItem.sourceContainer.name}}</b></span>
+  </div>
+</div>

@@ -88,6 +88,10 @@
   outline: 0;
 }
 
+.top {
+  padding-top: 12px;
+}
+
 @media only screen and (min-width: 960px) {
   .sidebar {
     width: 240px;

@@ -30,9 +30,10 @@ export class ExtractedItemService {
   }
 
   private postItem(containerId: string, item: Item): Observable<string> {
+    console.log(JSON.stringify(item));
     return this.httpClient.post(`${environment.apiUrl}/extracted-items`, {
         containerId: containerId,
-        itemHash: item.item.hash
+        itemHash: item.hash
       },
       {
         observe: 'response',

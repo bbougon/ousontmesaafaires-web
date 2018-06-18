@@ -9,14 +9,15 @@ import {HttpClientModule, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {ExtractedItem} from '../domain/extracted-item';
 import {CONTAINER} from '../container/testing/fake-container.service';
+import {ImageStore} from "../domain/image-store";
 
 describe('ExtractedItemService', () => {
 
-  const item = {
-    'item': {'type': 'chaussure'},
-    'imageStore': {
-      'folder': 'folder_name',
-      'images': [{
+  const item = new Item({
+      'item': {'type': 'chaussure'}
+    },
+    new ImageStore('folder_name',
+      [{
         'signature': 'signature',
         'url': 'assets/testing/url.png',
         'secureUrl': 'assets/testing/secureUrl.png',
@@ -36,10 +37,8 @@ describe('ExtractedItemService', () => {
           'height': 1103.0,
           'width': 800.0
         }]
-      }]
-    },
-    'hash': 'hash'
-  };
+      }]),
+    'hash');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -64,7 +63,7 @@ describe('ExtractedItemService', () => {
     it('creates an extracted-item', async(
       inject([ExtractedItemService, HttpTestingController],
         (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
-          extractedItemsService.extractItem(new Item(item), 'an-id').subscribe();
+          extractedItemsService.extractItem(item, 'an-id').subscribe();
 
           mockBackend.expectOne((req: HttpRequest<any>) => {
             console.log(req.body);

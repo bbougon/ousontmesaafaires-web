@@ -72,7 +72,7 @@ export class ItemComponent implements OnInit {
     this.formService.markAsDirty('', this.featureValueFormControl);
   }
 
-  getCreatedItem() {
+  getCreatedItem(): Item {
     return this.itemToCreate;
   }
 

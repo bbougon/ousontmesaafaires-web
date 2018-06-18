@@ -2,7 +2,7 @@ import {ImageStore} from './image-store';
 
 export class Item {
 
-  constructor(public item: { [key: string]: any, imageStore?: ImageStore, hash?: string }) {
+  constructor(public item: { [key: string]: any}, public imageStore?: ImageStore, public hash?: string ) {
   }
 
 }

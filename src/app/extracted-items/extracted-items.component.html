@@ -1,3 +1,15 @@
-<p>
-  extracted-items works!
-</p>
+<div class="container container-fluid d-print-none">
+  <div class="row">
+    <div class="col-12 col-md-9 offset-md-3 top">
+      <div class="col-12">
+        <div class="row-fluid">
+          <ul class="list-group">
+            <li *ngFor="let extractedItem of extractedItems" class="list-group-item">
+              <app-extracted-item [extractedItem]="extractedItem"></app-extracted-item>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -14,7 +14,7 @@ import {Image} from '../domain/image';
 import {CarouselComponent} from '../carousel/carousel.component';
 import {ImageStore} from '../domain/image-store';
 import {MoveItemToContainerComponent} from '../move-item-to-container/move-item-to-container.component';
-import {ExtractItemFromContainerComponent} from "../extract-item-from-container/extract-item-from-container.component";
+import {ExtractItemFromContainerComponent} from '../extract-item-from-container/extract-item-from-container.component';
 
 @Component({
   selector: 'ng-container-detail',
@@ -97,7 +97,11 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   openCarousel(imageStore: ImageStore) {
-    const ngbModalRef = this.ngbModal.open(CarouselComponent, {size: 'sm', centered: true, windowClass: 'carousel-modal'});
+    const ngbModalRef = this.ngbModal.open(CarouselComponent, {
+      size: 'sm',
+      centered: true,
+      windowClass: 'carousel-modal'
+    });
     ngbModalRef.componentInstance.imageStore = imageStore;
   }
 

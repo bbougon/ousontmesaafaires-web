@@ -15,11 +15,75 @@ import {Patch} from '../infrastructure/patch/patch';
 import {CarouselComponent} from '../carousel/carousel.component';
 import {MoveItemToContainerComponent} from '../move-item-to-container/move-item-to-container.component';
 import {ExtractItemFromContainerComponent} from '../extract-item-from-container/extract-item-from-container.component';
+import {Container} from '../domain/container';
 import Spy = jasmine.Spy;
 
 let activatedRoute: ActivatedRouteStub;
 
 describe('ContainerDetailComponent', () => {
+
+  const container = {
+    'id': 'an-id',
+    'name': 'Container',
+    'items': [{
+      'item': {'type': 'chaussure'},
+      'imageStore': {
+        'folder': 'folder_name',
+        'images': [{
+          'signature': 'signature',
+          'url': 'assets/testing/url.png',
+          'secureUrl': 'assets/testing/secureUrl.png',
+          'resizedImages': [{
+            'url': 'assets/testing/url2.png',
+            'secureUrl': 'assets/testing/secureUrl2.png',
+            'height': 110.0,
+            'width': 80.0
+          }, {
+            'url': 'assets/testing/url3.png',
+            'secureUrl': 'assets/testing/secureUrl3.png',
+            'height': 552.0,
+            'width': 400.0
+          }, {
+            'url': 'assets/testing/url4.png',
+            'secureUrl': 'assets/testing/secureUrl4.png',
+            'height': 1103.0,
+            'width': 800.0
+          }]
+        }]
+      },
+      'hash': 'hash'
+    }, {
+      'item': {'type': 'pantalon', 'couleur': 'marron'},
+      'imageStore': {
+        'folder': 'folder_name_2',
+        'images': [{
+          'signature': 'signature',
+          'url': 'assets/testing/url.png',
+          'secureUrl': 'assets/testing/secureUrl.png',
+          'resizedImages': [{
+            'url': 'assets/testing/url2.png',
+            'secureUrl': 'assets/testing/secureUrl2.png',
+            'height': 110.0,
+            'width': 80.0
+          }, {
+            'url': 'assets/testing/url3.png',
+            'secureUrl': 'assets/testing/secureUrl3.png',
+            'height': 552.0,
+            'width': 400.0
+          }, {
+            'url': 'assets/testing/url4.png',
+            'secureUrl': 'assets/testing/secureUrl4.png',
+            'height': 1103.0,
+            'width': 800.0
+          }]
+        }]
+      },
+      'hash': 'hash_2'
+    }],
+    'qrcode': 'a qr code',
+    'description': 'Description'
+  };
+
   let component: ContainerDetailComponent;
   let fixture: ComponentFixture<ContainerDetailComponent>;
   let containerService: ContainerService;
@@ -31,9 +95,9 @@ describe('ContainerDetailComponent', () => {
     activatedRoute.setParamMap({id: CONTAINER.id});
     TestBed.configureTestingModule({
       providers: [
+        {provide: ContainerService, useClass: FakeContainerService},
         {provide: NgbModal, useClass: FakeNgbModal},
         {provide: NgbActiveModal, useClass: FakeNgbActiveModal},
-        {provide: ContainerService, useClass: FakeContainerService},
         {provide: ActivatedRoute, useValue: activatedRoute}
       ],
       imports: [AppModule]
@@ -63,7 +127,7 @@ describe('ContainerDetailComponent', () => {
 
     it('with container details', () => {
       containerService = fixture.debugElement.injector.get(ContainerService);
-      const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(CONTAINER));
+      const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(container));
 
       component.ngOnInit();
 
@@ -75,7 +139,7 @@ describe('ContainerDetailComponent', () => {
     it('and thumbnail image', () => {
       component.container = CONTAINER;
 
-      const url: string = component.getThumbnail(component.container.items[0].item.imageStore.images[0]);
+      const url: string = component.getThumbnail(component.container.items[0].imageStore.images[0]);
 
       expect(url).toBe('assets/testing/secureUrl2.png');
     });
@@ -119,7 +183,7 @@ describe('ContainerDetailComponent', () => {
     it('to display carousel for an item', () => {
       component.container = CONTAINER;
       ngbModal = fixture.debugElement.injector.get(NgbModal);
-      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {images: CONTAINER.items[0].item.imageStore}});
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: {images: CONTAINER.items[0].imageStore}});
       const compiled = fixture.debugElement.nativeElement;
       fixture.detectChanges();
 

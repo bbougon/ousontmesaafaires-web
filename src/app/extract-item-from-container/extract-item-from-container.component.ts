@@ -14,14 +14,14 @@ export class ExtractItemFromContainerComponent implements OnInit {
   item: Item;
 
   constructor(public activeModal: NgbActiveModal,
-              private route: Router, private extractedItems: ExtractedItemService) {
+              private route: Router, private extractedItemService: ExtractedItemService) {
   }
 
   ngOnInit() {
   }
 
   extractItem() {
-    this.extractedItems.extractItem(this.item, this.containerId)
+    this.extractedItemService.extractItem(this.item, this.containerId)
       .subscribe((extractedItem) => {
         this.activeModal.close();
         this.route.navigateByUrl(`/extracted-items/${extractedItem.id}`);

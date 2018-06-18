@@ -18,35 +18,6 @@ import Spy = jasmine.Spy;
 
 describe('ExtractItemFromContainerComponent', () => {
 
-  const item = {
-    'item': {'type': 'chaussure'},
-    'imageStore': {
-      'folder': 'folder_name',
-      'images': [{
-        'signature': 'signature',
-        'url': 'assets/testing/url.png',
-        'secureUrl': 'assets/testing/secureUrl.png',
-        'resizedImages': [{
-          'url': 'assets/testing/url2.png',
-          'secureUrl': 'assets/testing/secureUrl2.png',
-          'height': 110.0,
-          'width': 80.0
-        }, {
-          'url': 'assets/testing/url3.png',
-          'secureUrl': 'assets/testing/secureUrl3.png',
-          'height': 552.0,
-          'width': 400.0
-        }, {
-          'url': 'assets/testing/url4.png',
-          'secureUrl': 'assets/testing/secureUrl4.png',
-          'height': 1103.0,
-          'width': 800.0
-        }]
-      }]
-    },
-    'hash': 'hash'
-  };
-
   let component: ExtractItemFromContainerComponent;
   let fixture: ComponentFixture<ExtractItemFromContainerComponent>;
   let spiedExtractedItemsService: Spy;

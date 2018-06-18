@@ -8,7 +8,7 @@ export class Container {
 
   constructor(private body: any) {
     this.id = body.id;
-    this.items = body.items.map((item) => new Item(item));
+    this.items = body.items.map((item) => new Item(item, item.imageStore, item.hash));
     this.name = body.name;
     this.description = body.description;
   }

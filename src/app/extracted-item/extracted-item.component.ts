@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {ExtractedItem} from '../domain/extracted-item';
 
 @Component({
   selector: 'app-extracted-item',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./extracted-item.component.css']
 })
 export class ExtractedItemComponent implements OnInit {
+
+  @Input() extractedItem: ExtractedItem;
 
   constructor() { }
 
