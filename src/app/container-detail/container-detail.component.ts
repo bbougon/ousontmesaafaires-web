@@ -15,6 +15,7 @@ import {CarouselComponent} from '../carousel/carousel.component';
 import {ImageStore} from '../domain/image-store';
 import {MoveItemToContainerComponent} from '../move-item-to-container/move-item-to-container.component';
 import {ExtractItemFromContainerComponent} from '../extract-item-from-container/extract-item-from-container.component';
+import {ResizedImages} from '../domain/resized-images';
 
 @Component({
   selector: 'ng-container-detail',
@@ -89,11 +90,7 @@ export class ContainerDetailComponent implements OnInit {
   }
 
   getThumbnail(image: Image): string {
-    const minimumWdth = Math.min.apply(Math, image.resizedImages.map(function (resizedImage) {
-      return resizedImage.width;
-    }));
-    return image.resizedImages
-      .filter(value => value.width === minimumWdth)[0].secureUrl;
+    return ResizedImages.getThumbnail(image.resizedImages).secureUrl;
   }
 
   openCarousel(imageStore: ImageStore) {

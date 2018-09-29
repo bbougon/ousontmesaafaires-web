@@ -32,13 +32,14 @@ import {ExtractItemFromContainerComponent} from './extract-item-from-container/e
 import {ExtractedItemComponent} from './extracted-item/extracted-item.component';
 import {ExtractedItemService} from './extracted-item/extracted-item.service';
 import {ExtractedItemsComponent} from './extracted-items/extracted-items.component';
+import {ExtractedItemDetailComponent} from './extracted-item-detail/extracted-item-detail.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'containers', pathMatch: 'full'},
   {path: 'containers/:id', component: ContainerDetailComponent},
   {path: 'containers', component: ContainerComponent},
   {path: 'extracted-items', component: ExtractedItemsComponent},
-  {path: 'extracted-items/:id', component: ExtractedItemComponent}
+  {path: 'extracted-items/:id', component: ExtractedItemDetailComponent}
 ];
 
 @NgModule({
@@ -58,7 +59,8 @@ const routes: Routes = [
     MoveItemToContainerComponent,
     ExtractItemFromContainerComponent,
     ExtractedItemComponent,
-    ExtractedItemsComponent
+    ExtractedItemsComponent,
+    ExtractedItemDetailComponent
   ],
   imports: [
     NgbModule.forRoot(),

@@ -1,9 +1,21 @@
 <div class="row" *ngIf="extractedItem">
-  <div class="col-8">
-      <span [outerHTML]="extractedItem.item.item | item"></span>
+  <div class="col-6">
+    <span [outerHTML]="extractedItem.item.item | item"></span>
   </div>
   <div class="col-4">
     <span>from container: </span>
     <span><b>{{extractedItem.sourceContainer.name}}</b></span>
+  </div>
+  <div class="col-2 d-flex justify-content-end align-self-center">
+    <span class="cursor-pointer oi oi-eye col-1" (click)="getDetails()"></span>
+    <span class="cursor-pointer oi oi-arrow-circle-bottom col-1" (click)="collapse()"></span>
+  </div>
+</div>
+<div [ngbCollapse]="isCollapsed" class="collapse" #itemCollapse="ngbCollapse">
+  <div class="card-body">
+    <div *ngIf="extractedItem && extractedItem.item && extractedItem.item.imageStore" class="row col-12">
+      <img *ngIf="extractedItem.item.imageStore.images" src="{{getThumbnail(extractedItem.item.imageStore.images[0])}}"
+           (click)="openCarousel(extractedItem.item.imageStore)">
+    </div>
   </div>
 </div>
