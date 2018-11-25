@@ -30,15 +30,14 @@ describe('ContainerComponent ', () => {
   }));
 
   afterEach(() => {
-    component.itemComponent.item = {};
-    component.itemComponent.itemToCreate = null;
+    component.itemComponent.item = null;
     component.containers = [];
   });
 
   it('displays the container once added', () => {
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    setValueOnFeaturesAndDispatchEvent('chaussure', '#featureValue');
     const button = compiled.querySelector('#addContainer');
 
     button.click();
@@ -46,66 +45,30 @@ describe('ContainerComponent ', () => {
 
     expect(compiled.querySelector('#containers').outerHTML).toContain('Container');
     expect(compiled.querySelector('#containerName').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
     expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
     expect(fixture.debugElement.query(By.css('#items'))).toBeNull(compiled.querySelector('span').outerHTML + 'Should be null');
   });
 
-  // it('should have qrc-version and qrc-value set to expected values', () => {
-  //   const compiled = fixture.debugElement.nativeElement;
-  //   setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-  //   setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
-  //   const button = compiled.querySelector('#addContainer');
-  //
-  //   button.click();
-  //   fixture.detectChanges();
-  //
-  //   expect(fixture.debugElement.query(By.css('ngx-qrcode')).attributes['qrc-version']).toEqual('14');
-  //   expect(component.getContainerURL(CONTAINER.id)).toEqual('http://localhost:9876/#/containers/' + CONTAINER.id);
-  // });
-
   it('can add an item to a container', () => {
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    setValueOnFeaturesAndDispatchEvent('chaussure', '#featureValue');
     const button = compiled.querySelector('#addContainer');
     button.click();
     fixture.detectChanges();
     const itemComponents = component.itemComponents.toArray();
     const spiedClearItemComponent = spyOn(itemComponents[1], 'clearItem');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
-      'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button').click();
+    setValueOnFeaturesAndDispatchEvent('marron', '#item0 div div div #featureValue');
     const addItemButton = compiled.querySelector('#addItemToContainer0');
 
     addItemButton.click();
     fixture.detectChanges();
 
     const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item item d-flex justify-content-between col-md-12"] div');
+    console.log('selector' + querySelectorAll);
     const querySelector = querySelectorAll[1];
-    expect(querySelector.textContent).toContain('Couleur: marron');
+    expect(querySelector.textContent).toContain('marron');
     expect(spiedClearItemComponent).toHaveBeenCalled();
-  });
-
-  it('hint is raised if `+` button is not clicked', () => {
-    const containerService = fixture.debugElement.injector.get(ContainerService);
-    const spiedService = spyOn(containerService, 'addItemToContainer');
-    const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
-    const button = compiled.querySelector('#addContainer');
-    button.click();
-    fixture.detectChanges();
-    const itemComponents = component.itemComponents.toArray();
-    const spiedOpenComponent = spyOn(itemComponents[1].featureHint, 'open');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemToCreate0 div div div #featureType',
-      'marron', '#itemToCreate0 div div div #featureValue', '#itemToCreate0 div div div button');
-    const addItemButton = compiled.querySelector('#addItemToContainer0');
-
-    addItemButton.click();
-    fixture.detectChanges();
-
-    expect(spiedOpenComponent).toHaveBeenCalled();
-    expect(spiedService).not.toHaveBeenCalled();
   });
 
   it('item form shows error if addContainer has been clicked and no item has been added', () => {
@@ -113,7 +76,7 @@ describe('ContainerComponent ', () => {
     const spiedService = spyOn(containerService, 'addItemToContainer');
     const compiled = fixture.debugElement.nativeElement;
     setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    setValueOnFeaturesAndDispatchEvent('chaussure', '#featureValue');
     const button = compiled.querySelector('#addContainer');
     button.click();
     fixture.detectChanges();
@@ -132,8 +95,8 @@ describe('ContainerComponent ', () => {
     const containerService = fixture.debugElement.injector.get(ContainerService);
     const spiedService = spyOn(containerService, 'getContainer').and.returnValue(of(CONTAINER));
     const compiled = fixture.debugElement.nativeElement;
-    setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', '#featureType', 'chaussure', '#featureValue', 'button').click();
+    setValueToInputAndDispatchEvent(CONTAINER.name, '#containerName', 'input');
+    setValueOnFeaturesAndDispatchEvent('chaussure', '#featureValue');
     compiled.querySelector('#addContainer').click();
     fixture.detectChanges();
     const button = compiled.querySelector('#generateSticker0');
@@ -144,21 +107,16 @@ describe('ContainerComponent ', () => {
     expect(spiedService).toHaveBeenCalled();
   });
 
-  function setValueToInputAndDispatchEvent(value: string, selector: string) {
+  function setValueToInputAndDispatchEvent(value: string, selector: string, eventType?: string) {
+    eventType = eventType || 'input';
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
     input.value = value;
-    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event(eventType));
   }
 
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureTypeSelector: string,
-                                              featureValue: string, featureValueSelector: string, buttonSelector: string) {
-    buttonSelector = buttonSelector || 'button';
+  function setValueOnFeaturesAndDispatchEvent(featureValue: string, featureValueSelector: string) {
     featureValueSelector = featureValueSelector || '#featureValue';
-    featureTypeSelector = featureTypeSelector || '#featureType';
     featureValue = featureValue || '';
-    featureType = featureType || '';
-    setValueToInputAndDispatchEvent(featureType, featureTypeSelector);
-    setValueToInputAndDispatchEvent(featureValue, featureValueSelector);
-    return compiled.querySelector(buttonSelector);
+    setValueToInputAndDispatchEvent(featureValue, featureValueSelector, 'blur');
   }
 });

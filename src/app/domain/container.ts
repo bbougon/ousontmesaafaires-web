@@ -1,4 +1,5 @@
 import {Item} from './item';
+import {isUndefined} from 'util';
 
 export class Container {
   public id: string;
@@ -8,7 +9,12 @@ export class Container {
 
   constructor(private body: any) {
     this.id = body.id;
-    this.items = body.items.map((item) => new Item(item, item.imageStore, item.hash));
+    this.items = body.items.map(singleItem => {
+      if (!isUndefined(singleItem.imageStore) && !isUndefined(singleItem.hash)) {
+        return new Item(singleItem.item, singleItem.imageStore, singleItem.hash);
+      }
+      return new Item(singleItem.item);
+    });
     this.name = body.name;
     this.description = body.description;
   }

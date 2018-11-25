@@ -17,7 +17,7 @@ import Spy = jasmine.Spy;
 describe('MoveItemToContainerComponent', () => {
 
   const item = {
-    'item': {'type': 'chaussure'},
+    'item': 'chaussure',
     'imageStore': {
       'folder': 'folder_name',
       'images': [{
@@ -79,7 +79,7 @@ describe('MoveItemToContainerComponent', () => {
     spiedContainerService = spyOn(containerService, 'moveItemToContainer')
       .and.returnValue(of(new Container(newContainer)));
     component.containerId = '12345';
-    component.item = new Item(item);
+    component.item = new Item(item.item);
     spiedCloseModal = spyOn(component.activeModal, 'close');
     spiedRouter = spyOn(fixture.debugElement.injector.get(Router), 'navigateByUrl');
     fixture.detectChanges();

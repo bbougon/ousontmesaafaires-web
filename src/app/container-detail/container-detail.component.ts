@@ -52,9 +52,9 @@ export class ContainerDetailComponent implements OnInit {
   addItemToContainer(itemComponent: ItemComponent) {
     this.route.paramMap
       .subscribe(pmap =>
-        this.containerService.addItemToContainer(pmap.get('id'), itemComponent.getCreatedItem())
+        this.containerService.addItemToContainer(pmap.get('id'), itemComponent.getItem())
           .subscribe(() => {
-            this.container.add(itemComponent.getCreatedItem());
+            this.container.add(itemComponent.getItem());
             itemComponent.clearItem();
           }));
   }
@@ -62,7 +62,7 @@ export class ContainerDetailComponent implements OnInit {
   addDescription(description: string) {
     this.route.paramMap
       .subscribe(pmap =>
-        this.containerService.patchContainer(pmap.get('id'), new Patch('description').unwrap(description))
+        this.containerService.patchContainer(pmap.get('id'), new Patch('item.description').unwrap(description))
           .subscribe(() => {
             this.hideAndShow(this.containerDescription, this.displayDescription);
             this.container.description = description.trim();

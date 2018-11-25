@@ -9,6 +9,7 @@ import {FormService} from '../infrastructure/form.service';
 import {NgbCollapse, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {PrintComponent} from '../print/print.component';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-container',
@@ -45,18 +46,16 @@ export class ContainerComponent implements OnInit {
   }
 
   addContainer(containerName: string): void {
-    this.itemComponent.hint();
-    if (containerName.trim() === '' || Object.keys(this.itemComponent.getItem()).length === 0) {
+    if (containerName.trim() === '' || isNullOrUndefined(this.itemComponent.getItem())) {
       this.formService.markAsDirty(containerName, this.containerNameFormControl);
       this.itemComponent.markAllAsDirty();
       return;
-    }
 
-    if (!this.itemComponent.itemsAreEmpty()) {
+    }
+    if (this.itemComponent.itemIsEmpty()) {
       return;
     }
-
-    this.containerService.addContainer(new NewContainer(containerName, this.itemComponent.getCreatedItem().item))
+    this.containerService.addContainer(new NewContainer(containerName, this.itemComponent.getItem()))
       .subscribe(container => {
         this.formService.resetFormControl(this.containerNameFormControl);
         this.containers.push(container);
@@ -69,21 +68,20 @@ export class ContainerComponent implements OnInit {
   }
 
   addItemToContainer(id: String, itemComponent: ItemComponent) {
-    itemComponent.hint();
-    if (Object.keys(itemComponent.getItem()).length === 0) {
+    if (isNullOrUndefined(itemComponent.getItem())) {
       itemComponent.markAllAsDirty();
       return;
     }
 
-    if (!itemComponent.itemsAreEmpty()) {
+    if (itemComponent.itemIsEmpty()) {
       return;
     }
 
-    this.containerService.addItemToContainer(id, itemComponent.getCreatedItem())
+    this.containerService.addItemToContainer(id, itemComponent.getItem())
       .subscribe(() => {
         this.containers.map((container: Container) => {
           if (container.id === id) {
-            container.add(itemComponent.getCreatedItem());
+            container.add(itemComponent.getItem());
             itemComponent.clearItem();
           }
         });
@@ -93,13 +91,13 @@ export class ContainerComponent implements OnInit {
   generateSticker(containerId: String) {
     this.containerService.getContainer(containerId)
       .subscribe((container: Container) => {
-        const modalRef = this.modalService.open(PrintComponent, { size: 'lg' });
+        const modalRef = this.modalService.open(PrintComponent, {size: 'lg'});
         modalRef.componentInstance.container = container;
       });
   }
 
   getDetails(containerId: String) {
-    this.router.navigate(['containers', containerId ]);
+    this.router.navigate(['containers', containerId]);
   }
 
   getContainerURL(containerId: String) {

@@ -9,13 +9,12 @@ import {HttpClientModule, HttpHeaders, HttpRequest} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {ExtractedItem} from '../domain/extracted-item';
 import {CONTAINER} from '../container/testing/fake-container.service';
-import {ImageStore} from "../domain/image-store";
+import {ImageStore} from '../domain/image-store';
 
 describe('ExtractedItemService', () => {
 
-  const item = new Item({
-      'item': {'type': 'chaussure'}
-    },
+  const item = new Item(
+      'chaussure',
     new ImageStore('folder_name',
       [{
         'signature': 'signature',
@@ -66,7 +65,6 @@ describe('ExtractedItemService', () => {
           extractedItemsService.extractItem(item, 'an-id').subscribe();
 
           mockBackend.expectOne((req: HttpRequest<any>) => {
-            console.log(req.body);
             return req.url === `${environment.apiUrl}/extracted-items`
               && req.method === 'POST'
               && req.responseType === 'text'
@@ -81,7 +79,7 @@ describe('ExtractedItemService', () => {
         (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
           const expectedExtractedItem = new ExtractedItem('an-id', item, CONTAINER);
 
-          extractedItemsService.extractItem(new Item(item), 'an-id')
+          extractedItemsService.extractItem(new Item(item.item), 'an-id')
             .subscribe((extractedItem) => {
               expect(extractedItem).not.toBeNull();
             });
@@ -108,8 +106,8 @@ describe('ExtractedItemService', () => {
         [ExtractedItemService, HttpTestingController],
         (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
           extractedItemsService.getAllExtractedItems()
-            .subscribe(containers => {
-              expect(containers.length).toBe(2);
+            .subscribe(extractedItems => {
+              expect(extractedItems.length).toBe(2);
             });
 
           mockBackend.expectOne(`${environment.apiUrl}/extracted-items`)
@@ -125,6 +123,24 @@ describe('ExtractedItemService', () => {
                 sourceContainer: CONTAINER
               }
             ], {status: 200, statusText: 'OK'});
+        }
+      )));
+
+    it('get extracted item', async(
+      inject(
+        [ExtractedItemService, HttpTestingController],
+        (extractedItemsService: ExtractedItemService, mockBackend: HttpTestingController) => {
+          extractedItemsService.getExtractedItem('an-id')
+            .subscribe(extractedItem => {
+              expect(extractedItem).not.toBeNull();
+            });
+
+          mockBackend.expectOne(`${environment.apiUrl}/extracted-items/an-id`)
+            .flush({
+              id: 'an-id',
+              item: item,
+              sourceContainer: CONTAINER
+            }, {status: 200, statusText: 'OK'});
         }
       )));
   });

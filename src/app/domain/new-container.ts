@@ -1,10 +1,12 @@
+import {Item} from './item';
+
 export class NewContainer {
 
-  constructor(name: string, item: {}) {
-    this.name = name;
-    this.item = item;
-  }
-
   name: string;
-  item: {};
+  items: Item[];
+
+  constructor(name: string, item: Item) {
+    this.name = name;
+    this.items = new Array(item);
+  }
 }

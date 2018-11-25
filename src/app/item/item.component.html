@@ -1,20 +1,12 @@
 <div class="row" [formGroup]="addItemForm">
   <div class="col-10 col-md-10">
-
     <h5>Item</h5>
-    <label for="featureType">Feature type:</label>
-    <div class="form-group">
-      <input #featureType id="featureType" class="form-control form-control-sm" [ngClass]="{
-                  'is-invalid': featureTypeFormControl.invalid && (featureTypeFormControl.dirty || featureTypeFormControl.touched),
-                  'is-valid': featureTypeFormControl.valid && (featureTypeFormControl.dirty || featureTypeFormControl.touched)}"
-             formControlName="featureTypeFormControl" required>
-      <div id="featureTypeFeedback" class="invalid-feedback">
-        Please fill a feature type
-      </div>
-    </div>
     <label for="featureValue">Feature value:</label>
     <div class="form-group">
-      <input #feature id="featureValue" class="form-control form-control-sm" [ngClass]="{
+      <input #feature id="featureValue" class="form-control form-control-sm"
+             (blur)="setItemValue(feature.value)"
+             (keyup.enter)="setItemValue(feature.value)"
+             [ngClass]="{
                   'is-invalid': featureValueFormControl.invalid && (featureValueFormControl.dirty || featureValueFormControl.touched),
                   'is-valid': featureValueFormControl.valid && (featureValueFormControl.dirty || featureValueFormControl.touched)}"
              formControlName="featureValueFormControl" required>
@@ -22,26 +14,5 @@
         Please fill a feature value
       </div>
     </div>
-  </div>
-  <div class="col-2 col-md-2 align-self-center">
-    <div>
-      <ng-template #featureHintPopOver>Press '+' button!</ng-template>
-      <button type="button" class="btn btn-light" [ngbPopover]="featureHintPopOver" popoverTitle="Hint"
-              placement="right" container="body" triggers="manual" #featureHint="ngbPopover"
-              (click)="add(featureType.value, feature.value); featureType.value=''; feature.value=''">
-        +
-      </button>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div *ngIf="getItemToCreate()" class="col-sm-12" id="items">
-    Item:
-    <ul class="list-group list-group-flush col-sm-12">
-      <li *ngFor="let item of getItemToCreate()" class="list-group-item item d-flex justify-content-between col-sm-12">
-        {{item[0] | truncate:26}},{{item[1] | truncate:26}}
-      </li>
-
-    </ul>
   </div>
 </div>

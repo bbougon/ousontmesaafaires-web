@@ -54,10 +54,10 @@ describe('ContainerService', () => {
         });
 
         mockBackend.expectOne(`${environment.apiUrl}/containers`).flush([{
-          'id': 'an id 1', 'items': [{'item': {'type': 'chaussure'}}],
+          'id': 'an id 1', 'items': [{'item': 'chaussure'}],
           'name': 'Container 1', 'qrcode': 'qrcode'
         }, {
-          'id': 'an id 2', 'items': [{'item': {'type': 'pantalon'}}],
+          'id': 'an id 2', 'items': [{'item': 'pantalon'}],
           'name': 'Container 2', 'qrcode': 'qrcode'
         }], {status: 200, statusText: 'OK'});
       })));
@@ -81,7 +81,7 @@ describe('ContainerService', () => {
 
     it('should have post a container with expected request', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.addContainer(new NewContainer('A container', {type: 'thing'}))
+        containerService.addContainer(new NewContainer('A container', new Item('thing')))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -97,7 +97,7 @@ describe('ContainerService', () => {
           'id': 'an id', 'items': [{'item': {'type': 'thing'}}],
           'name': 'A container', 'qrcode': 'qrcode'
         });
-        containerService.addContainer(new NewContainer('A container', {type: 'thing'}))
+        containerService.addContainer(new NewContainer('A container', new Item('thing')))
           .subscribe(container => {
             expect(container).not.toBeNull();
             expect(container.id).toBe('an id');
@@ -121,7 +121,7 @@ describe('ContainerService', () => {
     it('should have post an item to a container with expected request', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
         containerService.addItemToContainer('an-id',
-          new Item({'couleur': 'rouge', hash: 'abcdefgh', 'imageStore': new ImageStore('folder')}))
+          new Item('couleur rouge', new ImageStore('folder'), 'abcdef'))
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -134,7 +134,7 @@ describe('ContainerService', () => {
     it('should have post expected item', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
         containerService.addItemToContainer('an-id',
-          new Item({'couleur': 'rouge', hash: 'zetrydhsk', 'imageStore': new ImageStore('folder')}))
+          new Item('couleur rouge', new ImageStore('folder'), 'zetrydhsk'))
           .subscribe(() => {
             expect(this).not.toBeNull();
           });
@@ -173,7 +173,7 @@ describe('ContainerService', () => {
           });
 
         mockBackend.expectOne(`${environment.apiUrl}/containers/an-id`).flush({
-          'id': 'an-id', 'items': [{'item': {'type': 'chaussure'}}],
+          'id': 'an-id', 'items': [{'item': 'chaussure'}],
           'name': 'Container 1', 'qrcode': 'qrcode'
         }, {
           status: 200,
@@ -196,7 +196,6 @@ describe('ContainerService', () => {
           .subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
-          console.log(req.body);
           return req.url === environment.apiUrl + '/containers/an-id'
             && req.method === 'PATCH'
             && JSON.stringify(req.body) === '{"target":"description","id":"","version":1,"data":"A description"}';
@@ -213,7 +212,7 @@ describe('ContainerService', () => {
           });
 
         mockBackend.expectOne(`${environment.apiUrl}/containers/an-id`).flush({
-          'id': 'an-id', 'items': [{'item': {'type': 'chaussure'}, 'imageStore': {'folder': 'folder'}}],
+          'id': 'an-id', 'items': [{'item': 'chaussure', 'imageStore': {'folder': 'folder'}}],
           'name': 'Container 1', 'qrcode': 'qrcode'
         }, {
           status: 200,
@@ -226,7 +225,7 @@ describe('ContainerService', () => {
   describe('when moving an item to a container', () => {
 
     const item = {
-      'item': {'type': 'chaussure'},
+      'item': 'chaussure',
       'imageStore': {
         'folder': 'folder_name',
         'images': [{
@@ -260,11 +259,10 @@ describe('ContainerService', () => {
 
     it('moves item to a container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.moveItemToContainer(new Item(item, item.imageStore, item.hash), 'an-id',
+        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.hash), 'an-id',
           new Destination('another-container-id')).subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
-          console.log(req.body);
           return req.url === `${environment.apiUrl}/containers/an-id/items/hash`
             && req.method === 'POST'
             && JSON.stringify(req.body) === '{"destination":"another-container-id"}';
@@ -278,7 +276,8 @@ describe('ContainerService', () => {
           'id': 'an-id', 'items': [item],
           'name': 'A container', 'qrcode': 'qrcode'
         });
-        containerService.moveItemToContainer(new Item(item, item.imageStore, item.hash), 'an-id', new Destination('another-container-id'))
+        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.hash),
+          'an-id', new Destination('another-container-id'))
           .subscribe((container) => {
             expect(container).not.toBeNull();
             expect(container.id).toBe('an-id');

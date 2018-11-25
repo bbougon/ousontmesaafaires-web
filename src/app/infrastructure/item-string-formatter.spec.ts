@@ -4,9 +4,7 @@ import {ItemStringFormatter} from './item-string-formatter';
 describe('ItemStringFormatter', () => {
 
   const itemWithOneFeatureJson = {
-    'item': {
-      'type': 'chaussure'
-    },
+    'item': 'chaussure',
     'imageStore': {
       'folder': 'folder_name',
       'images': [
@@ -41,10 +39,7 @@ describe('ItemStringFormatter', () => {
   };
 
   const itemWithTwoFeaturesJson = {
-    'item': {
-      'type': 'chaussure',
-      'couleur': 'marron'
-    },
+    'item': 'chaussure marron',
     'imageStore': {
       'folder': 'folder_name',
       'images': [
@@ -104,18 +99,20 @@ describe('ItemStringFormatter', () => {
   };
 
   it('should format an item with one feature', () => {
-    const itemStringFormatter = new ItemStringFormatter(new Item(itemWithOneFeatureJson));
+    const itemStringFormatter = new ItemStringFormatter(
+      new Item(itemWithOneFeatureJson.item, itemWithOneFeatureJson.imageStore, itemWithOneFeatureJson.hash));
 
-    expect(itemStringFormatter.format()).toBe('type;chaussure|folder_name|' +
+    expect(itemStringFormatter.format()).toBe('chaussure|folder_name|' +
       'signature;url;secureUrl;assets/testing/url2.png;assets/testing/secureUrl2.png;110.0;80.0;' +
       'assets/testing/url3.png;assets/testing/secureUrl3.png;552.0;400.0;assets/testing/url4.png;' +
       'assets/testing/secureUrl4.png;1103.0;800.0');
   });
 
   it('should format an item with two features', () => {
-    const itemStringFormatter = new ItemStringFormatter(new Item(itemWithTwoFeaturesJson));
+    const itemStringFormatter = new ItemStringFormatter(
+      new Item(itemWithTwoFeaturesJson.item, itemWithTwoFeaturesJson.imageStore, itemWithTwoFeaturesJson.hash));
 
-    expect(itemStringFormatter.format()).toBe('type;chaussure;couleur;marron|folder_name|' +
+    expect(itemStringFormatter.format()).toBe('chaussure marron|folder_name|' +
       'signature;url;secureUrl;assets/testing/url2.png;assets/testing/secureUrl2.png;110.0;80.0;' +
       'assets/testing/url3.png;assets/testing/secureUrl3.png;552.0;400.0;assets/testing/url4.png;' +
       'assets/testing/secureUrl4.png;1103.0;800.0|' +

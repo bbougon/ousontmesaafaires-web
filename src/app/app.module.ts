@@ -14,7 +14,6 @@ import {FormService} from './infrastructure/form.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TruncatePipe} from './infrastructure/pipe/truncate-pipe';
 import {OcticonDirective} from './infrastructure/directive/octicon.directive';
-import {ItemPipe} from './infrastructure/pipe/item-pipe';
 import {PrintComponent} from './print/print.component';
 import {PrintDirective} from './print/print.directive';
 import {RouterModule, Routes} from '@angular/router';
@@ -48,7 +47,6 @@ const routes: Routes = [
     ItemComponent,
     ContainerComponent,
     TruncatePipe,
-    ItemPipe,
     OcticonDirective,
     ErrorMessageComponent,
     PrintComponent,

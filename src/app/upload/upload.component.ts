@@ -65,7 +65,7 @@ export class UploadComponent implements OnInit {
     this.signatureService
       .sign({
         eager: 'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800',
-        folder: this.item.item.imageStore.folder,
+        folder: this.item.imageStore.folder,
         public_id: publicId,
         timestamp: this.timestamp
       })
@@ -86,7 +86,7 @@ export class UploadComponent implements OnInit {
     uploadedImage.eager.forEach(function (eager) {
       resizedImages.push({url: eager.url, secure_url: eager.secure_url, width: eager.width, height: eager.height});
     });
-    this.persistUpload(new Patch('item', this.item.item.hash)
+    this.persistUpload(new Patch('item', this.item.hash)
       .unwrap({
         signature: uploadedImage.signature,
         url: uploadedImage.url,
@@ -97,7 +97,7 @@ export class UploadComponent implements OnInit {
 
   persistUpload(patch: Patch, callBack?: () => void) {
     const addImageTo = function () {
-      this.item.item.imageStore.images.push(
+      this.item.imageStore.images.push(
         new Image(patch.data.signature, patch.data.url, patch.data.secure_url,
           patch.data.resizedImages
             .map(resizedImage => new ResizedImage(resizedImage.url, resizedImage.secure_url,
@@ -106,13 +106,13 @@ export class UploadComponent implements OnInit {
 
     this.containerService.patchContainer(this.containerId, patch)
       .subscribe((container: Container) => {
-        if (isUndefined(this.item.item.imageStore.images)) {
-          this.item.item.imageStore.images = [];
+        if (isUndefined(this.item.imageStore.images)) {
+          this.item.imageStore.images = [];
         }
         addImageTo.call(this);
-        this.item.item.hash = this.cryptoService.sha1().encrypt(new ItemStringFormatter(this.item).format());
-        if (isUndefined(container.items.find(item => item.item.hash === this.item.item.hash))) {
-          throw new Error('Error, could not find item ' + this.item.item.hash + ' in updated container!');
+        this.item.hash = this.cryptoService.sha1().encrypt(new ItemStringFormatter(this.item).format());
+        if (isUndefined(container.items.find(item => item.hash === this.item.hash))) {
+          throw new Error('Error, could not find item ' + this.item.hash + ' in updated container!');
         }
         if (callBack) {
           callBack();
@@ -122,7 +122,7 @@ export class UploadComponent implements OnInit {
 
   onBuildItemForm(fileItem, form, publicId, timestamp, signature) {
     fileItem.withCredentials = false;
-    form.append('folder', this.item.item.imageStore.folder);
+    form.append('folder', this.item.imageStore.folder);
     form.append('file', fileItem);
     form.append('timestamp', timestamp);
     form.append('public_id', publicId);

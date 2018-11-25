@@ -15,7 +15,7 @@ import {Router} from '@angular/router';
 describe('ExtractedItemComponent', () => {
 
   const item = {
-    'item': {'type': 'chaussure', 'couleur': 'marron', 'matière': 'cuir'},
+    'item': 'chaussure couleur marron matière cuir',
     'imageStore': {
       'folder': 'folder_name',
       'images': [{
@@ -87,7 +87,7 @@ describe('ExtractedItemComponent', () => {
   });
 
   it('displays the item', () => {
-    component.extractedItem = new ExtractedItem('12345', new Item(item), CONTAINER);
+    component.extractedItem = new ExtractedItem('12345', item, CONTAINER);
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
@@ -103,7 +103,7 @@ describe('ExtractedItemComponent', () => {
     const secondImage = item.imageStore.images[1];
     images.push(new Image(secondImage.signature, secondImage.url, secondImage.secureUrl, createResizedImages(secondImage)));
     component.extractedItem = new ExtractedItem('12345',
-      new Item(item, new ImageStore(item.imageStore.folder, images), item.hash), CONTAINER);
+      new Item(item.item, new ImageStore(item.imageStore.folder, images), item.hash), CONTAINER);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
@@ -118,11 +118,11 @@ describe('ExtractedItemComponent', () => {
     router = TestBed.get(Router);
     location = TestBed.get(Location);
     component.extractedItem = new ExtractedItem('12345',
-      new Item(item, new ImageStore(item.imageStore.folder), item.hash), CONTAINER);
+      new Item(item.item, new ImageStore(item.imageStore.folder), item.hash), CONTAINER);
     fixture.detectChanges();
-    //
+
     fixture.debugElement.query(By.css('.oi-eye')).nativeElement.click();
-    //
+
     tick(50);
     expect(location.path()).toBe('/extracted-items/12345');
   }));

@@ -14,7 +14,7 @@ describe('ItemComponent', () => {
       providers: [PairPipe],
       imports: [AppModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -31,92 +31,38 @@ describe('ItemComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
 
-    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature type:');
-    expect(compiled.querySelector('div span')).toBeNull('Should be null');
+    expect(compiled.querySelector('label[for="featureValue"]').textContent).toContain('Feature value:');
   });
 
-  it('should add the feature once \'+\' is clicked', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
+  describe('should set item on triggered events', () => {
+    it('on keyup enter', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      const featureInput = fixture.debugElement.query(By.css('#featureValue'));
+      featureInput.nativeElement.textContent = 'A value';
+      featureInput.nativeElement.value = 'A value';
 
-    button.click();
-    fixture.detectChanges();
+      featureInput.triggerEventHandler('keyup.enter', {});
+      fixture.detectChanges();
 
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('li').textContent).toContain('type, tshirt');
-  });
+      const item = component.getItem();
+      expect(item).not.toBeNull('item is not null');
+      expect(item.item).toEqual('A value');
+    });
 
-  it('should invalidate feature if \'+\' is clicked and feature is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, '', '');
+    it('on blur', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      const featureInput = fixture.debugElement.query(By.css('#featureValue'));
+      featureInput.nativeElement.textContent = 'A value';
+      featureInput.nativeElement.value = 'A value';
 
-    button.click();
-    fixture.detectChanges();
+      featureInput.triggerEventHandler('blur', {});
+      fixture.detectChanges();
 
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
-    expect(compiled.querySelector('#featureValueFeedback').textContent).toContain('Please fill a feature value');
-    expect(compiled.querySelector('li')).toBeNull();
-  });
+      const item = component.getItem();
+      expect(item).not.toBeNull('item is not null');
+      expect(item.item).toEqual('A value');
+    });
 
-  it('should reset feature type if \'+\' is clicked and feature type is valid and feature value is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', '');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-invalid');
-    expect(compiled.querySelector('#featureType').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('li')).toBeNull();
-  });
-
-  it('should reset feature value if \'+\' is clicked and feature value is valid and feature type is empty', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, '', 'value');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-invalid');
-    expect(compiled.querySelector('#featureValue').className).not.toContain('is-valid');
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
-    expect(compiled.querySelector('li')).toBeNull();
-  });
-
-  it('can display hint if \'+\' has not been clicked', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const spiedCloseHint = spyOn(component.featureHint, 'close');
-    const spiedIsOpenHint = spyOn(component.featureHint, 'isOpen');
-    const spiedOpenHint = spyOn(component.featureHint, 'open');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
-
-    component.hint();
-    fixture.detectChanges();
-
-    expect(spiedCloseHint).toHaveBeenCalled();
-    expect(spiedIsOpenHint).toHaveBeenCalled();
-    expect(spiedOpenHint).toHaveBeenCalled();
-  });
-
-  it('do not display hint if \'+\' has been clicked', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    const spiedCloseHint = spyOn(component.featureHint, 'close');
-    const spiedIsOpenHint = spyOn(component.featureHint, 'isOpen');
-    const spiedOpenHint = spyOn(component.featureHint, 'open');
-    const button = setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'tshirt');
-
-    button.click();
-    fixture.detectChanges();
-    component.hint();
-    fixture.detectChanges();
-
-    expect(spiedCloseHint).toHaveBeenCalled();
-    expect(spiedIsOpenHint).not.toHaveBeenCalled();
-    expect(spiedOpenHint).not.toHaveBeenCalled();
   });
 
   function setValueToInputAndDispatchEvent(value: string, selector: string) {
@@ -125,11 +71,8 @@ describe('ItemComponent', () => {
     input.dispatchEvent(new Event('input'));
   }
 
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string) {
+  function setValueOnFeaturesAndDispatchEvent(featureValue: string) {
     featureValue = featureValue || '';
-    featureType = featureType || '';
-    setValueToInputAndDispatchEvent(featureType, '#featureType');
     setValueToInputAndDispatchEvent(featureValue, '#featureValue');
-    return compiled.querySelector('button');
   }
 });

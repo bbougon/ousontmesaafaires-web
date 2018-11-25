@@ -57,7 +57,7 @@
                 <div class="row">
                   <div class="col-md-10 col-10">
                     <div>
-                      <span *ngIf="item" [outerHTML]="item.item | item"></span>
+                      <span *ngIf="item.item" [outerHTML]="item.item"></span>
                     </div>
                     <div *ngIf="item.imageStore" class="row col-4">
                       <img *ngIf="item.imageStore.images" src="{{getThumbnail(item.imageStore.images[0])}}" (click)="openCarousel(item.imageStore)">

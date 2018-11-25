@@ -17,7 +17,7 @@ describe('ContainerComponent', () => {
   let location: Location;
   let router: Router;
 
-  beforeEach(async(async() => {
+  beforeEach(async(async () => {
     TestBed.configureTestingModule({
       providers: [
         {provide: ContainerService, useClass: FakeContainerService},
@@ -46,7 +46,6 @@ describe('ContainerComponent', () => {
 
     expect(fixture.debugElement.query(By.css('.title')).nativeElement.textContent).toContain('Add a new container');
     expect(compiled.querySelector('label[for="containerName"]').textContent).toContain('Container:');
-    expect(compiled.querySelector('label[for="featureType"]').textContent).toContain('Feature type:');
     expect(compiled.querySelector('div span')).toBeNull('Should be null');
   });
 
@@ -82,7 +81,6 @@ describe('ContainerComponent', () => {
     containerService = fixture.debugElement.injector.get(ContainerService);
     const spiedService = spyOn(containerService, 'addContainer');
     const compiled = fixture.debugElement.nativeElement;
-    const spiedOpenComponent = spyOn(component.itemComponent.featureHint, 'open');
     setValueToInputAndDispatchEvent('#containerName', '');
     const button = compiled.querySelector('#addContainer');
 
@@ -90,12 +88,9 @@ describe('ContainerComponent', () => {
     fixture.detectChanges();
 
     expect(spiedService).not.toHaveBeenCalled();
-    expect(spiedOpenComponent).not.toHaveBeenCalled();
     expect(compiled.querySelector('#containerName').className).toContain('is-invalid');
     expect(compiled.querySelector('#containerNameFeedback').textContent).toContain('Please choose a name for your new container');
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
     expect(compiled.querySelector('#featureValueFeedback').textContent).toContain('Please fill a feature value');
     expect(compiled.querySelector('span')).toBeNull();
   });
@@ -112,30 +107,9 @@ describe('ContainerComponent', () => {
 
     expect(spiedService).not.toHaveBeenCalled();
     expect(compiled.querySelector('#containerName').className).not.toContain('is-invalid');
-    expect(compiled.querySelector('#featureType').className).toContain('is-invalid');
     expect(compiled.querySelector('#featureValue').className).toContain('is-invalid');
-    expect(compiled.querySelector('#featureTypeFeedback').textContent).toContain('Please fill a feature type');
     expect(compiled.querySelector('#featureValueFeedback').textContent).toContain('Please fill a feature value');
     expect(compiled.querySelector('span')).toBeNull();
-  });
-
-  it('should release hint if \'Add\' button is clicked, item has already a feature but a new is filled without being added', () => {
-    containerService = fixture.debugElement.injector.get(ContainerService);
-    const spiedService = spyOn(containerService, 'addContainer');
-    const compiled = fixture.debugElement.nativeElement;
-    const spiedComponent = spyOn(component.itemComponent.featureHint, 'open');
-    setValueToInputAndDispatchEvent('#containerName', 'Container');
-    setValueOnFeaturesAndDispatchEvent(compiled, 'type', 'chaussure').click();
-    setValueToInput('#featureType', 'noir');
-    setValueToInput('#featureValue', 'couleur');
-    const button = compiled.querySelector('#addContainer');
-
-    button.click();
-    fixture.detectChanges();
-
-    expect(spiedComponent).toHaveBeenCalled();
-    expect(spiedService).not.toHaveBeenCalled();
-    expect(compiled.querySelector('#containerName').className).not.toContain('is-invalid');
   });
 
   it('should navigate to container detail', fakeAsync(() => {
@@ -157,14 +131,5 @@ describe('ContainerComponent', () => {
   function setValueToInputAndDispatchEvent(selector: string, value: string) {
     const input = setValueToInput(selector, value);
     input.dispatchEvent(new Event('input'));
-  }
-
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureValue: string, selector?: string) {
-    featureValue = featureValue || '';
-    featureType = featureType || '';
-    selector = selector ? selector.length > 0 ? selector + ' ' : '' : '';
-    setValueToInputAndDispatchEvent(selector + '#featureType', featureType);
-    setValueToInputAndDispatchEvent(selector.length > 0 ? selector + ' ' : '' + '#featureValue', featureValue);
-    return compiled.querySelector('#itemForContainer button');
   }
 });

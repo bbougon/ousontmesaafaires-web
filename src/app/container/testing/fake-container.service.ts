@@ -9,7 +9,7 @@ export const CONTAINER: Container = new Container({
   'id': 'an-id',
   'name': 'Container',
   'items': [{
-    'item': {'type': 'chaussure'},
+    'item': 'chaussure',
     'imageStore': {
       'folder': 'folder_name',
       'images': [{
@@ -36,7 +36,7 @@ export const CONTAINER: Container = new Container({
     },
     'hash': 'hash'
   }, {
-    'item': {'type': 'pantalon', 'couleur': 'marron'},
+    'item': 'pantalon marron',
     'imageStore': {
       'folder': 'folder_name_2',
       'images': [{
@@ -74,7 +74,7 @@ export class FakeContainerService extends ContainerService {
     const containerCreated = new Container({
       'id': Math.random().toString(36).substring(2, 15),
       'name': container.name,
-      'items': [{'item': container.item}],
+      'items': container.items,
       'qrcode': 'a qr code'
     });
     this.containers.push(containerCreated);

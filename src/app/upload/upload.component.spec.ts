@@ -29,7 +29,7 @@ describe('UploadComponent', () => {
       'id': 'an-id',
       'name': 'Bureau',
       'items': [{
-        'item': {'type': 'chaussure'},
+        'item': 'chaussure',
         'imageStore': {
           'folder': 'folder_name',
           'images': [{
@@ -74,9 +74,9 @@ describe('UploadComponent', () => {
             }]
           }]
         },
-        'hash': '5acba3dc1c6bb5d7df07230d2538f4f938a002da'
+        'hash': '74d85ee362c32db1f242a233acca2fcddb349ddc'
       }, {
-        'item': {'type': 'pantalon', 'couleur': 'marron'},
+        'item': 'pantalon couleur marron',
         'imageStore': {
           'folder': 'folder_name_2',
           'images': [{
@@ -150,11 +150,8 @@ describe('UploadComponent', () => {
     })));
     spiedContainerService = spyOn(containerService, 'patchContainer')
       .and.returnValue(of(new Container(retrievedContainer)));
-    component.item = new Item({
-      item: {
-        'type': 'chaussure'
-      },
-      imageStore: new ImageStore('folder_name', [new Image(
+    component.item = new Item(
+      'chaussure', new ImageStore('folder_name', [new Image(
         'signature', 'url', 'secureUrl', [{
           'url': 'assets/testing/url2.png',
           'secureUrl': 'assets/testing/secureUrl2.png',
@@ -172,8 +169,8 @@ describe('UploadComponent', () => {
           'width': 800.0
         }]
       )]),
-      hash: '123456'
-    });
+      '123456'
+    );
     component.containerId = '12345';
     fakeDateTimeProvider = new FakeDateTimeProvider(createDateAtUTC(2011, 8, 3, 16, 35, 10, 20));
     component.dateTimeProvider = fakeDateTimeProvider;
@@ -193,9 +190,9 @@ describe('UploadComponent', () => {
       component.uploadAll();
 
       expectUploaderOptions();
-      expectSignatureServiceCall(component.item.item.imageStore.folder, '123456_1',
+      expectSignatureServiceCall(component.item.imageStore.folder, '123456_1',
         'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
-      expectSignatureServiceCall(component.item.item.imageStore.folder, '123456_2',
+      expectSignatureServiceCall(component.item.imageStore.folder, '123456_2',
         'c_scale,w_45|c_scale,w_80|c_scale,w_400|c_scale,w_800');
     });
 
@@ -260,7 +257,7 @@ describe('UploadComponent', () => {
     });
 
     it('and api service is called', () => {
-      const patch = new Patch('item', component.item.item.hash).unwrap({
+      const patch = new Patch('item', component.item.hash).unwrap({
         signature: 'signature2',
         url: 'url5',
         secure_url: 'secureUrl5',
@@ -280,8 +277,8 @@ describe('UploadComponent', () => {
 
       expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
       expect(spiedCloseModal).toHaveBeenCalled();
-      expect(component.item.item.hash).toBe('5acba3dc1c6bb5d7df07230d2538f4f938a002da');
-      expect(component.item.item.imageStore.images.length).toBe(2);
+      expect(component.item.hash).toBe('74d85ee362c32db1f242a233acca2fcddb349ddc');
+      expect(component.item.imageStore.images.length).toBe(2);
     });
 
     it('modal is closed once all uploads ended', () => {
@@ -289,7 +286,7 @@ describe('UploadComponent', () => {
           'id': 'an-id',
           'name': 'Bureau',
           'items': [{
-            'item': {'type': 'chaussure'},
+            'item': 'chaussure',
             'imageStore': {
               'folder': 'folder_name',
               'images': [{
@@ -339,7 +336,7 @@ describe('UploadComponent', () => {
         })));
       const cryptoService: CryptoService = fixture.debugElement.injector.get(CryptoService);
       spyOn(cryptoService, 'sha1').and.returnValue(new FakeCryptoService((message) => 'sha-1'));
-      const patch = new Patch('item', component.item.item.hash).unwrap({
+      const patch = new Patch('item', component.item.hash).unwrap({
         signature: 'signature2',
         url: 'url5',
         secure_url: 'secureUrl5',

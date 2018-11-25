@@ -14,7 +14,7 @@ describe('ExtractedItemsComponent', () => {
   let extractedItemService: ExtractedItemService;
 
   const item = {
-    'item': {'type': 'chaussure', 'couleur': 'marron', 'matière': 'cuir'},
+    'item': 'chaussure couleur marron matière cuir',
     'imageStore': {
       'folder': 'folder_name',
       'images': [{
@@ -63,7 +63,7 @@ describe('ExtractedItemsComponent', () => {
   it('loads extracted items on init', () => {
     extractedItemService = fixture.debugElement.injector.get(ExtractedItemService);
     const spiedService = spyOn(extractedItemService, 'getAllExtractedItems')
-      .and.returnValue(of(Array.of(new ExtractedItem('azbvcbd', new Item(item), CONTAINER))));
+      .and.returnValue(of(Array.of(new ExtractedItem('azbvcbd', new Item(item.item), CONTAINER))));
 
     component.ngOnInit();
 

@@ -44,7 +44,7 @@ describe('ExtractItemFromContainerComponent', () => {
     spiedExtractedItemsService = spyOn(extractedItemsService, 'extractItem')
       .and.returnValue(of(new ExtractedItem('new-id', CONTAINER.items[0], CONTAINER)));
     component.containerId = CONTAINER.id;
-    component.item = new Item(CONTAINER.items[0]);
+    component.item = new Item(CONTAINER.items[0].item);
     spiedCloseModal = spyOn(component.activeModal, 'close');
     spiedRouter = spyOn(fixture.debugElement.injector.get(Router), 'navigateByUrl');
     fixture.detectChanges();

@@ -26,7 +26,7 @@ describe('ContainerDetailComponent', () => {
     'id': 'an-id',
     'name': 'Container',
     'items': [{
-      'item': {'type': 'chaussure'},
+      'item': 'chaussure',
       'imageStore': {
         'folder': 'folder_name',
         'images': [{
@@ -208,7 +208,7 @@ describe('ContainerDetailComponent', () => {
 
     it('generating a sticker', () => {
       const ngbModal = fixture.debugElement.injector.get(NgbModal);
-      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0]});
+      spiedModalService = spyOn(ngbModal, 'open').and.returnValue({componentInstance: CONTAINER.items[0].imageStore});
       component.container = CONTAINER;
       component.generateSticker();
       fixture.detectChanges();
@@ -221,8 +221,8 @@ describe('ContainerDetailComponent', () => {
       const itemComponents = component.itemComponents.toArray();
       const spiedClearItemComponent = spyOn(itemComponents[0], 'clearItem');
       const compiled = fixture.debugElement.nativeElement;
-      setValueOnFeaturesAndDispatchEvent(compiled, 'couleur', '#itemForContainer div div div #featureType',
-        'marron', '#itemForContainer div div div #featureValue', '#itemForContainer div div div button').click();
+      setValueOnFeaturesAndDispatchEvent(
+        'marron', '#itemForContainer div div div #featureValue');
       fixture.detectChanges();
       const addItemButton = compiled.querySelector('#addItemToContainer');
 
@@ -231,7 +231,7 @@ describe('ContainerDetailComponent', () => {
 
       const querySelectorAll = compiled.querySelectorAll('li[class="list-group-item"] div.row div.col-md-10.col-10');
       const querySelector = querySelectorAll[1];
-      expect(querySelector.textContent).toContain('Couleur: marron');
+      expect(querySelector.textContent).toContain('pantalon marron');
       expect(spiedClearItemComponent).toHaveBeenCalled();
     });
 
@@ -262,7 +262,7 @@ describe('ContainerDetailComponent', () => {
       }));
 
       const expectDescriptionCreation = function (compiled: any) {
-        expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch('description').unwrap('A content'));
+        expect(spiedContainerService).toHaveBeenCalledWith('an-id', new Patch('item.description').unwrap('A content'));
         expect(compiled.querySelector('#containerDescription').attributes['hidden']).toBeTruthy();
         expect(compiled.querySelector('#displayDescription').attributes['hidden']).toBeFalsy();
         expect(compiled.querySelector('#displayDescription').textContent).toContain('A content');
@@ -380,21 +380,16 @@ describe('ContainerDetailComponent', () => {
 
   });
 
-  function setValueToInputAndDispatchEvent(value: string, selector: string) {
+  function setValueToInputAndDispatchEvent(value: string, selector: string, eventType: string) {
+    eventType = eventType || 'input';
     const input = fixture.debugElement.query(By.css(selector)).nativeElement;
     input.value = value;
-    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event(eventType));
   }
 
-  function setValueOnFeaturesAndDispatchEvent(compiled: any, featureType: string, featureTypeSelector: string,
-                                              featureValue: string, featureValueSelector: string, buttonSelector: string) {
-    buttonSelector = buttonSelector || 'button';
+  function setValueOnFeaturesAndDispatchEvent(featureValue: string, featureValueSelector: string) {
     featureValueSelector = featureValueSelector || '#featureValue';
-    featureTypeSelector = featureTypeSelector || '#featureType';
     featureValue = featureValue || '';
-    featureType = featureType || '';
-    setValueToInputAndDispatchEvent(featureType, featureTypeSelector);
-    setValueToInputAndDispatchEvent(featureValue, featureValueSelector);
-    return compiled.querySelector(buttonSelector);
+    setValueToInputAndDispatchEvent(featureValue, featureValueSelector, 'blur');
   }
 });
