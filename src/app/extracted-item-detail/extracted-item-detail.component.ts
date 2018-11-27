@@ -9,7 +9,7 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./extracted-item-detail.component.css']
 })
 export class ExtractedItemDetailComponent implements OnInit {
-  
+
   extractedItem: ExtractedItem;
   isCollapsed: Boolean[] = [];
 

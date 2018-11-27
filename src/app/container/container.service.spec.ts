@@ -250,7 +250,7 @@ describe('ContainerService', () => {
           }]
         }]
       },
-      'hash': 'hash'
+      'itemHash': 'hash'
     };
 
     afterEach(inject([HttpTestingController], (backend: HttpTestingController) => {
@@ -259,7 +259,7 @@ describe('ContainerService', () => {
 
     it('moves item to a container', async(
       inject([ContainerService, HttpTestingController], (containerService: ContainerService, mockBackend: HttpTestingController) => {
-        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.hash), 'an-id',
+        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.itemHash), 'an-id',
           new Destination('another-container-id')).subscribe();
 
         mockBackend.expectOne((req: HttpRequest<any>) => {
@@ -276,7 +276,7 @@ describe('ContainerService', () => {
           'id': 'an-id', 'items': [item],
           'name': 'A container', 'qrcode': 'qrcode'
         });
-        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.hash),
+        containerService.moveItemToContainer(new Item(item.item, item.imageStore, item.itemHash),
           'an-id', new Destination('another-container-id'))
           .subscribe((container) => {
             expect(container).not.toBeNull();

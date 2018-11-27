@@ -113,4 +113,8 @@ export class ContainerDetailComponent implements OnInit {
     ngbModalRef.componentInstance.item = item;
     this.route.paramMap.subscribe(pmap => ngbModalRef.componentInstance.containerId = pmap.get('id'));
   }
+
+  containsImages(images: Image[]) {
+    return images.length > 0;
+  }
 }

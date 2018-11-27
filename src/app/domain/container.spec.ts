@@ -31,7 +31,7 @@ describe('Container', () => {
           }]
         }]
       },
-      'hash': 'hash'
+      'itemHash': 'hash'
     }]
   };
 
@@ -64,7 +64,7 @@ describe('Container', () => {
           }]
         }]
       },
-      'hash': 'hash_1'
+      'itemHash': 'hash_1'
     },
       {
         'item': 'pantalon',
@@ -93,13 +93,13 @@ describe('Container', () => {
           }
           ]
         },
-        'hash': 'hash_2'
+        'itemHash': 'hash_2'
       }]
   };
 
   const bodyWithoutImageStoreAndHash = {
     'id': 'a-new-id',
-    'name': 'Container without image store and hash',
+    'name': 'Container without image store and itemHash',
     'items': [{
       'item': 'chaussure'
     }]
@@ -121,12 +121,12 @@ describe('Container', () => {
     expect(container.items[1].imageStore.folder).toEqual('other_folder', 'second item folder');
   });
 
-  it('should create a container without image store and hash', () => {
+  it('should create a container without image store and itemHash', () => {
     const container = new Container(bodyWithoutImageStoreAndHash);
     expect(container.items.length).toBe(1);
     expect(container.items[0].item).toEqual('chaussure');
     expect(container.items[0].imageStore).toBeUndefined('image store should be undefined');
-    expect(container.items[0].hash).toBeUndefined('hash shouldbe undefined');
+    expect(container.items[0].itemHash).toBeUndefined('itemHash shouldbe undefined');
   });
 
 });

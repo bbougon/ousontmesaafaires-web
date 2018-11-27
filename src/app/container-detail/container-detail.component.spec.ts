@@ -51,7 +51,7 @@ describe('ContainerDetailComponent', () => {
           }]
         }]
       },
-      'hash': 'hash'
+      'itemHash': 'hash'
     }, {
       'item': {'type': 'pantalon', 'couleur': 'marron'},
       'imageStore': {
@@ -78,7 +78,7 @@ describe('ContainerDetailComponent', () => {
           }]
         }]
       },
-      'hash': 'hash_2'
+      'itemHash': 'hash_2'
     }],
     'qrcode': 'a qr code',
     'description': 'Description'
@@ -144,6 +144,23 @@ describe('ContainerDetailComponent', () => {
       expect(url).toBe('assets/testing/secureUrl2.png');
     });
 
+    it('with emtpy images', () => {
+      component.container = new Container({
+        'id': 'an-id',
+        'name': 'Container',
+        'items': [{
+          'item': 'chaussure',
+          'imageStore': {
+            'folder': 'folder_name',
+            'images': []
+          },
+          'itemHash': 'hash'
+        }]
+      });
+      console.log('CONTAINER' + JSON.stringify(component.container));
+
+      expect(component.containsImages(component.container.items[0].imageStore.images)).toBeFalsy();
+    });
   });
 
   describe('opens modal to upload image', () => {
@@ -297,7 +314,7 @@ describe('ContainerDetailComponent', () => {
         fixture = null;
       });
 
-      it('a new container', () => {
+      it('to a new container', () => {
         ngbModal = fixture.debugElement.injector.get(NgbModal);
         spiedModalService = spyOn(ngbModal, 'open').and
           .returnValue({componentInstance: {item: CONTAINER.items[0], containerId: 'an-id', target: 'NEW'}});

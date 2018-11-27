@@ -35,7 +35,7 @@ describe('ItemStringFormatter', () => {
         }
       ]
     },
-    'hash': 'new-hash'
+    'hash': 'new-itemHash'
   };
 
   const itemWithTwoFeaturesJson = {
@@ -95,7 +95,7 @@ describe('ItemStringFormatter', () => {
         }
       ]
     },
-    'hash': 'new-hash'
+    'hash': 'new-itemHash'
   };
 
   it('should format an item with one feature', () => {

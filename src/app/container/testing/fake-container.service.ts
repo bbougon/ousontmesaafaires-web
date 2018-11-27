@@ -34,7 +34,7 @@ export const CONTAINER: Container = new Container({
         }]
       }]
     },
-    'hash': 'hash'
+    'itemHash': 'hash'
   }, {
     'item': 'pantalon marron',
     'imageStore': {
@@ -61,7 +61,7 @@ export const CONTAINER: Container = new Container({
         }]
       }]
     },
-    'hash': 'hash_2'
+    'itemHash': 'hash_2'
   }],
   'qrcode': 'a qr code',
   'description': 'Description'

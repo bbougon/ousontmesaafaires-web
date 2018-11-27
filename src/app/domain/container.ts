@@ -10,8 +10,9 @@ export class Container {
   constructor(private body: any) {
     this.id = body.id;
     this.items = body.items.map(singleItem => {
-      if (!isUndefined(singleItem.imageStore) && !isUndefined(singleItem.hash)) {
-        return new Item(singleItem.item, singleItem.imageStore, singleItem.hash);
+      console.log('SINGLEITEM:' + JSON.stringify(singleItem));
+      if (!isUndefined(singleItem.imageStore) && !isUndefined(singleItem.itemHash)) {
+        return new Item(singleItem.item, singleItem.imageStore, singleItem.itemHash);
       }
       return new Item(singleItem.item);
     });

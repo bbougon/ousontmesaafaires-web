@@ -86,7 +86,7 @@ export class UploadComponent implements OnInit {
     uploadedImage.eager.forEach(function (eager) {
       resizedImages.push({url: eager.url, secure_url: eager.secure_url, width: eager.width, height: eager.height});
     });
-    this.persistUpload(new Patch('item', this.item.hash)
+    this.persistUpload(new Patch('item.image', this.item.itemHash)
       .unwrap({
         signature: uploadedImage.signature,
         url: uploadedImage.url,
@@ -110,9 +110,9 @@ export class UploadComponent implements OnInit {
           this.item.imageStore.images = [];
         }
         addImageTo.call(this);
-        this.item.hash = this.cryptoService.sha1().encrypt(new ItemStringFormatter(this.item).format());
-        if (isUndefined(container.items.find(item => item.hash === this.item.hash))) {
-          throw new Error('Error, could not find item ' + this.item.hash + ' in updated container!');
+        this.item.itemHash = this.cryptoService.sha1().encrypt(new ItemStringFormatter(this.item).format());
+        if (isUndefined(container.items.find(item => item.itemHash === this.item.itemHash))) {
+          throw new Error('Error, could not find item ' + this.item.itemHash + ' in updated container!');
         }
         if (callBack) {
           callBack();

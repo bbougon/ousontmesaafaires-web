@@ -91,7 +91,7 @@ export class ContainerService {
   }
 
   moveItemToContainer(item: Item, containerId: string, destination: Destination): Observable<Container> {
-    return this.httpClient.post(`${environment.apiUrl}/containers/${containerId}/items/${item.hash}`, destination, {
+    return this.httpClient.post(`${environment.apiUrl}/containers/${containerId}/items/${item.itemHash}`, destination, {
       observe: 'response',
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
       responseType: 'text'

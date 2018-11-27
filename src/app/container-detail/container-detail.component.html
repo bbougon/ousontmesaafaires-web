@@ -60,7 +60,7 @@
                       <span *ngIf="item.item" [outerHTML]="item.item"></span>
                     </div>
                     <div *ngIf="item.imageStore" class="row col-4">
-                      <img *ngIf="item.imageStore.images" src="{{getThumbnail(item.imageStore.images[0])}}" (click)="openCarousel(item.imageStore)">
+                      <img *ngIf="containsImages(item.imageStore.images)" src="{{getThumbnail(item.imageStore.images[0])}}" (click)="openCarousel(item.imageStore)">
                     </div>
                   </div>
                   <div class="col-md-2 col-2 justify-content-end align-self-center">

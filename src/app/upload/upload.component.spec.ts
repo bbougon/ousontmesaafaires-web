@@ -74,7 +74,7 @@ describe('UploadComponent', () => {
             }]
           }]
         },
-        'hash': '74d85ee362c32db1f242a233acca2fcddb349ddc'
+        'itemHash': '74d85ee362c32db1f242a233acca2fcddb349ddc'
       }, {
         'item': 'pantalon couleur marron',
         'imageStore': {
@@ -101,7 +101,7 @@ describe('UploadComponent', () => {
             }]
           }]
         },
-        'hash': '1de26eb55d4baa7a24ac94715b075103630bf2c9'
+        'itemHash': '1de26eb55d4baa7a24ac94715b075103630bf2c9'
       }]
     }
   ;
@@ -257,7 +257,7 @@ describe('UploadComponent', () => {
     });
 
     it('and api service is called', () => {
-      const patch = new Patch('item', component.item.hash).unwrap({
+      const patch = new Patch('item', component.item.itemHash).unwrap({
         signature: 'signature2',
         url: 'url5',
         secure_url: 'secureUrl5',
@@ -277,7 +277,7 @@ describe('UploadComponent', () => {
 
       expect(spiedContainerService).toHaveBeenCalledWith(component.containerId, patch);
       expect(spiedCloseModal).toHaveBeenCalled();
-      expect(component.item.hash).toBe('74d85ee362c32db1f242a233acca2fcddb349ddc');
+      expect(component.item.itemHash).toBe('74d85ee362c32db1f242a233acca2fcddb349ddc');
       expect(component.item.imageStore.images.length).toBe(2);
     });
 
@@ -331,12 +331,12 @@ describe('UploadComponent', () => {
                 }]
               }]
             },
-            'hash': 'sha-1'
+            'itemHash': 'sha-1'
           }]
         })));
       const cryptoService: CryptoService = fixture.debugElement.injector.get(CryptoService);
       spyOn(cryptoService, 'sha1').and.returnValue(new FakeCryptoService((message) => 'sha-1'));
-      const patch = new Patch('item', component.item.hash).unwrap({
+      const patch = new Patch('item', component.item.itemHash).unwrap({
         signature: 'signature2',
         url: 'url5',
         secure_url: 'secureUrl5',
